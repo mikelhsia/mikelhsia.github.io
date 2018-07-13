@@ -100,6 +100,11 @@
 .site-footer {
     border-top: 1px solid $grey-color-light;
     padding: $spacing-unit 0;
+    position: fixed;
+    bottom: 0px;
+    padding: 20px 0px 0px 0px;
+    width: 100%;
+    background-color: white;
 }
 
 .footer-heading {
@@ -169,6 +174,11 @@
  */
 .page-content {
     padding: $spacing-unit 0;
+    position: absolute;
+    bottom: 200px;
+    top: 66px;
+    width: 100%;
+    overflow: scroll;
 }
 
 .page-heading {
