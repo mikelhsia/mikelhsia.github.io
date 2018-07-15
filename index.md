@@ -4,3 +4,4 @@
 
 layout: home
 ---
+<p>This is coming from index.md</p>
