@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: What else do I need to do after I reboot my computer
+author:
+  display_name: Michael Hsia
+  login: michaelhsia
+  email: mikelhsia@hotmail.com
+  url: ''
+author_login: michaelhsia
+author_email: mikelhsia@hotmail.com
+wordpress_id: 131
+wordpress_url: http://127.0.0.1:1025/?p=131
+date: '2017-04-29 15:39:38 +0800'
+date_gmt: '2017-04-29 15:39:38 +0800'
+categories:
+- System
+tags:
+- PHP
+- Mac
+- Nginx
+- MySQL
+comments: []
+---
+<p class="p1"><b>Nginx</b></p>
+<p class="p1">sudo nginx -c /usr/local/etc/nginx/nginx.conf</p>
+<p class="p1"><span class="s1">sudo nginx -s reload</span></p>
+<p class="p1"><b>php-fpm (This is php-fpm, which not working since missing mcrypt)</b></p>
+<p class="p1">sudo php-fpm -y /usr/local/etc/php/5.6/php-fpm.conf -c /usr/local/etc/php/5.6/php.ini</p>
+<p class="p1"><b>php56-fpm</b></p>
+<p class="p1"><span class="s1">sudo /usr/local/sbin/php56-fpm start -y /usr/local/etc/php/5.6/php-fpm.conf -c /usr/local/etc/php/5.6/php.ini</span></p>
+<p class="p1"><b>Mysql</b></p>
+<p class="p1">sudo chown -R _mysql /usr/local/var/mysql</p>
+<p class="p1">sudo chmod -R o+rwx /usr/local/var/mysql</p>
+<p class="p1">mysql.server start</p>
