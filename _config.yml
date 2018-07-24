@@ -43,3 +43,4 @@ permalink: /:year-:month-:day/:title
 #   - vendor/gems/
 #   - vendor/ruby/
 
+excerpt_separator: <!--More-->

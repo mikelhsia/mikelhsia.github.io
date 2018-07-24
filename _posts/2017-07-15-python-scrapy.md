@@ -20,7 +20,7 @@ tags:
 - python
 comments: []
 ---
-<pre>scrapy startproject tutorial</pre>
+**scrapy startproject tutorial**
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">scrapy.cfg</span></code>: 项目的配置文件</li>
 <li><code class="docutils literal"><span class="pre">tutorial/</span></code>: 该项目的python模块。之后您将在此加入代码。</li>

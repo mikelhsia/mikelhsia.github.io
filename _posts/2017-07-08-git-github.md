@@ -19,26 +19,27 @@ categories:
 tags: []
 comments: []
 ---
-<p>1、在ubuntu中安装git</p>
+本篇讲述安装git并和github连接的步骤.
+<!--More-->
+### 1、在ubuntu中安装git
 <div class="cnblogs_code">
 <pre>$ sudo apt-get install git git-core</pre>
 </div>
-<p>2、配置本机的git</p>
+### 2、配置本机的git
 <div class="cnblogs_code">
 <pre>$ git config --global user.name "abcd"
 $ git config --global user.email abcd@efgh.com</pre>
 </div>
-<p>3、生成密钥</p>
-<div>
+### 3、生成密钥
 <div class="cnblogs_code">
 <pre>$ ssh-keygen -t rsa -C "abcd@efgh.com" //邮箱同上</pre>
 </div>
-<p>4、提交密钥</p>
+### 4、提交密钥
 <div class="cnblogs_code">
 <pre>vim /home/linx/.ssh/id_rsa.pub //复制里面的密钥</pre>
 </div>
 <p>到github网页中登陆自己的账号，然后再account setting中，找到SSH KEY讲复制的密钥加入（需要再次输入github的密码）</p>
-<p>5、检验是否链接上了github</p>
+### 5、检验是否链接上了github
 <div class="cnblogs_code">
 <pre>$ ssh git@github.com
 //正常情况下，回显如下
@@ -46,10 +47,9 @@ PTY allocation request failed on channel 0
 Hi plinx! You've successfully authenticated, but GitHub does not provide shell access.
 Connection to github.com closed.</pre>
 </div>
-<p>6、首次推送</p>
+### 6、首次推送
 <div>
 <div class="cnblogs_code">
-<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a title="复制代码"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></a></span></div>
 <pre>$ mkdir tmp      //创建推送目录
 $ cd tmp         //进入推送目录    
 $ git init       //设置该目录为推送
@@ -58,12 +58,11 @@ $ git add README //加入修改列表
 $ git commit -m 'first commit' //递交修改声明
 $ git remote add origin git@github.com:abcd/tmp.git //为远程Git更名为origin
 $ git push -u origin master //推送此次修改</pre>
-<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a title="复制代码"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></a></span></div>
 </div>
+<hr>
 <p>然后各种问题从这里开始了，以下谈一下解决的方法：</p>
 </div>
-<p>&nbsp;</p>
-<p>问题一：</p>
+##### 问题一：
 <div class="cnblogs_code">
 <pre>ERROR: Repository not found.</pre>
 </div>
@@ -71,7 +70,7 @@ $ git push -u origin master //推送此次修改</pre>
 <p>解决方法：</p>
 <p>1）检查自己的github中的Repository，检查自己创建的目录，必须要两者一致；</p>
 <p>2）先git clone下github中的Repository，然后再进行更改，这样就一定一致了。</p>
-<p>问题二：</p>
+##### 问题二：
 <div class="cnblogs_code">
 <pre>Agent admitted failure to sign using the key. 
 Permission denied (publickey)</pre>
@@ -80,7 +79,7 @@ Permission denied (publickey)</pre>
 <p>解决方法：</p>
 <p>1）重新拷贝一份当前的~/.ssh/id_rsa.pub中的ssh key到github中添加;</p>
 <p>2）先删除~/.ssh/in_rsa*文件，然后重新ssh-keygen一份sshkey来生成密钥，然后复制到github，接着ssh链接github来检验是否成功联通。</p>
-<p>问题三：</p>
+##### 问题三：
 <div class="cnblogs_code">
 <pre>//出现如下提示
 ! [rejected] master -> master (non-fast-forward)
@@ -88,11 +87,11 @@ error: failed to push some refs to ...</pre>
 </div>
 <p>这个问题是因为，github中已经有了这个代码，不允许你覆盖它。</p>
 <p>解决方法：</p>
-<p>1）强制推送，一般不推荐！</p>
+1) 强制推送，一般不推荐！
 <div class="cnblogs_code">
 <pre>$ git push -f</pre>
 </div>
-<p>2）</p>
+2)
 <div class="cnblogs_code">
 <pre>$ git pull</pre>
 </div>
@@ -110,14 +109,15 @@ $ git config branch.master.merge ref/heads/master</pre>
 </div>
 <p>目前了解到的也就这三个问题了。</p>
 <p>之后就可以成功得推送了。</p>
+<hr>
 <p>接着上一篇的，从github clone下代码。</p>
-<p>1、先查看当前开发分支</p>
+### 1、先查看当前开发分支
 <div class="cnblogs_code">
 <pre>$ cat .git/HEAD
 ref: refs/heads/master</pre>
 </div>
 <p>这里的master是默认分支。</p>
-<p>2、查看当前状态</p>
+### 2、查看当前状态
 <div class="cnblogs_code">
 <pre>$ git status
 # On branch master
@@ -126,7 +126,6 @@ nothing to commit (working directory clean)</pre>
 <p>目前是无推送状态，即使你推送了一个未做任何改变的文件，当前状态仍未无推送状态。</p>
 <p>进入README添加一句之后</p>
 <div class="cnblogs_code">
-<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a title="复制代码"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></a></span></div>
 <pre>$ git add README
 //之后有两种方法填写推送信息
 //比较简单的一种，直接写入推送信息，-m 就是 message 的意思
@@ -134,7 +133,6 @@ $ git commit -m 'message you want to write.'
 //比较麻烦的一种
 $ git commit
 //进入GNU nano编辑器，底行有操作提示</pre>
-<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a title="复制代码"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></a></span></div>
 </div>
 <p>将提示</p>
 <div class="cnblogs_code">
@@ -148,33 +146,28 @@ $ git commit
 #
 nothing to commit (working directory clean)</pre>
 </div>
-<p>3、git中有日志可以查看推送记录</p>
+### 3、git中有日志可以查看推送记录
 <div class="cnblogs_code">
 <pre>$ git log</pre>
 </div>
-<p>4、检查不同</p>
+### 4、检查不同
 <div class="cnblogs_code">
 <pre>$ git diff
 //这项操作时要在添加推送之前执行的，否则就看不出哪里不同了</pre>
 </div>
-<p>5、创建分支</p>
+### 5、创建分支
 <div class="cnblogs_code">
-<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a title="复制代码"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></a></span></div>
 <pre>git branch test0.1   //创建一个test0.1分支
 git checkout test0.1   //进入这个分支中来
 git branch   //查看当前分支情况，所在分支前面有'*'号
 git add -A     //将本次修改的所有内容都加入修改列表
 git commit -m "commit all"   //提交说明
 git push -u origin test0.1  //将此次修改提交到分支test0.1中去</pre>
-<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a title="复制代码"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></a></span></div>
 </div>
-<p>6、只对项目精简了而没有增加内容</p>
-<div>
+### 6、只对项目精简了而没有增加内容
 <div class="cnblogs_code">
 <pre>$ git commit -a 
 $ git push -u origin code_ver0.1
 //分支和账户请勿对号入座
 </pre>
-</div>
-</div>
 </div>

@@ -3,28 +3,23 @@ layout: post
 status: publish
 published: true
 title: Wordpress create widget
-author:
-  display_name: Michael Hsia
-  login: michaelhsia
-  email: mikelhsia@hotmail.com
-  url: ''
-author_login: michaelhsia
-author_email: mikelhsia@hotmail.com
-wordpress_id: 133
-wordpress_url: http://127.0.0.1:1025/?p=133
 date: '2017-04-30 14:19:17 +0800'
-date_gmt: '2017-04-30 14:19:17 +0800'
 categories:
 - Wordpress
 tags:
 - WordPress
 comments: []
 ---
-<p>https://www.wpdaxue.com/creating-context-sensitive-sidebar-navigation.html</p>
-<p>https://www.wpdaxue.com/creat-your-first-wordpress-widget.html</p>
+- 什么是 WordPress 动作挂钩
+- 什么是 WordPress 过滤钩子（Filter）
+- 参考文章
+  - <a href="https://www.wpdaxue.com/creating-context-sensitive-sidebar-navigation.html">
+在 WordPress 中创建上下文相关的侧栏页面导航</a>
+  - <a href="https://www.wpdaxue.com/creat-your-first-wordpress-widget.html">创建你的第一个WordPress小工具</a>
+<!--More-->
 <h4>get_pages 函数</h4>
 <p>http://www.wordpress.la/codex-%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0-get_pages().html</p>
-<p>&nbsp;</p>
+<br>
 <h2>Differences between action and filter</h2>
 <table border="2">
 <tbody>

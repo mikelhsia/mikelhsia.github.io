@@ -3,17 +3,7 @@ layout: post
 status: publish
 published: true
 title: How I achieve installing Magento 2
-author:
-  display_name: Michael Hsia
-  login: michaelhsia
-  email: mikelhsia@hotmail.com
-  url: ''
-author_login: michaelhsia
-author_email: mikelhsia@hotmail.com
-wordpress_id: 19
-wordpress_url: http://127.0.0.1:1025/?p=19
 date: '2016-11-13 11:33:11 +0800'
-date_gmt: '2016-11-13 11:33:11 +0800'
 categories:
 - Magento 2
 - System
@@ -30,6 +20,7 @@ comments: []
 <li class="li1"><span class="s1"><span class="s2">Study home-brew</span></span></li>
 <li class="li1"><span class="s1"><span class="s2">PHP study</span></span></li>
 <li class="li1"><span class="s1"><span class="s2">Nginx</span></span></li>
+<!--More-->
 <li class="li1"><span class="s1"><span class="s2">PHP study</span></span></li>
 <li class="li1"><span class="s1"><span class="s2">MySQL</span></span></li>
 <li class="li1"><span class="s1"><span class="s2">Wordpress</span></span></li>

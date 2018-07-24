@@ -3,23 +3,14 @@ layout: post
 status: publish
 published: true
 title: Magento 2 Issue that bother's me
-author:
-  display_name: Michael Hsia
-  login: michaelhsia
-  email: mikelhsia@hotmail.com
-  url: ''
-author_login: michaelhsia
-author_email: mikelhsia@hotmail.com
-wordpress_id: 139
-wordpress_url: http://127.0.0.1:1025/?p=139
 date: '2017-05-06 07:20:20 +0800'
-date_gmt: '2017-05-06 07:20:20 +0800'
 categories:
 - Magento 2
 tags:
 - PHP
 comments: []
 ---
+<!--More-->
 <h3>php:</h3>
 <p>mcrypt&nbsp;-&nbsp;<span class="s1">Notice: Use of undefined constant MCRYPT_BLOWFISH - assumed '</span><span class="s2">MCRYPT_BLOWFISH</span><span class="s1">'</span></p>
 <p>intl -&nbsp;<a href="http://stackoverflow.com/questions/6242378/fatal-error-class-intldateformatter-not-found">Fatal error: Class 'IntlDateFormatter' not found</a></p>

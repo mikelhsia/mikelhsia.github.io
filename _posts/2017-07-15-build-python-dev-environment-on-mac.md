@@ -22,17 +22,10 @@ tags:
 comments: []
 ---
 <p class="title"><a href="http://www.jianshu.com/p/b26b86bff852">Mac中基于Homebrew搭建python开发环境</a></p>
-<div class="author">
-<p><a class="avatar" href="http://www.jianshu.com/u/8327ffb13b21"><img src="http://upload.jianshu.io/users/upload_avatars/912917/5132f46a068a?imageMogr2/auto-orient/strip|imageView2/1/w/144/h/144" alt="144" /></a></p>
-<div class="info">
-<p><span class="tag">作者</span>&nbsp;<span class="name"><a href="http://www.jianshu.com/u/8327ffb13b21">classtag</a></span>&nbsp;<a class="btn btn-success follow"><i class="iconfont ic-follow"></i>关注</a></p>
-<div class="meta"><span class="publish-time" title="" data-toggle="tooltip" data-placement="bottom" data-original-title="最后编辑于 2017.04.21 17:24">2016.01.14 00:10*</span>&nbsp;<span class="wordage">字数 422</span>&nbsp;<span class="views-count">阅读 2122</span><span class="comments-count">评论 0</span><span class="likes-count">喜欢 4</span></div>
-</div>
-</div>
 <div class="show-content" data-note-content="">
 <div class="image-package">
 <p><img src="http://upload-images.jianshu.io/upload_images/912917-19836c0a351b7d90.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/912917-19836c0a351b7d90.png?imageMogr2/auto-orient/strip%7CimageView2/2" /></p>
-<div class="image-caption">python</div>
+<!--More-->
 </div>
 <p>转移到mac上了。这里是在lion中搭建python开发环境的简单记录。这份记录不是一份step by step.而是事后写的记录，可能有记忆遗漏。如果有错误，请指正。</p>
 <hr />
