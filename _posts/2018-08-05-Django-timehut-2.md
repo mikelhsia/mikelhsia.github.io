@@ -54,4 +54,8 @@ Django also includes the following views to allow users to reset their password:
 - `password_reset_confirm`: Lets the user set a new password.
 - `password_reset_complete`: The success page shown to the user after he resets their password.”
 
+#### User registration and user profiles
+- User registration
+
+#### Extending the User model
 
