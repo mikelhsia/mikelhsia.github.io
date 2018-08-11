@@ -54,11 +54,35 @@ Django also includes the following views to allow users to reset their password:
 - `password_reset_confirm`: Lets the user set a new password.
 - `password_reset_complete`: The success page shown to the user after he resets their password.”
 
-### User registration and user profiles
+#### User registration and user profiles
 
 #### Extending the User model
 - Extending the User model
 - Using a custom User model
 - Using the messageframework
 
+#### Using a custom User model
+Django also offers a way to substitute the whole User model with your own custom model. Your user class should inherit from Django's AbstractUser class, which provides the full implementation of the default user as an abstract model.
+
+#### Using the messages framework/middleware
+messages is default Django middleware, and can be imported by using:
+```
+from django.contrib import messages
+messages.error(request, 'Something went wrong')
+```
+- success(): Success messages to display after an action was successful
+- info(): Informational messages
+- warning(): Something has not yet failed but may fail imminently
+- error(): An action was not successful or something failed
+- debug(): Debug messages that will be removed or ignored in a production environment
+
 #### Building a custom authentication backend
+The AUTHENTICATION_BACKENDS setting includes the list of authentication backends for your project. By default, this setting is set to the following:
+
+`('django.contrib.auth.backends.ModelBackend',)`
+
+The default ModelBackend authenticates users against the database using the User model of django.contrib.auth. This will suit most of your projects. However, you can create custom backends to authenticate your user against other sources like a LDAP directory or any other system.
+
+An authentication backend is a class provides the following:
+- authenticate(): Takes user credentials as parameters. Has to return `True` if the user has been successfully authenticated, or False otherwise.
+- get_user(): Takes a user ID parameter and has to return a User object.
