@@ -43,3 +43,33 @@ Django forces the relationship to be symmetrical. In this case, we are setting s
 
 ### Creating list and detail views for user profiles
 ### Building an Ajax view to follow users
+#### Using the contenttypes framework
+ContentType model
+- `app_label`: The name of the application the model belongs to. This is automatically taken from the app_label attribute of the model Meta options. For example, our Image model belongs to the application images.
+model: The name of the model class.
+- `name`: The human-readable name of the model. This is automatically taken from the verbose_name attribute of the model Meta options
+
+#### Adding generic relations to your models
+#### Avoiding duplicate actions in the activity stream
+#### Adding user actions to the activity stream
+- A user bookmarks an image
+- A user likes/unlikes an image
+- A user creates an account
+- A user follows/unfollows another user
+#### Displaying the activity stream
+#### Optimizing QuerySets that involve related objects
+- Using `select_related`: We are using user__profile to join the profile table too in one single SQL query. If you call select_related() without passing any arguments to it, it will retrieve objects from all ForeignKey relationships. Always limit select_related() to the relationships that will be accessed afterwards.
+- Using `prefetch_related`: select_related() cannot work for many-to-many or many-to-one relationships (ManyToMany or reverse ForeignKey fields). Django offers a different queryset method called prefetch_related that works for many-to-many and many-to-one relations in addition to the relations supported by select_related(). The prefetch_related() method performs a separate lookup for each relationship and joins the results using Python. This method also supports prefetching of GenericRelation and GenericForeignKey.
+#### Creating templates for actions
+
+### Using signals for denormalizing counts
+`Denormalization` is making data redundant in a way that it optimizes read performance. You could improve your queries by denormalizing counts. The drawback is that we have to keep the redundant data updated.
+#### Working with signals (Django signal dispatcher)
+Django provides several signals for models located at `django.db.models.signals`. Some of these signals are:
+- `pre_save` and `post_save`: Sent before or after calling the `save()` method of a model
+- `pre_delete` and `post_delete`: Sent before or after calling the `delete()` method of a model or queryset
+- `m2m_changed`: Sent when a `ManyToManyField` on a model is changed
+
+#### Defining application configuration classes
+
+### Using Redis for storing item views
