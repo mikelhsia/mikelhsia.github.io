@@ -62,3 +62,6 @@ Context processor is a Python function that takes the `request` object as an arg
 - `django.contrib.messages.context_processors.messages`: This sets a messages variable in the context containing all messages that have been sent using the messages framework.
 Django also enables `django.template.context_processors.csrf` to avoid cross-site request forgery attacks. This context processor is not present in the settings, but it is always enabled and cannot be turned off for security reasons.
 
+## Including OrderItem inline in the admin site
+
+## Creating customer orders
