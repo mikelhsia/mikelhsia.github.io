@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Notes about how to utilize Django session to achieve caching user info.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Django Online Shop Setup">
+<meta property="og:url" content="http://yoursite.com/2017/08/18/2018-08-18-Django-online-shop/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Notes about how to utilize Django session to achieve caching user info.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-08-18T04:57:40.000Z">
+<meta property="article:modified_time" content="2020-08-19T12:18:12.957Z">
+<meta property="article:author" content="Michael Hsia">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2017/08/18/2018-08-18-Django-online-shop/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Python Django Online Shop Setup | Michael's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/18/2018-08-18-Django-online-shop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python Django Online Shop Setup
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-08-18 12:57:40" itemprop="dateCreated datePublished" datetime="2017-08-18T12:57:40+08:00">2017-08-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-19 20:18:12" itemprop="dateModified" datetime="2020-08-19T20:18:12+08:00">2020-08-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Programming-Python-Django/" itemprop="url" rel="index"><span itemprop="name">Programming Python Django</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Notes about how to utilize Django session to achieve caching user info.</p>
+<a id="more"></a>
+<h1 id="Building-e-commerce-shop"><a href="#Building-e-commerce-shop" class="headerlink" title="Building e-commerce shop"></a>Building e-commerce shop</h1><ul>
+<li>Building Category and Product </li>
+<li>Building Catalog views</li>
+</ul>
+<h2 id="Building-Django-Session"><a href="#Building-Django-Session" class="headerlink" title="Building Django Session"></a>Building Django Session</h2><p>You can set a variable in the session like this:<br><code>request.session[&#39;foo&#39;] = &#39;bar&#39;</code><br>Retrieve a session key:<br><code>request.session.get(&#39;foo&#39;)</code><br>Delete a key you stored in the session:<br><code>del request.session[&#39;foo&#39;]”</code></p>
+<p>Django stores sessions in the database using the Session model of the <code>django.contrib.sessions</code> application.</p>
+<p>Django offers the following options for storing session data:</p>
+<ul>
+<li><em>Database sessions</em>: Session data is stored in the database. This is the default session engine.</li>
+<li><em>File-based sessions</em>: Session data is stored in the file system.</li>
+<li><em>Cached sessions</em>: Session data is stored in a cache backend. You can specify cache backends using the <code>CACHES</code> setting. Storing session data in a cache system offers best performance.</li>
+<li><em>Cached database sessions</em>: Session data is stored in a write-through cache and database. Reads only use the database if the data is not already in the cache.</li>
+<li><em>Cookie-based sessions</em>: Session data is stored in the cookies that are sent to the browser.”</li>
+</ul>
+<p>You can customize sessions with other settings. Here are some of the important session related settings:</p>
+<ul>
+<li><strong>SESSION_COOKIE_AGE</strong>: This is the duration of session cookies in seconds. The default value is 1209600 (2 weeks).</li>
+<li><strong>SESSION_COOKIE_DOMAIN</strong>: This domain is used for session cookies. Set this to .mydomain.com to enable cross-domain cookies.</li>
+<li><strong>SESSION_COOKIE_SECURE</strong>: This is a boolean indicating that the cookie should only be sent if the connection is an HTTPS connection.</li>
+<li><strong>SESSION_EXPIRE_AT_BROWSER_CLOSE</strong>: This is a boolean indicating that the session has to expire when the browser is closed.</li>
+<li><strong>SESSION_SAVE_EVERY_REQUEST</strong>: This is a boolean that, if True, will save the session to the database on every request. The session expiration is also updated each time.”</li>
+</ul>
+<h2 id="Building-shopping-cart-by-using-session"><a href="#Building-shopping-cart-by-using-session" class="headerlink" title="Building shopping cart by using session"></a>Building shopping cart by using session</h2><ul>
+<li>When a cart is needed, we check if a custom session key is set. If no cart is set in the session, we create a new cart and save it in the cart session key.</li>
+<li>For successive requests, we perform the same check and get the cart items from the cart session key. We retrieve the cart items from the session and their related Product objects from the database.</li>
+</ul>
+<h2 id="Context-processors"><a href="#Context-processors" class="headerlink" title="Context processors"></a>Context processors</h2><p>Context processor is a Python function that takes the <code>request</code> object as an argument and returns a dictionarty that gets added to the request context and available to <strong><em>all</em></strong> the templates rendered using <code>RequestContext</code></p>
+<ul>
+<li><code>django.template.context_processors.debug</code>: This sets the Boolean debug and sql_queries variables in the context representing the list of SQL queries executed in the request</li>
+<li><code>django.template.context_processors.request</code>: This sets the request variable in the context</li>
+<li><code>django.contrib.auth.context_processors.auth</code>: This sets the user variable in the request</li>
+<li><code>django.contrib.messages.context_processors.messages</code>: This sets a messages variable in the context containing all messages that have been sent using the messages framework.<br>Django also enables <code>django.template.context_processors.csrf</code> to avoid cross-site request forgery attacks. This context processor is not present in the settings, but it is always enabled and cannot be turned off for security reasons.</li>
+</ul>
+<h2 id="Including-OrderItem-inline-in-the-admin-site"><a href="#Including-OrderItem-inline-in-the-admin-site" class="headerlink" title="Including OrderItem inline in the admin site"></a>Including OrderItem inline in the admin site</h2><h2 id="Creating-customer-orders"><a href="#Creating-customer-orders" class="headerlink" title="Creating customer orders"></a>Creating customer orders</h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/11/2018-08-11-Django-timehut-4/" rel="prev" title="Python Django Time Hut 4">
+      <i class="fa fa-chevron-left"></i> Python Django Time Hut 4
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Building-e-commerce-shop"><span class="nav-number">1.</span> <span class="nav-text">Building e-commerce shop</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Building-Django-Session"><span class="nav-number">1.1.</span> <span class="nav-text">Building Django Session</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Building-shopping-cart-by-using-session"><span class="nav-number">1.2.</span> <span class="nav-text">Building shopping cart by using session</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Context-processors"><span class="nav-number">1.3.</span> <span class="nav-text">Context processors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Including-OrderItem-inline-in-the-admin-site"><span class="nav-number">1.4.</span> <span class="nav-text">Including OrderItem inline in the admin site</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-customer-orders"><span class="nav-number">1.5.</span> <span class="nav-text">Creating customer orders</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

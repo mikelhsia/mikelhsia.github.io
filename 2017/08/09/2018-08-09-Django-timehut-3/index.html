@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="In this article, I’m putting the thoughts to create a JavaScript bookmarklet to share content from other sites into your website, and you will implement AJAX features into your project using jQuery an">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Django Time Hut 3">
+<meta property="og:url" content="http://yoursite.com/2017/08/09/2018-08-09-Django-timehut-3/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="In this article, I’m putting the thoughts to create a JavaScript bookmarklet to share content from other sites into your website, and you will implement AJAX features into your project using jQuery an">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-08-09T04:57:40.000Z">
+<meta property="article:modified_time" content="2020-08-19T12:15:44.841Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Notes">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2017/08/09/2018-08-09-Django-timehut-3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Python Django Time Hut 3 | Michael's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/09/2018-08-09-Django-timehut-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python Django Time Hut 3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-08-09 12:57:40" itemprop="dateCreated datePublished" datetime="2017-08-09T12:57:40+08:00">2017-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-19 20:15:44" itemprop="dateModified" datetime="2020-08-19T20:15:44+08:00">2020-08-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Programming-Python/" itemprop="url" rel="index"><span itemprop="name">Programming Python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>In this article, I’m putting the thoughts to create a JavaScript bookmarklet to share content from other sites into your website, and you will implement AJAX features into your project using jQuery and Django, which is originally captured from the eBook about Django that I’m reading…</p>
+<a id="more"></a>
+
+<p>This chapter will cover the following points:</p>
+<ul>
+<li>Creating many-to-many relationships</li>
+<li>Customizing behavior for forms</li>
+<li>Using jQuery with Django</li>
+<li>Building a jQuery bookmarklet</li>
+<li>Generating image thumbnails using sorl-thumbnail</li>
+<li>Implementing AJAX views and integrating them with jQuery</li>
+<li>Creating custom decorators for views</li>
+<li>Building AJAX pagination</li>
+</ul>
+<h3 id="Posting-content-from-other-websites"><a href="#Posting-content-from-other-websites" class="headerlink" title="Posting content from other websites"></a>Posting content from other websites</h3><h4 id="Cleaning-form-fields"><a href="#Cleaning-form-fields" class="headerlink" title="Cleaning form fields"></a>Cleaning form fields</h4><h4 id="Overriding-the-save-method-of-a-ModelForm"><a href="#Overriding-the-save-method-of-a-ModelForm" class="headerlink" title="Overriding the save() method of a ModelForm"></a>Overriding the save() method of a ModelForm</h4><h4 id="Building-a-bookmarklet-with-jQuery"><a href="#Building-a-bookmarklet-with-jQuery" class="headerlink" title="Building a bookmarklet with jQuery"></a>Building a bookmarklet with jQuery</h4><h4 id="Building-detail-page-for-image-liked"><a href="#Building-detail-page-for-image-liked" class="headerlink" title="Building detail page for image liked"></a>Building detail page for image liked</h4><h4 id="Adding-Ajax-actions-with-jQuery"><a href="#Adding-Ajax-actions-with-jQuery" class="headerlink" title="Adding Ajax actions with jQuery"></a>Adding Ajax actions with jQuery</h4><ul>
+<li>add() passing an object that is already present in the related object set does not duplicate it and thus</li>
+<li>remove() passing an object that is not in the related object set does nothing</li>
+<li>Another many-to-many manager is clear(), which removes all objects from the related object set</li>
+</ul>
+<p><code>JsonResponse</code> class provided by Django, which returns an HTTP response with an <code>application/json</code> content type, converting the given object into a JSON output.</p>
+<p><strong>Cross-Site Request Forgery in AJAX requests</strong><br>Django allows you to set a custom X-CSRFToken header in your AJAX requests with the value of the CSRF token.</p>
+<p>In order to include the token in all requests, you need to:</p>
+<ol>
+<li>Retrieve the CSRF token form the csrftoken cookie, which is set if CSRF protection is active</li>
+<li>Send the token in the AJAX request using the X-CSRFToken header</li>
+</ol>
+<h4 id="Creating-custom-decorators-for-your-views"><a href="#Creating-custom-decorators-for-your-views" class="headerlink" title="Creating custom decorators for your views"></a>Creating custom decorators for your views</h4><p>We are going to restrict our AJAX views to allow only requests generated via AJAX. The Django Request object provides an <code>is_ajax()</code> method that checks if the request is being made with <code>XMLHttpRequest</code>, which means it is an AJAX request. This value is set in the <code>HTTP_X_REQUESTED_WITH</code> HTTP header, which is included in AJAX requests by most JavaScript libraries.</p>
+<h4 id="Adding-AJAX-pagination-to-your-list-views"><a href="#Adding-AJAX-pagination-to-your-list-views" class="headerlink" title="Adding AJAX pagination to your list views"></a>Adding AJAX pagination to your list views</h4><ul>
+<li><code>empty_page</code>: Allows us to know if the user is in the last page and retrieves an empty page. As soon as we get an empty page we will stop sending additional AJAX requests because we will assume there are no more results.</li>
+<li><code>block_request</code>: Prevents from sending additional requests while an AJAX request is in progress</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Notes/" rel="tag"># Notes</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/04/2018-08-05-Django-timehut-2/" rel="prev" title="Python Django Time Hut 2">
+      <i class="fa fa-chevron-left"></i> Python Django Time Hut 2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/11/2018-08-11-Django-timehut-4/" rel="next" title="Python Django Time Hut 4">
+      Python Django Time Hut 4 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Posting-content-from-other-websites"><span class="nav-number">1.</span> <span class="nav-text">Posting content from other websites</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cleaning-form-fields"><span class="nav-number">1.1.</span> <span class="nav-text">Cleaning form fields</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Overriding-the-save-method-of-a-ModelForm"><span class="nav-number">1.2.</span> <span class="nav-text">Overriding the save() method of a ModelForm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Building-a-bookmarklet-with-jQuery"><span class="nav-number">1.3.</span> <span class="nav-text">Building a bookmarklet with jQuery</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Building-detail-page-for-image-liked"><span class="nav-number">1.4.</span> <span class="nav-text">Building detail page for image liked</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Adding-Ajax-actions-with-jQuery"><span class="nav-number">1.5.</span> <span class="nav-text">Adding Ajax actions with jQuery</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Creating-custom-decorators-for-your-views"><span class="nav-number">1.6.</span> <span class="nav-text">Creating custom decorators for your views</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Adding-AJAX-pagination-to-your-list-views"><span class="nav-number">1.7.</span> <span class="nav-text">Adding AJAX pagination to your list views</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

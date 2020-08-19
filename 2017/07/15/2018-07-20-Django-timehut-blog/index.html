@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Recently, I’m digging into python Django framework to practice python and to learn a skill when I quit my job as a project manager (or get fired). So here are some notes that I’ve put together that he">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Django Setup">
+<meta property="og:url" content="http://yoursite.com/2017/07/15/2018-07-20-Django-timehut-blog/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Recently, I’m digging into python Django framework to practice python and to learn a skill when I quit my job as a project manager (or get fired). So here are some notes that I’ve put together that he">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-07-15T04:57:40.000Z">
+<meta property="article:modified_time" content="2020-08-19T08:15:06.062Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Notes">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2017/07/15/2018-07-20-Django-timehut-blog/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Python Django Setup | Michael's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/15/2018-07-20-Django-timehut-blog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python Django Setup
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-07-15 12:57:40" itemprop="dateCreated datePublished" datetime="2017-07-15T12:57:40+08:00">2017-07-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-19 16:15:06" itemprop="dateModified" datetime="2020-08-19T16:15:06+08:00">2020-08-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Programming-Python/" itemprop="url" rel="index"><span itemprop="name">Programming Python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Recently, I’m digging into python Django framework to practice python and to learn a skill when I quit my job as a project manager <em>(or get fired)</em>. So here are some notes that I’ve put together that helps me understand what and which I should do. It’s also a flow that I follow every time learning a new framework in any programming language.</p>
+<h3 id="settings-py-and-any-other-configurations"><a href="#settings-py-and-any-other-configurations" class="headerlink" title="settings.py and any other configurations"></a>settings.py and any other configurations</h3><blockquote>
+<p>Get familiar with the settings and configs would save you a lot of efforts. </p>
+</blockquote>
+<a id="more"></a>
+<p>Whenever you found a function/feature that is missing in the framework you’re learning, don’t panic. First looking into the settings and its documentation, which you sometimes found out the author of this framework has already thought of this and put them in the settings as an option for you to enable/disable. </p>
+<p>I guess the reason why they (the authors) doing this is because they don’t want to spook you with tens of thousands of settings, switches, unknown file paths, and API keys and such.</p>
+<!--more-->
+<p><code>The first line of codes I&#39;m looking at while learning Django</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DATABASES &#x3D; &#123;</span><br><span class="line">    &#39;default&#39;: &#123;</span><br><span class="line">        &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,   # 数据库引擎</span><br><span class="line">        &#39;NAME&#39;: &#39;mydb&#39;,       # 你要存储数据的库名，事先要创建之</span><br><span class="line">        &#39;USER&#39;: &#39;root&#39;,         # 数据库用户名</span><br><span class="line">        &#39;PASSWORD&#39;: &#39;1234&#39;,     # 密码</span><br><span class="line">        &#39;HOST&#39;: &#39;localhost&#39;,    # 主机</span><br><span class="line">        &#39;PORT&#39;: &#39;3306&#39;,         # 数据库使用的端口</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Database-migration"><a href="#Database-migration" class="headerlink" title="Database migration"></a>Database migration</h3><p>Why I’m looking into this is because I had another <code>scrapy</code> project that scraped tons of things into the database, as back then I don’t know what I would like to do with the information I scraped.</p>
+<p>Now I’m learning this frontend framework <em>(it’s not accurate since Django also has backend/admin to work with)</em>, I would like to use the existing DB and data inside it instead of building db and dumping data from scratch. Also this would make migrating project to another project easier, saving more disk space as I’m working mostly my projects on my local machine.</p>
+<h4 id="Connecting-existing-mysql-DB"><a href="#Connecting-existing-mysql-DB" class="headerlink" title="Connecting existing mysql DB"></a>Connecting existing mysql DB</h4><p>python3不支持MySQLdb，可用pymysql代替。cmd安装pymysql：pip install pymysql。<br>在项目文件夹下的<em>init</em>.py添加如下代码即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import pymysql</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br></pre></td></tr></table></figure>
+
+<p>然后在Terminal中执行数据库迁移命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+
+<p>To dump the data tables creation into SQL. The exact output depends on the database you are using</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 manage.py sqlmigrate timehutBlog 0001</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>Changing DATABASE setting in <code>settings.py</code></li>
+<li>Use <code>python3 manage.py inspectdb &gt; models.py</code> to generate Mysql schema</li>
+<li>Modify models.py schema</li>
+<li><code>python3 manage.py migrate</code></li>
+</ol>
+<h3 id="Creating-an-administration-site-for-your-models"><a href="#Creating-an-administration-site-for-your-models" class="headerlink" title="Creating an administration site for your models"></a>Creating an administration site for your models</h3><h4 id="Creating-a-superuser"><a href="#Creating-a-superuser" class="headerlink" title="Creating a superuser"></a>Creating a superuser</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 manage.py createsuperuser</span><br></pre></td></tr></table></figure>
+<p>Then access <a target="_blank" rel="noopener" href="http://127.0.0.1:8000/admin/">http://127.0.0.1:8000/admin/</a></p>
+<h3 id="Sharing-posts-by-e-mail"><a href="#Sharing-posts-by-e-mail" class="headerlink" title="Sharing posts by e-mail"></a>Sharing posts by e-mail</h3><p>Just one feature that I think is common so that I saved the information here for future uses.</p>
+<ol>
+<li>Create a form for users to fill in their name and e-mail, the e-mail recipient, and optional comments<ul>
+<li>Form: Allows you to build standard forms</li>
+<li>ModelForm: Allows you to build forms to create or update model instances<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Note</span><br><span class="line">Forms can reside anywhere in your Django project but the convention is to place them inside a forms.py file for each application.</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Create a view in the <code>views.py</code> file that handles the posted data and sends the e-mail<ul>
+<li>external SMTP server by adding the following settings in the settings.py file of your project:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">EMAIL_HOST: The SMTP server host. Default localhost.</span><br><span class="line">EMAIL_PORT: The SMTP port Default 25.</span><br><span class="line">EMAIL_HOST_USER: Username for the SMTP server.</span><br><span class="line">EMAIL_HOST_PASSWORD: Password for the SMTP server.</span><br><span class="line">EMAIL_USE_TLS: Whether to use a TLS secure connection.</span><br><span class="line">EMAIL_USE_SSL: Whether to use an implicit TLS secure connection.”</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Add an URL pattern for the new view in the <code>urls.py</code> file of the blog application</li>
+<li>Create a template to display the form</li>
+</ol>
+<h3 id="Create-comment-system"><a href="#Create-comment-system" class="headerlink" title="Create comment system"></a>Create comment system</h3><p>Reason same as above feature.</p>
+<ol>
+<li>Create models.py</li>
+<li>Create form<ul>
+<li>Remember that Django has two base classes to build forms: Form and ModelForm.</li>
+</ul>
+</li>
+<li>Handling ModelForms in views<ul>
+<li>save() is available for ModelForm but not for Form instance, since they are not linked to any model</li>
+</ul>
+</li>
+<li>Adding comments to the collection detail template<ul>
+<li>Display the total number of comments for the post</li>
+<li>Display the list of comments</li>
+<li>Display a form for users tp add a new comment</li>
+</ul>
+</li>
+</ol>
+<h3 id="Extending-Your-Blog-Application"><a href="#Extending-Your-Blog-Application" class="headerlink" title="Extending Your Blog Application"></a>Extending Your Blog Application</h3><p>Feature for searching</p>
+<ul>
+<li>Creating custom template tags and filters</li>
+<li>Adding a sitemap and a post feed</li>
+<li>Building a search enging with Solr and Haystack</li>
+</ul>
+<h4 id="Creating-custom-template-tags-and-filters"><a href="#Creating-custom-template-tags-and-filters" class="headerlink" title="Creating custom template tags and filters"></a>Creating custom template tags and filters</h4><p>Custom template tags and filters are extremely important and you need to be able to get yourself familiar with. As Django using built-in template/tags/filters to render the variables either from your backend API or from DB, to make sure you’re able to customize the data to the format that you need is very crucial.</p>
+<ol>
+<li>Creating custom template tags<ul>
+<li><code>simple_tag</code>: Processes the data and returns a string</li>
+<li><code>inclusion_tag</code>: Processes the data and returns a rendered template</li>
+<li><code>assignment_tag</code>: Processes the data and sets a variable in the context (<code>assignment_tag</code> is depricated in Django 2.0)<br>‘’’<br>Template tags must live inside Django applications<br>‘’’</li>
+</ul>
+</li>
+<li>Creating custom template filters</li>
+</ol>
+<h4 id="Adding-a-sitemap-to-your-site"><a href="#Adding-a-sitemap-to-your-site" class="headerlink" title="Adding a sitemap to your site"></a>Adding a sitemap to your site</h4><p>Just for notes</p>
+<p>in sitemap.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from django.contrib.sitemaps import Sitemap</span><br></pre></td></tr></table></figure>
+
+<p>in urls.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">from django.contrib.sitemaps.views import sitemap</span><br><span class="line">from blog.sitemaps import PostSitemap</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">urlpatterns &#x3D; [</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">path(&#39;sitemap.xml&#39;, sitemap, &#123;&#39;sitemaps&#39;: sitemaps&#125;, name&#x3D;&#39;django.contrib.sitemaps.views.sitemap&#39;)</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h4 id="Adding-a-RSS-feed"><a href="#Adding-a-RSS-feed" class="headerlink" title="Adding a RSS feed"></a>Adding a RSS feed</h4><p>Just for notes</p>
+<p>in feeds.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from django.contrib.syndication.views import Feed</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Notes/" rel="tag"># Notes</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/05/14/2017-05-14-jQuery-Selector/" rel="prev" title="jQuery Selector">
+      <i class="fa fa-chevron-left"></i> jQuery Selector
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/07/15/2017-07-15-python-scrapy/" rel="next" title="Python Scrapy folder structure notes">
+      Python Scrapy folder structure notes <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#settings-py-and-any-other-configurations"><span class="nav-number">1.</span> <span class="nav-text">settings.py and any other configurations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Database-migration"><span class="nav-number">2.</span> <span class="nav-text">Database migration</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Connecting-existing-mysql-DB"><span class="nav-number">2.1.</span> <span class="nav-text">Connecting existing mysql DB</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Creating-an-administration-site-for-your-models"><span class="nav-number">3.</span> <span class="nav-text">Creating an administration site for your models</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Creating-a-superuser"><span class="nav-number">3.1.</span> <span class="nav-text">Creating a superuser</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sharing-posts-by-e-mail"><span class="nav-number">4.</span> <span class="nav-text">Sharing posts by e-mail</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-comment-system"><span class="nav-number">5.</span> <span class="nav-text">Create comment system</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Extending-Your-Blog-Application"><span class="nav-number">6.</span> <span class="nav-text">Extending Your Blog Application</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Creating-custom-template-tags-and-filters"><span class="nav-number">6.1.</span> <span class="nav-text">Creating custom template tags and filters</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Adding-a-sitemap-to-your-site"><span class="nav-number">6.2.</span> <span class="nav-text">Adding a sitemap to your site</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Adding-a-RSS-feed"><span class="nav-number">6.3.</span> <span class="nav-text">Adding a RSS feed</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
