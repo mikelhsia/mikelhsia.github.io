@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="This is my first article after 2 months of digging, reading, researching, and backtesting. Here I would like to share the result with people who are interested in it and welcome any thoughts from an">
+<meta property="og:type" content="article">
+<meta property="og:title" content="An investment strategy that takes you three days a year">
+<meta property="og:url" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="This is my first article after 2 months of digging, reading, researching, and backtesting. Here I would like to share the result with people who are interested in it and welcome any thoughts from an">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/cover.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/tlbtbtm.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/tam.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/ev.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-r-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-r-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-e-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-e-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-m-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-m-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-r-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-r-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-e-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-e-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-m-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-m-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-r-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-r-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-e-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-e-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-m-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-m-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-r-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-r-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-e-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-e-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-m-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-m-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-r-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-r-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-e-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-e-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-m-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-m-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-a-e-12.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-a-e-25.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/ols-1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/ols-2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-r-12.png">
+<meta property="article:published_time" content="2020-08-21T03:57:46.000Z">
+<meta property="article:modified_time" content="2020-08-31T04:26:36.718Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Strategy">
+<meta property="article:tag" content="Research">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/cover.jpg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>An investment strategy that takes you three days a year | Michael's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2020/08/21/magic-formula-vs-Acquirer-Multiples/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          An investment strategy that takes you three days a year
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-08-21 11:57:46" itemprop="dateCreated datePublished" datetime="2020-08-21T11:57:46+08:00">2020-08-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-31 12:26:36" itemprop="dateModified" datetime="2020-08-31T12:26:36+08:00">2020-08-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/21/magic-formula-vs-Acquirer-Multiples/" class="post-meta-item leancloud_visitors" data-flag-title="An investment strategy that takes you three days a year" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/08/21/magic-formula-vs-Acquirer-Multiples/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/21/magic-formula-vs-Acquirer-Multiples/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/cover.jpg" class="" width="400">
+<blockquote>
+<p><em>This is my first article after 2 months of digging, reading, researching, and backtesting. Here I would like to share the result with people who are interested in it and welcome any thoughts from anyone.</em></p>
+</blockquote>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p><a name="question"></a><br>Before diving into this article, you can start with reading the following thoughts and see whether these are the situations that you’re facing: <a id="more"></a></p>
+<ul>
+<li><em>My daytime salary is stable, and I want to make some small money by investing in the stock market or ETFs</em></li>
+<li><em>I don’t have a finance background or experience in putting money in the stock market before</em></li>
+<li><em>I don’t want to spend too much time and I don’t have enough time to analyze tens of thousands of stocks myself</em></li>
+<li><em>I know what I should do and how to do it, but buying stocks would literally consume the rest of my day as I don’t want to lose too much money on this.</em></li>
+</ul>
+<p>If you’ve asked these questions to yourself in the middle of the night or during work sometime, this article might help introduce you to some ideas to help you get rid of these thoughts that haunts you.</p>
+<hr>
+<h2 id="Background-Story-Magic-Formula-v-s-Acquirer’s-Multiple"><a href="#Background-Story-Magic-Formula-v-s-Acquirer’s-Multiple" class="headerlink" title="Background Story (Magic Formula v.s. Acquirer’s Multiple)"></a>Background Story (Magic Formula v.s. Acquirer’s Multiple)</h2><p>The Magic Formula was first introduced in the book “<strong><em>The Little Book that Beats the Market</em></strong>“ by <em>Joel Greenblatt</em>. </p>
+<img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/tlbtbtm.jpg" class="" width="200">
+<p>The formula is about using ranking of two fundamental stats: <a href="#terminology"><strong><em>Earnings Yield</em></strong></a> and <a href="#terminology"><strong><em>Return on Capital</em></strong></a> to quickly identify the value stocks/companies. Once we have our candidates picked, then we buy and hold them for a year and re-evaluate the performance of the portfolio annually. By applying these two numbers as your filters, you’ll be able to locate the stocks/companies that make more money (<em>high Return on Capital, or ROC</em>), but in the meantime is undervalued (<em>high Earnings Yield, or EY</em>).</p>
+<p>And then <em>Tobias Carlisle</em> introduced an updated version of the Magic Formula, called Acquirer’s Multiple in his book “<strong><em>The Acquirer’s Multiple</em></strong>“.</p>
+<img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/tam.jpg" class="" width="200">
+<p>As Buffett said, a wonderful company is the one with a high return on equity. The Acquirer’s Multiple uses operating earnings instead of using EBIT. The formula is also inverted. Operating earnings is constructed from the top of the income statement down, whereas EBIT is constructed from the bottom up.</p>
+<p>In short, <em>Greenblatt’s Magic Formula</em> is looking for a company that makes money for each dollar that stakeholders invested, while stakeholders pay as little as possible. This is what Buffet has been practicing as he preached over the years. And <em>Tobias’s Acquirer’s Multiple</em> is to find out the company’s cashflow hidden under the iceberg. The lower the Acquirer’s Multiple, the more value you get for the price you pay and the better the stock.</p>
+<img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/ev.png" class="" width="400">
+<p>In this article, I’m using <a target="_blank" rel="noopener" href="https://www.quantopian.com">Quantopian</a> as the platform for constructing my research and backtesting the strategies to find out the result.</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://redhouse.statementdog.com/archives/1050">價值投資者：喬伊‧葛林布雷 (Joel Greenblatt)的神奇公式:『MAGIC FORMULA』</a> - by <a target="_blank" rel="noopener" href="https://redhouse.statementdog.com/archives/author/redhouse"><em>雷浩斯</em></a></li>
+<li><a target="_blank" rel="noopener" href="https://www.gurufocus.com/news/818900/tobias-carlisle-greenblatt-builds-a-magic-formula-on-buffettstyle-ideas">Greenblatt builds a magic formula on Buffett style ideas</a> - by <a target="_blank" rel="noopener" href="https://www.gurufocus.com/ic/space.php?do=article&amp;uid=200877&amp;author=Robert+Abbott"><em>Robert Abbott</em></a></li>
+<li><a target="_blank" rel="noopener" href="https://seekingalpha.com/article/4221743-acquirers-portfolio-year-in-review#:~:text=The%20Acquirer&#39;s%20Multiple%C2%AE%20differs,constructed%20from%20the%20bottom%20up">Acquirer’s portfolio year in review</a> - by <a target="_blank" rel="noopener" href="https://seekingalpha.com/author/ryan-boselo"><em>Ryan Boselo</em></a></li>
+<li><a target="_blank" rel="noopener" href="https://www.quantopian.com/posts/magic-formula">Magic Formula Strategy in Quantopian</a> - from <a target="_blank" rel="noopener" href="https://www.quantopian.com/"><em>Quantopian</em></a></li>
+<li><a target="_blank" rel="noopener" href="https://www.quantopian.com/posts/value-investing-in-quantopian-comparing-the-acquirers-multiple-to-the-magic-formula">Comparing the Acquirer’s Multiple to the Magic Formula</a> - from <a target="_blank" rel="noopener" href="https://www.quantopian.com/"><em>Quantopian</em></a></li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="Here-comes-the-Meat"><a href="#Here-comes-the-Meat" class="headerlink" title="Here comes the Meat!!"></a>Here comes the Meat!!</h2><h3 id="Assumptions"><a href="#Assumptions" class="headerlink" title="Assumptions"></a><strong>Assumptions</strong></h3><ul>
+<li>Establish a threshold of market capitalization of the company (\$100M~\$1B).</li>
+<li>Exclude stocks in the utility and financial sector</li>
+<li>Exclude foreign companies ADR (American Depositary Receipts).</li>
+</ul>
+<h3 id="Formula"><a href="#Formula" class="headerlink" title="Formula"></a><strong>Formula</strong></h3><ul>
+<li>Using <strong>Magic Formula</strong><script type="math/tex; mode=display">Return on Capital = \frac{EBIT}{Net Working Capital + Net Fixed Assets}</script><script type="math/tex; mode=display">Earning Yield = \frac{EBIT}{Enterprise Value}</script><ul>
+<li>We’re going to rank both earning yield and roic (the higher the value, the smaller number the rank)</li>
+<li>Add up these two ranks</li>
+<li>We take the top <em>N</em> stocks that rank the highest (top <em>N</em> smaller rank numbers)</li>
+</ul>
+</li>
+<li>Using <strong>Acquirer’s Multiple</strong><script type="math/tex; mode=display">Acquirer's Multiple = \frac{Enterprise Value}{EBIT + Capital Expenditure}</script><ul>
+<li>We’re going to rank the calculated AM number in <strong>reverse order</strong> (the lower the value, the smaller number th rank)</li>
+<li>We take the top <em>N</em> stocks that rank the highest (top <em>N</em> smaller rank numbers)</li>
+</ul>
+</li>
+</ul>
+<h3 id="Weight-distribution"><a href="#Weight-distribution" class="headerlink" title="Weight distribution"></a><strong>Weight distribution</strong></h3><p>We are going to test how these three different weight distribution methods impact the return of our portfolio, and find out which one would be better.</p>
+<ul>
+<li>Weight evenly</li>
+<li>Weight by rank</li>
+<li>Weight by Market Cap</li>
+</ul>
+<hr>
+<h2 id="Let’s-get-started"><a href="#Let’s-get-started" class="headerlink" title="Let’s get started"></a><strong>Let’s get started</strong></h2><p>Most research and papers have suggested that owning 25~30 stocks would adequately diversify the sector risk of the portfolio. For individual investors like us, owning that many stocks would be too troublesome. I’m thinking of using 12 as the limit. Also, we’re going to rebalance our portfolio once per year, selling losers one week before the year-mark and winners one week after the year mark. This strategy will need to continue over a long-term period (5~10 years). In this backtest, we’re using <code>2011/01/01 ~ 2020/07/30</code> as the backtest period.</p>
+<h3 id="How-to-understand-the-diagram"><a href="#How-to-understand-the-diagram" class="headerlink" title="How to understand the diagram?"></a>How to understand the diagram?</h3><blockquote>
+<ul>
+<li><strong>Blue line</strong>: returns of the algorithm</li>
+<li><strong>Red line</strong>: returns of SPY (S&amp;P 500)</li>
+<li><strong>Returns</strong>: the final return of the algorithm at the end of the backtest date</li>
+<li><strong>Alpha</strong>: Excess market neutral return that is generated by this strategy</li>
+<li><strong>Beta</strong>: Represents an individual stock’s returns against those of the market as a whole</li>
+<li><strong>Sharpe</strong>: How much returns can we get if we take one more unit of risk</li>
+<li><strong>Drawdown</strong>: Maximum lost in a continuous period</li>
+<li><strong>Capacity</strong>: Max number of stocks that we’re going to contain in our portfolio</li>
+</ul>
+</blockquote>
+<h3 id="Scenario-1-Buy-all-and-sell-all-at-the-beginning-of-each-year"><a href="#Scenario-1-Buy-all-and-sell-all-at-the-beginning-of-each-year" class="headerlink" title="Scenario 1: Buy all and sell all at the beginning of each year"></a>Scenario 1: Buy all and sell all at the beginning of each year</h3><p><strong>Magic Formula</strong> </p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Capacity = 12</th>
+<th>Capacity = 25 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rank weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-r-12.png" alt="1-m-r-12.png"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-r-25.png" alt="1-m-r-25.png"></td>
+</tr>
+<tr>
+<td>Evenly weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-e-12.png" alt="1-m-e-12.png"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-e-25.png" alt="1-m-e-25.png"></td>
+</tr>
+<tr>
+<td>Market cap weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-m-12.png" alt="1-m-m-12.png"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-m-m-25.png" alt="1-m-m-25.png"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Acquirer’s Multiple</strong> </p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Capacity = 12</th>
+<th>Capacity = 25</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rank weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-r-12.png" alt="1-a-r-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-r-25.png" alt="1-a-r-25"></td>
+</tr>
+<tr>
+<td>Evenly weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-e-12.png" alt="1-a-e-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-e-25.png" alt="1-a-e-25"></td>
+</tr>
+<tr>
+<td>Market cap weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-m-12.png" alt="1-a-m-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/1-a-m-25.png" alt="1-a-m-25"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Conclusion</strong></p>
+<ul>
+<li>Big capacity doesn’t really imply a well diversified portfolio. You could include a stock that potentially hurts the return of the portfolio.</li>
+<li>Seems AM does do better than MF in this scenario.</li>
+<li>We can’t tell which weight distribution method is better at the moment.</li>
+<li><code>demean(groupby=Sector())</code> is a built-in factor function in Quantopian IDE. It deducts the mean of industry sector from each stock, removing part of the differences by sector. In the code we added this function, and it did help improve the performance as it has normalized the Sector risk/exposure.</li>
+</ul>
+<h3 id="Scenario-2-Buy-all-and-sell-all-and-use-rolling-data-for-the-past-three-quarters"><a href="#Scenario-2-Buy-all-and-sell-all-and-use-rolling-data-for-the-past-three-quarters" class="headerlink" title="Scenario 2: Buy all and sell all and use rolling data for the past three quarters"></a>Scenario 2: Buy all and sell all and use rolling data for the past three quarters</h3><p>In this scenario, for all the factors such as EV, EBIT, ROIC, …etc, I’m using a three-quarter rolling mean to smooth the data. By doing this, we can mitigate the zig and zag of the quarter numbers and reduce the chances of picking a stock that only stands out in one specific quarter. </p>
+<p><strong>Magic Formula</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Capacity = 12</th>
+<th>Capacity = 25 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rank weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-r-12.png" alt="2-m-r-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-r-25.png" alt="2-m-r-25"></td>
+</tr>
+<tr>
+<td>Evenly weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-e-12.png" alt="2-m-e-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-e-25.png" alt="2-m-e-25"></td>
+</tr>
+<tr>
+<td>Market cap weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-m-12.png" alt="2-m-m-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-m-25.png" alt="2-m-m-25"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Acquirer’s Multiple</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Capacity = 12</th>
+<th>Capacity = 25</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rank weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-r-12.png" alt="2-a-r-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-r-25.png" alt="2-a-r-25"></td>
+</tr>
+<tr>
+<td>Evenly weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-e-12.png" alt="2-a-e-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-e-25.png" alt="2-a-e-25"></td>
+</tr>
+<tr>
+<td>Market cap weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-m-12.png" alt="2-a-m-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-a-m-25.png" alt="2-a-m-25"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Conclusion</strong></p>
+<ul>
+<li>When implementing the rolling rank, I’ve noticed that a lot of stocks are missing EBIT or missing ROIC in their historic data sets, so I dropped those completely. If we had more complete data, the performance of this method might be better.</li>
+<li>While backtesting using the AM method, we can clearly see the return drastically decrease starting in 2016. By looking at the <em>stocks_owned</em> in the diagrams, you’ll see that three stocks disappeared in the middle of the year. After printing out the owned stocks for each period, we found out that the following three stocks: BMR, SWI, and IRC had either changed their symbol or been delisted from the market, resulting in part of our capital being locked down. I tried to figure out a way to update this in either the log or the portfolio capital, but found that this needs to be managed manually.</li>
+<li>Rank weighted distribution is the best option here as it guides us to put more capital in the better quality stocks/companies.</li>
+</ul>
+<h3 id="Scenario-3-Buy-three-stocks-maximum-per-month-Adjust-portfolio-monthly-and-use-rolling-three-quarters-factors"><a href="#Scenario-3-Buy-three-stocks-maximum-per-month-Adjust-portfolio-monthly-and-use-rolling-three-quarters-factors" class="headerlink" title="Scenario 3: Buy three stocks maximum per month + Adjust portfolio monthly and use rolling three quarters factors"></a>Scenario 3: Buy three stocks maximum per month + Adjust portfolio monthly and use rolling three quarters factors</h3><p>In this scenario, we re-balance our portfolio on a monthly basis, and buy the top 3 stocks per month in order to make sure we’re able to pick the top ranked stocks. For theMarket Cap-weighted and Rank-weighted method, I discarded them as you need to adjust your positions every month. This also means, that the number of turnovers would increase quite a lot compared to in an evenly-weighted portfolio. I would rather look into this strategy later than now.</p>
+<p><strong>Magic Formula</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Capacity = 12</th>
+<th>Capacity = 25 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rank weighted (x)</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-r-12.png" alt="3-m-r-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-r-25.png" alt="3-m-r-25"></td>
+</tr>
+<tr>
+<td>Evenly weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-e-12.png" alt="3-m-e-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-e-25.png" alt="3-m-e-25"></td>
+</tr>
+<tr>
+<td>Market cap weighted (x)</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-m-12.png" alt="3-m-m-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-m-m-25.png" alt="3-m-m-25"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Acquirer’s Multiple</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Capacity = 12</th>
+<th>Capacity = 25</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Evenly weighted</td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-a-e-12.png" alt="3-a-e-12"></td>
+<td><img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/3-a-e-25.png" alt="3-a-e-25"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Conclusion</strong></p>
+<ul>
+<li>In this scenario, we saw the <em>stocks_owned</em> line has very frequent movement, meaning we’re trading very frequently.</li>
+</ul>
+<h3 id="Additional-step"><a href="#Additional-step" class="headerlink" title="Additional step"></a>Additional step</h3><p>In the magic formula, we’re actually assuming the <code>EY_rank</code> and <code>roic_rank</code> are weighted equally. </p>
+<script type="math/tex; mode=display">MF\_rank = 0.5 \times EY\_rank + 0.5 \times roic\_rank</script><p>So what we could do is to use a linear regression to find out the relative coefficient of these two independent variables. Once we have these two coefficients, we can better describe the relation between these variables, and better predict the quality of the company with the Magic Formula.</p>
+<script type="math/tex; mode=display">MF\_rank = 0.7 \times EY\_rank + 0.3 \times roic\_rank</script><p>However, after performing an OLS linear regression (<em>it’s a basic type of linear regression in the python built-in statsmodels package </em>) to find out the coefficient of the two independent variables, I found out that the data set is very skewed in terms of the distribution of the daily return of the stock price across stocks. To dive into this topic further, there’re a few more things we can do: </p>
+<ol>
+<li>use <code>log return</code> over <code>daily percentage change</code></li>
+<li>Demean the log return by sector</li>
+</ol>
+<p>But I’ll leave the thoughts here for now.</p>
+<img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/ols-1.png" class="" width="600">
+<img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/ols-2.png" class="" width="600">
+<hr>
+<h2 id="Final-words"><a href="#Final-words" class="headerlink" title="Final words"></a>Final words</h2><p>I’ll probably go with the strategy of <code>Scenario 2, 12 assets max, with rank-weighted distribution</code>. The total return has constantly beaten the S&amp;P 500 index over the years covered in the simulation. Also you got an alpha that is positive, a beta slightly over 1, an ok sharpe ratio, and annual returns around 30% over 8 years. Even when the big slide of COVID-19 hit the market, this strategy still beat the market and was able to rebound quickly enough back to where it was.</p>
+<img data-src="/2020/08/21/magic-formula-vs-Acquirer-Multiples/2-m-r-12.png" class="" width="400">
+<p><strong>“What can I get out of this research and backtesting?”</strong> you must be wondering. To answer the questions that <a href="#question">we raised in the beginning of the article</a>, I believe this strategy does bring you the benefit that:</p>
+<blockquote>
+<p><em>We only need to spend <strong>1 morning and 2 evenings</strong> in the entire year to complete the trading actions of this Magic Formula strategy.</em></p>
+</blockquote>
+<p>Doesn’t this sound amazing and attractive!? </p>
+<p>Thank you, and let me know if you have any thoughts.</p>
+<hr>
+<h2 id="Appendix"><a href="#Appendix" class="headerlink" title="Appendix"></a>Appendix</h2><h3 id="Statistics-that-used-in-the-Magic-Formula"><a href="#Statistics-that-used-in-the-Magic-Formula" class="headerlink" title="Statistics that used in the Magic Formula"></a>Statistics that used in the Magic Formula</h3><p><a name="terminology"></a></p>
+<ul>
+<li>息税前利润(EBIT) = 净利润 + 财务费用 + 所得税费用</li>
+<li>net_profit 净利润(元)</li>
+<li>financial_expense 财务费用(元)</li>
+<li>income_tax_expense 所得税费用(元)</li>
+<li>固定资产净额(Net Fixed Assets) = 固定资产 - 工程物资 - 在建工程 - 固定资产清理<ul>
+<li>fixed_assets 固定资产(元)</li>
+<li>construction_materials 工程物资(元)</li>
+<li>constru_in_process 在建工程(元)</li>
+<li>fixed_assets_liquidation 固定资产清理(元)</li>
+</ul>
+</li>
+<li>净营运资本(Net Working Capital)= 流动资产合计－流动负债合计<ul>
+<li>total_current_assets 流动资产合计(元)</li>
+<li>total_current_liability 流动负债合计(元)</li>
+</ul>
+</li>
+<li>企业价值(Enterprise Value) = 总市值 + 负债合计 – 期末现金及现金等价物余额<ul>
+<li>market_cap 总市值(亿元)</li>
+<li>total_liability 负债合计(元)</li>
+<li>cash_and_equivalents_at_end 期末现金及现金等价物余额(元)<br>Here I also attached the Quantopian code that I used to construct the research this time:</li>
+</ul>
+</li>
+</ul>
+<h3 id="Quantopian-code"><a href="#Quantopian-code" class="headerlink" title="Quantopian code"></a>Quantopian code</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> quantopian.pipeline.classifiers.fundamentals <span class="keyword">import</span> Sector</span><br><span class="line"><span class="keyword">from</span> quantopian.algorithm <span class="keyword">import</span> attach_pipeline, pipeline_output, get_open_orders</span><br><span class="line"><span class="keyword">from</span> quantopian.pipeline <span class="keyword">import</span> Pipeline, CustomFactor</span><br><span class="line"><span class="keyword">from</span> quantopian.pipeline.filters <span class="keyword">import</span> QTradableStocksUS</span><br><span class="line"><span class="keyword">from</span> quantopian.pipeline.filters.morningstar <span class="keyword">import</span> IsPrimaryShare</span><br><span class="line"><span class="keyword">from</span> quantopian.pipeline.data <span class="keyword">import</span> Fundamentals</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RiskAdjValue</span>(<span class="params">CustomFactor</span>):</span>  </span><br><span class="line">    <span class="string">&quot;&quot;&quot;  </span></span><br><span class="line"><span class="string">    RiskAdjValue = Average value of past N quarters&#x27; / standard deviation of those values  </span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span>  </span><br><span class="line">    num_of_quarter = <span class="number">3</span></span><br><span class="line">    window_length = <span class="number">65</span> * num_of_quarter  </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">compute</span>(<span class="params">self, today, assets, out, value, asof_date</span>):</span></span><br><span class="line">        <span class="comment"># asof_date: shape - (number of window, number of stocks)</span></span><br><span class="line">        <span class="comment"># Example: </span></span><br><span class="line">        <span class="comment"># for datetime 1: ([value of stock A, B, C, ...])</span></span><br><span class="line">        <span class="comment"># for datetime 2: ([value of stock A, B, C, ...])</span></span><br><span class="line">        <span class="comment"># for datetime 3: ([value of stock A, B, C, ...])</span></span><br><span class="line">        values = value</span><br><span class="line">        <span class="keyword">for</span> column_ix <span class="keyword">in</span> range(asof_date.shape[<span class="number">1</span>]):  </span><br><span class="line">            _, unique_indices = np.unique(asof_date[:, column_ix], return_index=<span class="literal">True</span>)  </span><br><span class="line">            quarterly_values = values[unique_indices, column_ix]  </span><br><span class="line">            <span class="keyword">if</span> len(quarterly_values) &lt; self.num_of_quarter:  </span><br><span class="line">                quarterly_values = np.hstack([  </span><br><span class="line">                    np.repeat([np.nan], self.num_of_quarter - len(quarterly_values)),</span><br><span class="line">                    quarterly_values,</span><br><span class="line">                ])</span><br><span class="line">            out[column_ix] = np.nanmean(quarterly_values[-self.num_of_quarter:]) / np.nanstd(quarterly_values[-self.num_of_quarter:])</span><br><span class="line">           </span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">initialize</span>(<span class="params">context</span>):</span></span><br><span class="line">    <span class="comment"># Use below as weight_distribution method. Didn&#x27;t use Enum as it&#x27;s not in the quantopian import white list</span></span><br><span class="line">    <span class="comment"># context.weight_distribution = &#x27;RANK_WEIGHTED&#x27; | &#x27;EVENLY_WEIGHTED&#x27; | &#x27;MARKET_CAP_WEIGHTED&#x27;</span></span><br><span class="line">    context.weight_distribution = <span class="string">&#x27;MARKET_CAP_WEIGHTED&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># context.formula = &#x27;AM_rank&#x27; | &#x27;MF_rank&#x27;</span></span><br><span class="line">    context.formula = <span class="string">&#x27;MF_rank&#x27;</span>  </span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Max stocks in our portfolio</span></span><br><span class="line">    context.capacity = <span class="number">12</span></span><br><span class="line">    </span><br><span class="line">    my_pipe = make_pipeline()</span><br><span class="line">    attach_pipeline(my_pipe, <span class="string">&#x27;my_pipeline&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    set_slippage(slippage.FixedSlippage(spread=<span class="number">0.02</span>))</span><br><span class="line">    set_long_only()</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#schedule for buying a week after the year start</span></span><br><span class="line">    schedule_function(func=buy_stocks,</span><br><span class="line">                      date_rule=date_rules.month_start(<span class="number">4</span>),</span><br><span class="line">                      time_rule=time_rules.market_open())</span><br><span class="line">    <span class="comment">#schedule for selling losers a week before the year start</span></span><br><span class="line">    schedule_function(func=sell_losers,</span><br><span class="line">                      date_rule=date_rules.month_end(<span class="number">4</span>),</span><br><span class="line">                      time_rule=time_rules.market_open())</span><br><span class="line">    <span class="comment">#schedule for selling winners on the 7th day of year start</span></span><br><span class="line">    schedule_function(func=sell_stocks,</span><br><span class="line">                      date_rule=date_rules.month_start(<span class="number">3</span>),</span><br><span class="line">                      time_rule=time_rules.market_close())</span><br><span class="line">    <span class="comment"># plot record variables</span></span><br><span class="line">    schedule_function(func=record_vars,</span><br><span class="line">                      time_rule=time_rules.market_close(),</span><br><span class="line">                      date_rule=date_rules.every_day())</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buy_stocks</span>(<span class="params">context, data</span>):</span></span><br><span class="line">    today = get_datetime(<span class="string">&#x27;US/Eastern&#x27;</span>)</span><br><span class="line">    stocks_owned = sum(<span class="number">1</span> <span class="keyword">for</span> stock, position <span class="keyword">in</span> context.portfolio.positions.items() <span class="keyword">if</span> position.amount &gt; <span class="number">0</span>)</span><br><span class="line">    open_orders = get_open_orders()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> today.month == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">for</span> stock <span class="keyword">in</span> context.output.index:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> data.can_trade(stock) <span class="keyword">or</span> stock <span class="keyword">in</span> open_orders:</span><br><span class="line">                print(<span class="string">&quot;= %s not tradable or in the open_orders...&quot;</span>%(stock))</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">if</span> stocks_owned &gt;= context.capacity:</span><br><span class="line">                print(<span class="string">&quot;= Exceeded the limit&quot;</span>)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="comment"># Skip stocks already owned</span></span><br><span class="line">            <span class="keyword">if</span> stock <span class="keyword">in</span> context.portfolio.positions:</span><br><span class="line">                print(<span class="string">&quot;= %s is already in the portfolio&quot;</span>%(stock))</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">                </span><br><span class="line">            order_target_percent(stock, context.output.T[stock][<span class="string">&#x27;weight&#x27;</span>]) </span><br><span class="line">            print(<span class="string">&quot;+ Buy stocks: %s - weight: %.2f&quot;</span>%(stock, context.output.T[stock][<span class="string">&#x27;weight&#x27;</span>]))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sell_losers</span>(<span class="params">context, data</span>):</span></span><br><span class="line">    today = get_datetime(<span class="string">&#x27;US/Eastern&#x27;</span>)</span><br><span class="line">    open_orders = get_open_orders()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> today.month == <span class="number">12</span> <span class="keyword">and</span> context.portfolio.positions_value != <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">for</span> stock <span class="keyword">in</span> context.portfolio.positions:</span><br><span class="line">            <span class="keyword">if</span> data.can_trade(stock) <span class="keyword">and</span> stock <span class="keyword">not</span> <span class="keyword">in</span> open_orders:</span><br><span class="line">                <span class="keyword">if</span> context.portfolio.positions[stock].cost_basis &gt; data.current(stock, <span class="string">&#x27;price&#x27;</span>):</span><br><span class="line">                    order_target_percent(stock, <span class="number">0</span>)</span><br><span class="line">                    print(<span class="string">&quot;- Sell loser stock: %s&quot;</span>%(stock))</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    print(<span class="string">&quot;= Didn&#x27;t sell stock: %s&quot;</span>%(stock))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                print(<span class="string">&quot;= %s is already in the portfolio&quot;</span>%(stock))</span><br><span class="line">                print(open_orders)</span><br><span class="line">             </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sell_stocks</span>(<span class="params">context, data</span>):</span></span><br><span class="line">    open_orders = get_open_orders()</span><br><span class="line">    today = get_datetime(<span class="string">&#x27;US/Eastern&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> today.month == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">for</span> stock <span class="keyword">in</span> context.portfolio.positions:</span><br><span class="line">            <span class="keyword">if</span> data.can_trade(stock) <span class="keyword">and</span> stock <span class="keyword">not</span> <span class="keyword">in</span> open_orders:</span><br><span class="line">                order_target_percent(stock, <span class="number">0</span>)</span><br><span class="line">                print(<span class="string">&quot;- Sell winner stock: %s&quot;</span>%(stock))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                print(<span class="string">&quot;= Didn&#x27;t sell stock: %s&quot;</span>%(stock))</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_pipeline</span>():</span></span><br><span class="line">    isPrimaryShare = IsPrimaryShare()</span><br><span class="line"></span><br><span class="line">    m &amp;= (Fundamentals.market_cap.latest &gt; <span class="number">1.00e9</span>) </span><br><span class="line">    m &amp;= (Fundamentals.market_cap.latest &lt; <span class="number">1.00e10</span>)</span><br><span class="line">    m &amp;= (Fundamentals.country_id.latest.eq(<span class="string">&#x27;USA&#x27;</span>)) </span><br><span class="line">    m &amp;= (isPrimaryShare)</span><br><span class="line">    m &amp;= (</span><br><span class="line">        (Fundamentals.morningstar_sector_code.latest != <span class="number">103</span>) &amp;  <span class="comment"># Financial</span></span><br><span class="line">        (Fundamentals.morningstar_sector_code.latest != <span class="number">207</span>) &amp;  <span class="comment"># Utilities</span></span><br><span class="line">        (Fundamentals.morningstar_sector_code.latest != <span class="number">206</span>) &amp;  <span class="comment"># Healthcare</span></span><br><span class="line">        (Fundamentals.morningstar_sector_code.latest != <span class="number">309</span>) &amp;  <span class="comment"># Energy</span></span><br><span class="line">        (Fundamentals.morningstar_industry_code.latest != <span class="number">20645020</span>) &amp; <span class="comment"># Pharmaceutical Retailers - New</span></span><br><span class="line">        (Fundamentals.morningstar_industry_code.latest != <span class="number">20533080</span>) &amp; <span class="comment"># Pharmaceutical Retailers - Old</span></span><br><span class="line">        (Fundamentals.morningstar_industry_code.latest != <span class="number">10280010</span>) &amp; <span class="comment"># Apparel Retail - New</span></span><br><span class="line">        (Fundamentals.morningstar_industry_code.latest != <span class="number">10217033</span>) &amp; <span class="comment"># Apparel Stores - Old </span></span><br><span class="line">        (Fundamentals.morningstar_industry_group_code != <span class="number">10150</span>) &amp; <span class="comment"># Metals &amp; Mining - New</span></span><br><span class="line">        (Fundamentals.morningstar_industry_group_code != <span class="number">10106</span>) &amp; <span class="comment"># Metals &amp; Mining - Old</span></span><br><span class="line">        (Fundamentals.morningstar_industry_group_code != <span class="number">10160</span>) &amp; <span class="comment"># Coking Coal - New</span></span><br><span class="line">        (Fundamentals.morningstar_industry_group_code != <span class="number">10104</span>)   <span class="comment"># Coal - Old</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    ra_EBIT = RiskAdjValue(</span><br><span class="line">        inputs=[</span><br><span class="line">            Fundamentals.ebit, </span><br><span class="line">            Fundamentals.ebit_asof_date</span><br><span class="line">        ], </span><br><span class="line">        mask=m</span><br><span class="line">    )</span><br><span class="line">    ra_EV = RiskAdjValue(</span><br><span class="line">        inputs=[</span><br><span class="line">            Fundamentals.enterprise_value, </span><br><span class="line">            Fundamentals.enterprise_value_asof_date</span><br><span class="line">        ], </span><br><span class="line">        mask=m</span><br><span class="line">    )</span><br><span class="line">    ra_roic = RiskAdjValue(</span><br><span class="line">        inputs=[</span><br><span class="line">            Fundamentals.roic, </span><br><span class="line">            Fundamentals.roic_asof_date</span><br><span class="line">        ], </span><br><span class="line">        mask=m</span><br><span class="line">    )</span><br><span class="line">    ra_market_cap = RiskAdjValue(</span><br><span class="line">        inputs=[</span><br><span class="line">            Fundamentals.market_cap, </span><br><span class="line">            Fundamentals.market_cap_asof_date</span><br><span class="line">        ], </span><br><span class="line">        mask=m</span><br><span class="line">    )</span><br><span class="line">    ra_cap_exp = RiskAdjValue(</span><br><span class="line">        inputs=[</span><br><span class="line">            Fundamentals.capital_expenditure,</span><br><span class="line">            Fundamentals.capital_expenditure_asof_date</span><br><span class="line">        ],</span><br><span class="line">        mask=m</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Magic Formula</span></span><br><span class="line">    earnings_yield = ra_EBIT / ra_EV</span><br><span class="line">    EY_rank   = earnings_yield.rank(ascending=<span class="literal">False</span>, mask=m)</span><br><span class="line">    roic_rank = ra_roic       .rank(ascending=<span class="literal">False</span>, mask=m)</span><br><span class="line">    MF_rank   = EY_rank + roic_rank</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Acquirer&#x27;s Multiple</span></span><br><span class="line">    ACQ_MULTIPLE = ra_EV / (ra_EBIT + ra_cap_exp)</span><br><span class="line">    AM_rank = ACQ_MULTIPLE.demean(groupby=Sector()).rank(ascending=<span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> Pipeline(</span><br><span class="line">        columns=&#123;</span><br><span class="line">            <span class="string">&#x27;ra_roic&#x27;</span>       : ra_roic,</span><br><span class="line">            <span class="string">&#x27;ra_EBIT&#x27;</span>       : ra_EBIT,</span><br><span class="line">            <span class="string">&#x27;ra_EV&#x27;</span>         : ra_EV,</span><br><span class="line">            <span class="string">&#x27;ra_market_cap&#x27;</span> : ra_market_cap,</span><br><span class="line">            <span class="string">&#x27;MF_rank&#x27;</span>       : MF_rank,</span><br><span class="line">            <span class="string">&#x27;AM_rank&#x27;</span>: AM_rank,</span><br><span class="line">            <span class="string">&#x27;market_cap&#x27;</span>: Fundamentals.market_cap.latest,</span><br><span class="line">        &#125;,</span><br><span class="line">        screen=m</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">before_trading_start</span>(<span class="params">context, data</span>):</span></span><br><span class="line">    <span class="comment"># Trim the output to the picked stocks</span></span><br><span class="line">    context.output = pipeline_output(<span class="string">&#x27;my_pipeline&#x27;</span>).dropna().sort_values(by=context.formula, ascending=<span class="literal">True</span>).head(context.capacity) </span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> context.weight_distribution == <span class="string">&#x27;EVENLY_WEIGHTED&#x27;</span>:</span><br><span class="line">        <span class="comment"># Weight evenly</span></span><br><span class="line">        context.output[<span class="string">&#x27;weight&#x27;</span>] = <span class="number">1.0</span> / int(context.capacity)</span><br><span class="line">    <span class="keyword">elif</span> context.weight_distribution == <span class="string">&#x27;RANK_WEIGHTED&#x27;</span>:</span><br><span class="line">        <span class="comment"># weight as rank normalize 0 to 1</span></span><br><span class="line">        <span class="comment"># Weight by rank number</span></span><br><span class="line">        context.output[<span class="string">&#x27;weight&#x27;</span>] = context.output[context.formula] / context.output[context.formula].sum()</span><br><span class="line">    <span class="keyword">elif</span> context.weight_distribution == <span class="string">&#x27;MARKET_CAP_WEIGHTED&#x27;</span>:</span><br><span class="line">        <span class="comment"># Weight by market value</span></span><br><span class="line">        context.output[<span class="string">&#x27;weight&#x27;</span>] = context.output[<span class="string">&#x27;market_cap&#x27;</span>] / context.output[<span class="string">&#x27;market_cap&#x27;</span>].sum()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">record_vars</span>(<span class="params">context, data</span>):</span></span><br><span class="line">    record(leverage=context.account.leverage,</span><br><span class="line">           stocks_owned=len(context.portfolio.positions))</span><br></pre></td></tr></table></figure>
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
+              <a href="/tags/Research/" rel="tag"># Research</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/18/2018-08-18-Django-online-shop/" rel="prev" title="Python Django Online Shop Setup">
+      <i class="fa fa-chevron-left"></i> Python Django Online Shop Setup
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/04/the-most-important-thing-illuminated/" rel="next" title="投資最重要的事 讀後感(The most important thing illuminated)">
+      投資最重要的事 讀後感(The most important thing illuminated) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Background-Story-Magic-Formula-v-s-Acquirer%E2%80%99s-Multiple"><span class="nav-number">2.</span> <span class="nav-text">Background Story (Magic Formula v.s. Acquirer’s Multiple)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference"><span class="nav-number">2.1.</span> <span class="nav-text">Reference</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Here-comes-the-Meat"><span class="nav-number">3.</span> <span class="nav-text">Here comes the Meat!!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Assumptions"><span class="nav-number">3.1.</span> <span class="nav-text">Assumptions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Formula"><span class="nav-number">3.2.</span> <span class="nav-text">Formula</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Weight-distribution"><span class="nav-number">3.3.</span> <span class="nav-text">Weight distribution</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Let%E2%80%99s-get-started"><span class="nav-number">4.</span> <span class="nav-text">Let’s get started</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#How-to-understand-the-diagram"><span class="nav-number">4.1.</span> <span class="nav-text">How to understand the diagram?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scenario-1-Buy-all-and-sell-all-at-the-beginning-of-each-year"><span class="nav-number">4.2.</span> <span class="nav-text">Scenario 1: Buy all and sell all at the beginning of each year</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scenario-2-Buy-all-and-sell-all-and-use-rolling-data-for-the-past-three-quarters"><span class="nav-number">4.3.</span> <span class="nav-text">Scenario 2: Buy all and sell all and use rolling data for the past three quarters</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scenario-3-Buy-three-stocks-maximum-per-month-Adjust-portfolio-monthly-and-use-rolling-three-quarters-factors"><span class="nav-number">4.4.</span> <span class="nav-text">Scenario 3: Buy three stocks maximum per month + Adjust portfolio monthly and use rolling three quarters factors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Additional-step"><span class="nav-number">4.5.</span> <span class="nav-text">Additional step</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Final-words"><span class="nav-number">5.</span> <span class="nav-text">Final words</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Appendix"><span class="nav-number">6.</span> <span class="nav-text">Appendix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Statistics-that-used-in-the-Magic-Formula"><span class="nav-number">6.1.</span> <span class="nav-text">Statistics that used in the Magic Formula</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Quantopian-code"><span class="nav-number">6.2.</span> <span class="nav-text">Quantopian code</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
