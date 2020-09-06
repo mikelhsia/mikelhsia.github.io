@@ -194,7 +194,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-06 16:34:43" itemprop="dateModified" datetime="2020-09-06T16:34:43+08:00">2020-09-06</time>
+                <time title="Modified: 2020-09-06 16:44:24" itemprop="dateModified" datetime="2020-09-06T16:44:24+08:00">2020-09-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -976,7 +976,7 @@
 
       
           <img data-src="/2017/07/15/2018-07-20-Django-timehut-blog/python-django.png" class="" width="600">
-<p>Recently, I’m digging into python Django framework to practice python and to learn a skill when I quit my job as a project manager <em>(or get fired)</em>. So here are some notes that I’ve put together that helps me understand what and which I should do. It’s also a flow that I follow every time learning a new framework in any programming language.</p>
+<p>Recently, I’m digging into python Django framework to practice python and to learn a skill when I quit my job as a project manager _(or get fired)_. So here are some notes that I’ve put together that helps me understand what and which I should do. It’s also a flow that I follow every time learning a new framework in any programming language.</p>
 <h3 id="settings-py-and-any-other-configurations"><a href="#settings-py-and-any-other-configurations" class="headerlink" title="settings.py and any other configurations"></a>settings.py and any other configurations</h3><blockquote>
 <p>Get familiar with the settings and configs would save you a lot of efforts.<br>
           <!--noindex-->
@@ -1390,6 +1390,61 @@
 
 
   
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
