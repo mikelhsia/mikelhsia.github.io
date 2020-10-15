@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="table th:nth-of-type(1){ width: 10%; } table th:nth-of-type(2){ width: 45% ; } table th:nth-of-type(3){ width: 45%; }    I’ve been thinking for weeks. As a beginner in automated trading and quant tra">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Anatomy of secondary indicators for assisting MACD single strategy">
+<meta property="og:url" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="table th:nth-of-type(1){ width: 10%; } table th:nth-of-type(2){ width: 45% ; } table th:nth-of-type(3){ width: 45%; }    I’ve been thinking for weeks. As a beginner in automated trading and quant tra">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/fomo.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/macd.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/rvi.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/rvi_signal.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/mfi.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/tema.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/trix.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/awesome_scillator.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/ma_example.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/ma.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/return_rvi.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/return_mfi.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/return_tema.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/return_trix.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/return_awesome.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/return_ma.png">
+<meta property="article:published_time" content="2020-10-10T09:36:33.000Z">
+<meta property="article:modified_time" content="2020-10-15T04:28:31.107Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Strategy">
+<meta property="article:tag" content="Research">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2020/10/10/macd-strategy/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2020/10/10/macd-strategy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Anatomy of secondary indicators for assisting MACD single strategy | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2020/10/10/macd-strategy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Anatomy of secondary indicators for assisting MACD single strategy
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-10 17:36:33" itemprop="dateCreated datePublished" datetime="2020-10-10T17:36:33+08:00">2020-10-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-15 12:28:31" itemprop="dateModified" datetime="2020-10-15T12:28:31+08:00">2020-10-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/10/10/macd-strategy/" class="post-meta-item leancloud_visitors" data-flag-title="Anatomy of secondary indicators for assisting MACD single strategy" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/10/10/macd-strategy/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/10/macd-strategy/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <style>
+table th:nth-of-type(1){
+width: 10%;
+}
+table th:nth-of-type(2){
+width: 45%
+;
+}
+table th:nth-of-type(3){
+width: 45%;
+}
+</style>
+
+<img data-src="/2020/10/10/macd-strategy/cover.png" class="" width="300">
+<p>I’ve been thinking for weeks. As a beginner in automated trading and quant trading, what would be the best practical entry-level strategy that I can automate and practice what I’ve been learning? a.) I don’t need to make a huge fortune out of it. b.) I won’t be able to short stocks and no rights to bid on options. c.) I can bear lost as long as it’s not a huge one. d.) I would like to trade daily in order to have further feedback regarding how to further improve the strategy. After days of research, I believe the MACD strategy would be the one to start with.</p>
+<p><strong>MACD (Moving Average Convergence Divergence)</strong> is a basic indicator strategy for capturing the stock price momentum both upward and downward. The idea of the MACD trading strategy is to buy or sell when the signals were triggered. As easy as that. Even grandma and grandpa can follow simple instructions to profit from the stock market.</p>
+<p>There are several explanations of why momentum strategy such as MACD strategy works:<br><a id="more"></a></p>
+<ol>
+<li>One explanation is that the momentum generated when the stock price soars more than the market expected, then it tends to generate traction to attract more attention from other investors. </li>
+<li>Another explanation is that investors have a different response time to the good news. Therefore the stock price would continue to rise for several days until all investors have digested the news and made the necessary moves (either buy or sell).</li>
+</ol>
+<p>Let’s take this for example:<br>If you see the price of a popular stock starts soaring and many of your friends telling you that they have bought this stock that might increase its price 5% in the next week. Would you buy it?</p>
+<p>This plays a big part in the momentum strategy. The more people are buying and more attention was paid to specific stocks, the more likely the stock price would go up as described in the major economic principle of providing and demand. This is the so-called <strong>FOMO effect (Fear tO Miss Out)</strong></p>
+<img data-src="/2020/10/10/macd-strategy/fomo.png" class="" width="500">
+<p>The momentum strategies also have their limits:</p>
+<ol>
+<li>The momentum strategy is too well known so that the return/benefit has been diluted as many investors are participating in this game.</li>
+<li>It’s only a phenomenon based on the <a href="https://mikelhsia.github.io/2020/09/04/the-most-important-thing-illuminated/#more">herding behavior</a> and past history. This strategy won’t be able to predict the future price trend.</li>
+<li>Take the MACD momentum strategy for example, simply using MACD indicators will trigger too many noises and no-profit trades, generating unnecessary trading fees.</li>
+</ol>
+<h1 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h1><p>So we need an additional secondary indicator that helps us remove the noise and decide the trend whether it’s upward or downward. What indicator we should adopt to work together with the MACD strategy?</p>
+<p>Luckily enough, after reading this article <a target="_blank" rel="noopener" href="https://tradingsim.com/blog/macd/">MACD – 5 Profitable Trading Strategies</a>, we have found several options to opt-in. Therefore the objective of this article is <u><strong>to dive-in to the details of how to implement these secondary indicators, and how they perform respectively</strong></u>.</p>
+<h1 id="What-is-MACD"><a href="#What-is-MACD" class="headerlink" title="What is MACD?"></a>What is MACD?</h1><p>The history of MACD can be traced back to 1979, Gerald Apple invented the MACD indicator, it was an analytic tool for tracking stock and gold price trend. The MACD was constructed by both short-term and long-term <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/e/ema.asp">EMA (Exponential Moving Average)</a>. If the MACD indicator turns from negative to positive, then it’s a buy-in signal; vise-versa. 12 days for short-term EMA and 26 days for long-term EMA are the common setup of the MACD strategy. Here’s a quick guide of how to calculate MACD indicator:</p>
+<p>$EMA_{Current} = (ClosingPrice - EMA_{PreviousDay}) \times Multiplier + EMA_{PreviousDay}$</p>
+<blockquote>
+<p><em>As we are using 10 days in this exponential moving average example, the weighting multiplier would be calculated as follows:</em></p>
+<p>$Multiplier = \frac{2}{TimePeriods + 1} = \frac{2}{10 + 1} = 18.18\%$</p>
+</blockquote>
+<p>$MACD = EMA_{ShortTerm} - EMA_{LongTerm}$</p>
+<p>$MACD_{Signal} = 9\,day\,EMA\,of\,MACD\newline$</p>
+<p>$MACD_{Hist} = MACD - MACD_{Signal}\newline$</p>
+<h1 id="Let’s-get-started"><a href="#Let’s-get-started" class="headerlink" title="Let’s get started!!"></a>Let’s get started!!</h1><h2 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h2><ul>
+<li>On <a target="_blank" rel="noopener" href="https://www.quantopian.com">Quantopian platform</a></li>
+<li>Run the backtest in a five-year span, from Jan 2015 to Sep 2020</li>
+<li>Trading once a day</li>
+<li>Maximum 10 stocks in our target portfolio</li>
+<li>Selecting stocks that are high quality as our target assets universe </li>
+<li>Hedge assets such as Gold or VIX related ETF to hedge the downside risk</li>
+</ul>
+<img data-src="/2020/10/10/macd-strategy/macd.png" class="" width="600">
+<h2 id="Enter-and-exit-Strategy"><a href="#Enter-and-exit-Strategy" class="headerlink" title="Enter and exit Strategy"></a>Enter and exit Strategy</h2><p>When the $MACD_{Hist}$ is above 0 together when the signal of the secondary indicator is triggered, this indicates that the current $MACD$ line starts trending up above the past 9-day EMA. So once this combined signal reveals, then we enter the position. When the $MACD_{Signal}$ is below 0, then this means the stock price is starting trending low. So we exit the position to capture the return as much as we can compare to the signal using $MACD_{Hist}$ and $MACD_{Signal}$ both below 0.</p>
+<blockquote>
+<p><em>PS:</em><br><em>There’s another exit strategy that is quite popular on the internet, that you could set a certain percentage as your take-profit and stop-loss point. For example, you can exit the position once you’ve hit 10% of profit or lost 10% of the original investment. It seems quite make sense to me in the beginning, so I played with it and tried to incorporate this into my exit strategy. It turned out the results didn’t seem plausible. My assumption would be that this exit strategy doesn’t serve the purpose of capturing the momentum in the MACD strategy, as the stock price could fluctuate before it reaches the timing that the MACD signal predicts.</em></p>
+</blockquote>
+<h2 id="Backtests-and-results-of-combination-with-secondary-trigger-signals"><a href="#Backtests-and-results-of-combination-with-secondary-trigger-signals" class="headerlink" title="Backtests and results of combination with secondary trigger signals"></a>Backtests and results of combination with secondary trigger signals</h2><p>Let’s start pairing the MACD signal with the secondary signal and see how they were implemented:</p>
+<h3 id="1-Relative-Vigor-Index-RVI"><a href="#1-Relative-Vigor-Index-RVI" class="headerlink" title="1. Relative Vigor Index (RVI)"></a>1. Relative Vigor Index (RVI)</h3><p>RVI is not like the other oscillators that evaluating over-buy or over-sell. By looking at the formula below, it’s more of an indicator to tell whether the stock is vigorous enough to be profitable (either long or short the stock). Therefore, a crossover above the RVI signal line indicates that there is probably a bullish trend in the near future. So we can combine RVI with MACD to form a better-confirmed signal.</p>
+<p>$Numerator = \frac{a + 2 \times b + 2 \times c + d}{6}$</p>
+<p>$Denominator = \frac{e + 2 \times f + 2 \times g + h}{6}$</p>
+<p>$RVI = \frac{SMA\,of\,Numerator\,of\,N\,periods}{SMA\,of\,Denominator\,of\,N\,periods}$</p>
+<p>$RVI signal = \frac{RVI + 2 \times i + 2 \times j + k}{6}$</p>
+<p>$where$</p>
+<p>$a = Close−Open$</p>
+<p>$b = Close−Open One Bar Prior to a$</p>
+<p>$c = Close−Open One Bar Prior to b$</p>
+<p>$d = Close−Open One Bar Prior to c$</p>
+<p>$e = High−Low of Bar a$</p>
+<p>$f = High−Low of Bar b$</p>
+<p>$g = High−Low of Bar c$</p>
+<p>$h = High−Low of Bar d$</p>
+<p>$i = RVI Value One Bar Prior$</p>
+<p>$j = RVI Value One Bar Prior to i$</p>
+<p>$k = RVI Value One Bar Prior to j$</p>
+<p>$N = Minutes/Hours/Days/Weeks/Month$</p>
+<h4 id="Code-in-python"><a href="#Code-in-python" class="headerlink" title="Code in python:"></a>Code in python:</h4><img data-src="/2020/10/10/macd-strategy/rvi.png" class="" width="600">
+<img data-src="/2020/10/10/macd-strategy/rvi_signal.png" class="" width="600">
+<h3 id="2-Money-Flow-Index-MFI"><a href="#2-Money-Flow-Index-MFI" class="headerlink" title="2. Money Flow Index (MFI)"></a>2. Money Flow Index (MFI)</h3><p>Money Flow Index is another type of oscillator (range from 0 to 100) that reflects the changes in both price and volume, comparing to the other oscillators that reflect price only. So this gives us a better idea of whether the target stock is oversold or overbought when the MFI is positioned at both extreme edges. So we combine the MACD signals with MFI to double confirm the trend of the stock price.</p>
+<p>$MoneyFlowIndex = 100 - \frac{100}{1 + MoneyFlowRatio}$</p>
+<p>$where$</p>
+<p>$MoneyFlowRatio = \frac{14 Period\,PositiveMoneyFlow}{14 Period\,NegativeMoneyFlow}$</p>
+<p>$PositiveMoneyFlow = RawMoneyFlow &gt;= 0$</p>
+<p>$NegativeMoneyFlow = RawMoneyFlow &lt; 0$</p>
+<p>$RawMoneyFlow = TypicalPrice \times Volume$</p>
+<p>$TypicalPrice = \frac{High + Low + Close}{3}$</p>
+<h4 id="Code-in-python-1"><a href="#Code-in-python-1" class="headerlink" title="Code in python:"></a>Code in python:</h4><img data-src="/2020/10/10/macd-strategy/mfi.png" class="" width="600">
+<h3 id="3-Triple-Exponential-Moving-Average-TEMA"><a href="#3-Triple-Exponential-Moving-Average-TEMA" class="headerlink" title="3. Triple Exponential Moving Average (TEMA)"></a>3. Triple Exponential Moving Average (TEMA)</h3><p>TEMA is a more complex indicator. TEMA smooths the price fluctuations and waives the lagged price impact from the traditional moving average(MA). Compares to EMA, TEMA reduces the influence magnitude of the past few days. Therefore, it works like the traditional moving average to reflect the stock price moving trend by factoring the price movement of the past <em>N</em> periods. We use this to see when the current stock price cross above the TEMA, as a signal of the upward breakthrough.</p>
+<p>$TEMA = 3 \times EMA_1 - 3 \times EMA_2 + EMA_3$</p>
+<p>$where$</p>
+<p>$EMA_1 = Exponential Moving Average (EMA)$</p>
+<p>$EMA_2 = EMA of EMA_1$</p>
+<p>$EMA_3 = EMA of EMA_2$</p>
+<h4 id="Code-in-python-2"><a href="#Code-in-python-2" class="headerlink" title="Code in python:"></a>Code in python:</h4><img data-src="/2020/10/10/macd-strategy/tema.png" class="" width="600">
+<h3 id="4-Triple-Exponential-Average-TRIX"><a href="#4-Triple-Exponential-Average-TRIX" class="headerlink" title="4. Triple Exponential Average (TRIX)"></a>4. Triple Exponential Average (TRIX)</h3><p>Similarly to TEMA, TRIX is working surrounding the concept of exponential average. It does have one distinct difference. Unlike TEMA, TRIX represents the change in percentage comparing to the previous day, rather than the stock price EMA itself. Change in percentage would help identify the magnitude of either growth or decline. We are going to adopt this into our buy-in signal when the TRIX line goes above the zero-line.</p>
+<p>$EMA_{1(i)} = EMA(Price, N, 1)$</p>
+<p>$where$</p>
+<p>$Price_{(i)} = Current\,price$</p>
+<p>$EMA_{1(i)} = The\,current\,value\,of\,the\,Exponential\,Moving\,Average$</p>
+<p>$EMA_{2(i)} = EMA(EMA_1, N, i)$</p>
+<p>$EMA_{3(i)} = EMA(EMA_2, N, i)$</p>
+<p>$TRIX_{(i)} = \frac{EMA_{3(i)} - EMA_{3(i-1)}}{EMA_{3(i-1)}}$</p>
+<h4 id="Code-in-python-3"><a href="#Code-in-python-3" class="headerlink" title="Code in python:"></a>Code in python:</h4><img data-src="/2020/10/10/macd-strategy/trix.png" class="" width="600">
+<h3 id="5-Awesome-Oscillator"><a href="#5-Awesome-Oscillator" class="headerlink" title="5. Awesome Oscillator"></a>5. Awesome Oscillator</h3><p>According to the article <a target="_blank" rel="noopener" href="https://tradingsim.com/blog/awesome-oscillator/">Awesome Oscillator Day Trading Strategies</a>, the awesome oscillator is quite awesome, or to say it’s amazing. First of all, the awesome oscillator is a boundless oscillator, comparing to the traditional oscillator that ranges from +100 to -100. Secondly, it’s less complex in terms of equation computation, as TRIX modified the concept of normal SMA strategy from using the close price to using the middle price in an intraday. To incorporate the awesome oscillator into our MACD trading strategy, we need both MACD and awesome oscillator signals to be triggered in order to enter or close the positions.</p>
+<p>$SMA_{Fast\,Period} = Simple\,Moving\,Average(\frac{(High - Low)}{2}, 5\,periods)$</p>
+<p>$SMA_{Slow\,Period} = Simple\,Moving\,Average(\frac{(High - Low)}{2}, 34\,periods)$</p>
+<p>$Awesome\,Oscillator = SMA_{Fast\,Period} – SMA_{Slow\,Period}$</p>
+<h4 id="Code-in-python-4"><a href="#Code-in-python-4" class="headerlink" title="Code in python:"></a>Code in python:</h4><img data-src="/2020/10/10/macd-strategy/awesome_scillator.png" class="" width="600">
+<h3 id="6-Simple-Moving-Average"><a href="#6-Simple-Moving-Average" class="headerlink" title="6. Simple Moving Average"></a>6. Simple Moving Average</h3><p>This strategy was mentioned in the article <a target="_blank" rel="noopener" href="https://tradingsim.com/blog/macd/">MACD – 5 Profitable Trading Strategies</a> as a bouns strategy to look at. In this strategy, we enter a position when the MACD signal is triggered, and then we look for the timing with the assistance of the MA line. Meaning, we buy only when the following conditions are met:</p>
+<ol>
+<li>The stock price is above MA most of the time</li>
+<li>MACD has already crossed above the MACD signal line</li>
+<li>The most recent stock price slide and touched the MA line. </li>
+</ol>
+<img data-src="/2020/10/10/macd-strategy/ma_example.png" class="" width="150">
+<p>Allegedly, this strategy would get us to buy into the pullbacks of security that still has strong upward momentum.</p>
+<h4 id="Code-in-python-5"><a href="#Code-in-python-5" class="headerlink" title="Code in python:"></a>Code in python:</h4><img data-src="/2020/10/10/macd-strategy/ma.png" class="" width="600">
+<h2 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h2><p>The long and tedious description section is over!! Now let’s put the result together and see how each strategy performed.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Secondary indicators</th>
+<th style="text-align:center">Diagram</th>
+<th style="text-align:left">Stats</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">RVI</td>
+<td style="text-align:center"><img data-src="/2020/10/10/macd-strategy/return_rvi.png" class="" width="300"></td>
+<td style="text-align:left">By looking at the return line chart, we see that our strategy was actually beaten by the market for a long period of time, from the middle of 2015 to the beginning of 2018. Even though we have generated <strong>80%+ return over a five-year span</strong>, this strategy doesn’t look good on the overall Sharpe ratio and max dropdown.</td>
+</tr>
+<tr>
+<td style="text-align:center">MFI</td>
+<td style="text-align:center"><img data-src="/2020/10/10/macd-strategy/return_mfi.png" class="" width="300"></td>
+<td style="text-align:left">MFI strategy did beat the market most of the time and reaches <strong>100%+ return over 5 years</strong>. It performed slightly better than the RVI strategy. One thing you noticed in the bottom line chart, that the open position and the leverage ratio fluctuate very often. This could be a sign that the strategy generated too many false alarms.</td>
+</tr>
+<tr>
+<td style="text-align:center">TEMA</td>
+<td style="text-align:center"><img data-src="/2020/10/10/macd-strategy/return_tema.png" class="" width="300"></td>
+<td style="text-align:left">The backtest generated <strong>the highest alpha</strong>, <strong>lowest beta</strong>, and <strong>the smallest max dropdown</strong> among all secondary indicators. It also produces 143%+ return over 5 years. It could be a good choice to automate this into a trading bot program to test as it receives the least impact from the market factors.</td>
+</tr>
+<tr>
+<td style="text-align:center">TRIX</td>
+<td style="text-align:center"><img data-src="/2020/10/10/macd-strategy/return_trix.png" class="" width="300"></td>
+<td style="text-align:left">As a mutation of the TEMA, TRIX doesn’t perform better than the results generated from TEMA. Change in percentage of EMA might not be able to point out what’s the upward trend. We could play with the TRIX threshold and replace the zero line with other numbers. But I don’t want to do this at the moment, preventing overfitting the model.</td>
+</tr>
+<tr>
+<td style="text-align:center">Awesome Oscillator</td>
+<td style="text-align:center"><img data-src="/2020/10/10/macd-strategy/return_awesome.png" class="" width="300"></td>
+<td style="text-align:left">This strategy with Awesome Oscillator gives us the highest return and Sharpe ratio. Even though the beta and the max dropdown are both high comparing to the other five strategies, the line chart did clearly represents that this strategy can constantly beat the benchmark(SPY) return.</td>
+</tr>
+<tr>
+<td style="text-align:center">SMA</td>
+<td style="text-align:center"><img data-src="/2020/10/10/macd-strategy/return_ma.png" class="" width="300"></td>
+<td style="text-align:left">This is the only that strategy doesn’t work like the rest. As clearly pointed out in the explanation of the previous paragraph, that it is the strategy tries to capture the bounce back from the pullbacks instead of capturing the momentum. So I would say this test is not mature enough and can dive into this in the next article.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><ol>
+<li>The final results don’t seem to be consistent with the author of <a target="_blank" rel="noopener" href="https://tradingsim.com/blog/macd/">MACD – 5 Profitable Trading Strategies</a> on the preferred MACD strategy, as he’s doing research on single stock respectively against the technical diagram. Here we’re working with the computer, screening qualified stocks, and letting the program to decide what to buy and when to buy or sell.</li>
+<li>From what we have tested, TEMA and Awesome Oscillator seem to be the best options out of 6 strategies that we have backtested. These two strategies have generated outstanding return and Sharpe ratio, and also be able to beat the benchmark stock SPY.</li>
+<li>As we’re running the stock selection by programmed rules, there could be many stocks that have passed the threshold and qualified to be traded. Since we have only 10 seats in our portfolio, how are we going to select the stock that has the biggest momentum? The MACD nor the rest of the secondary indicators can be used to define the magnitude of the momentum across different stocks. However, it seems that <u><strong>high P/B ratio</strong> tends to receive higher influence from the momentum factor</u>. When ranking the P/B ratio from high to low would generate a higher return and lower risk compared to ranking the P/B ratio from low to high. I will not spend more words on describing this in this article. If anyone is interested in this topic, let me know, and I’ll write more about this.</li>
+</ol>
+<h1 id="Take-away"><a href="#Take-away" class="headerlink" title="Take away"></a>Take away</h1><p>There are still many other variables to play with in order to optimize the strategy. Such as increase the MACD threshold to make sure we don’t run into a short-term reverse, increase the portfolio capacity to waive the sector-specific risk, monitor the MACD breakthrough for several periods to confirm the upward/downward trend before opening a position, … etc.. However, looking from the MVP (minimum viable product) point of view, I believe it’s already good enough to throw this into practice by picking either <u>TEMA</u> or <u>Awesome Oscillator</u> strategies.</p>
+<p>OK. I’m going to write my code to start trading automatically. See you next time.</p>
+<blockquote>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://tradingsim.com/blog/macd/">MACD – 5 Profitable Trading Strategies</a></li>
+<li><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%9B%B8%E5%AF%B9%E6%B4%BB%E5%8A%9B%E6%8C%87%E6%95%B0%E6%8C%87%E6%A0%87">RVI 活力指標</a></li>
+<li><a target="_blank" rel="noopener" href="https://tradingsim.com/blog/money-flow-index/">Money Flow Index Strategy</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/m/mfi.asp">Money Flow Index - MFI</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/t/triple-exponential-moving-average.asp">TEMA</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.mbalib.com/wiki/TRIX%E6%8C%87%E6%A0%87">TRIX wiki</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/t/trix.asp">TRIX investopedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://tradingsim.com/blog/awesome-oscillator/">Awesome Oscillator</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.fmz.com/strategy/127101">MACD+MA Indicator Combination Strategy</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=kz_NJERCgm8">Algorithmic Trading Strategy Using MACD and MA</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.forbes.com/sites/simonmoore/2019/01/27/a-deeper-look-at-how-momentum-strategies-work/">A deeper look at how momentum strategies work</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/trading/introduction-to-momentum-trading/">Introduction to momentum trading</a></li>
+<li><a target="_blank" rel="noopener" href="https://quantpedia.com/strategies/momentum-factor-effect-in-stocks/">Momentum factor effect in stocks</a></li>
+</ul>
+</blockquote>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
+              <a href="/tags/Research/" rel="tag"># Research</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/18/how-to-grow-and-protect-wealth-for-100-years/" rel="prev" title="How to grow and protect wealth for 100 years">
+      <i class="fa fa-chevron-left"></i> How to grow and protect wealth for 100 years
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Objective"><span class="nav-number">1.</span> <span class="nav-text">Objective</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-MACD"><span class="nav-number">2.</span> <span class="nav-text">What is MACD?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Let%E2%80%99s-get-started"><span class="nav-number">3.</span> <span class="nav-text">Let’s get started!!</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Setup"><span class="nav-number">3.1.</span> <span class="nav-text">Setup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Enter-and-exit-Strategy"><span class="nav-number">3.2.</span> <span class="nav-text">Enter and exit Strategy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtests-and-results-of-combination-with-secondary-trigger-signals"><span class="nav-number">3.3.</span> <span class="nav-text">Backtests and results of combination with secondary trigger signals</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Relative-Vigor-Index-RVI"><span class="nav-number">3.3.1.</span> <span class="nav-text">1. Relative Vigor Index (RVI)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-in-python"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">Code in python:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Money-Flow-Index-MFI"><span class="nav-number">3.3.2.</span> <span class="nav-text">2. Money Flow Index (MFI)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-in-python-1"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">Code in python:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Triple-Exponential-Moving-Average-TEMA"><span class="nav-number">3.3.3.</span> <span class="nav-text">3. Triple Exponential Moving Average (TEMA)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-in-python-2"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">Code in python:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Triple-Exponential-Average-TRIX"><span class="nav-number">3.3.4.</span> <span class="nav-text">4. Triple Exponential Average (TRIX)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-in-python-3"><span class="nav-number">3.3.4.1.</span> <span class="nav-text">Code in python:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Awesome-Oscillator"><span class="nav-number">3.3.5.</span> <span class="nav-text">5. Awesome Oscillator</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-in-python-4"><span class="nav-number">3.3.5.1.</span> <span class="nav-text">Code in python:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Simple-Moving-Average"><span class="nav-number">3.3.6.</span> <span class="nav-text">6. Simple Moving Average</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-in-python-5"><span class="nav-number">3.3.6.1.</span> <span class="nav-text">Code in python:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Performance"><span class="nav-number">3.4.</span> <span class="nav-text">Performance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">3.5.</span> <span class="nav-text">Summary</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Take-away"><span class="nav-number">4.</span> <span class="nav-text">Take away</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
