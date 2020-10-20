@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Hi everyone, this is the first article for the 【How 2】 column. Every time that I have questions that popped into my mind, I always go Google and try the luck. It would take quite some time to filter t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【How 2】 Vol. 1. How 2 get all tradable tickers in US markets">
+<meta property="og:url" content="http://mikelhsia.github.io/2020/10/19/get-all-tradable-tickers/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Hi everyone, this is the first article for the 【How 2】 column. Every time that I have questions that popped into my mind, I always go Google and try the luck. It would take quite some time to filter t">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/10/19/get-all-tradable-tickers/ftp.png">
+<meta property="article:published_time" content="2020-10-19T04:57:54.000Z">
+<meta property="article:modified_time" content="2020-10-20T04:09:33.596Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Investing">
+<meta property="article:tag" content="How2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2020/10/19/get-all-tradable-tickers/ftp.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2020/10/19/get-all-tradable-tickers/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【How 2】 Vol. 1. How 2 get all tradable tickers in US markets | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2020/10/19/get-all-tradable-tickers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【How 2】 Vol. 1. How 2 get all tradable tickers in US markets
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-19 12:57:54" itemprop="dateCreated datePublished" datetime="2020-10-19T12:57:54+08:00">2020-10-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-20 12:09:33" itemprop="dateModified" datetime="2020-10-20T12:09:33+08:00">2020-10-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/How2/" itemprop="url" rel="index"><span itemprop="name">How2</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/10/19/get-all-tradable-tickers/" class="post-meta-item leancloud_visitors" data-flag-title="【How 2】 Vol. 1. How 2 get all tradable tickers in US markets" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/10/19/get-all-tradable-tickers/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/19/get-all-tradable-tickers/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Hi everyone, this is the first article for the <strong>【How 2】 column</strong>.</p>
+<p>Every time that I have questions that popped into my mind, I always go Google and try the luck. It would take quite some time to filter the outdated answers, situation not applied answers, …etc. so that I can start forming the answer that help solve my question.</p>
+<p>So, here’s the corner for accumulating all these small notes that would help people who have the same questions of “How to …..”</p>
+<p>Let’s get started.<br><a id="more"></a></p>
+<h1 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h1><p>While working on the trading automation bot, there’s one common factor that is essential to acquire for all the stocks that are considered as your potential targets. That is <strong>stock price</strong>. </p>
+<p>There are many third party service and data warehouse that allows you to fetch the stock hloc (high, low, open, close) price through their APIs. The format of these APIs go by:<br><em>yfinance</em><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> yfinance <span class="keyword">as</span> yf</span><br><span class="line"></span><br><span class="line">msft = yf.Ticker(<span class="string">&quot;MSFT&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># get historical market data</span></span><br><span class="line">hist = msft.history(period=<span class="string">&quot;max&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p><em>tiingo</em><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">requestResponse = requests.get(<span class="string">&quot;https://api.tiingo.com/tiingo/daily/MSFT/prices?startDate=2019-01-02&amp;token=&lt;your_token&gt;&quot;</span>, headers=headers)</span><br><span class="line">print(requestResponse.json())</span><br></pre></td></tr></table></figure></p>
+<p><em>quandl</em><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> quandl</span><br><span class="line"></span><br><span class="line">stock_tickers = [</span><br><span class="line">    <span class="string">&#x27;MSFT&#x27;</span>, </span><br><span class="line">]</span><br><span class="line">mydata = quandl.get(stock_tickers, start_date = <span class="string">&#x27;2019-03-19&#x27;</span>, end_date=<span class="string">&#x27;2019-03-21&#x27;</span>)</span><br><span class="line"></span><br><span class="line">mydata.loc[:,(mydata.columns.str.contains(<span class="string">&#x27;Close&#x27;</span>))].T</span><br></pre></td></tr></table></figure></p>
+<p>If you have a pair of good eyes, you’ll notice what we’re trying to tackle here. All the APIs are called by given the <strong>ticker</strong> of the stock.</p>
+<p>Ticker is a brief symbol or code to represent a specific stock/company. So before using your preferable APIs to get the price data, you need to know the ticker of the stock beforehand. As we’re working with code, we would like to get a group or a list of tickers to feed to the code that will automatically start processing the data for us.</p>
+<p>So the question today would be: </p>
+<blockquote>
+<h3 id="“How-to-get-a-list-of-tickers-listed-in-NYSE-or-Nasdaq-”"><a href="#“How-to-get-a-list-of-tickers-listed-in-NYSE-or-Nasdaq-”" class="headerlink" title="“How to get a list of tickers listed in NYSE or Nasdaq?”"></a><em>“How to get a list of tickers listed in NYSE or Nasdaq?”</em></h3></blockquote>
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><p>As stated in the article [<a target="_blank" rel="noopener" href="https://quant.stackexchange.com/questions/1640/where-to-download-list-of-all-common-stocks-traded-on-nyse-nasdaq-and-amex">How to get all common stock tickers</a>], that actually Nasdaq is maintaining the list of the listed stocks and all the preliminary data in the text files. So the idea would be get the content from remote FTP, and parse those content into the format we need.</p>
+<img data-src="/2020/10/19/get-all-tradable-tickers/ftp.png" class="" width="400">
+<p><strong>Example:</strong><br><strong>nasdaqlisted.txt</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Security Name</th>
+<th>Market Category</th>
+<th>Test Issue</th>
+<th>Financial Status</th>
+<th>Round Lot Size</th>
+<th>ETF</th>
+<th>NextShares</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AACG</td>
+<td>ATA Creativity Global - American Depositary Shares, each representing two common shares</td>
+<td>G</td>
+<td>N</td>
+<td>N</td>
+<td>100</td>
+<td>N</td>
+<td>N</td>
+</tr>
+<tr>
+<td>AACQ</td>
+<td>Artius Acquisition Inc. - Class A Common Stock</td>
+<td>S</td>
+<td>N</td>
+<td>N</td>
+<td>100</td>
+<td>N</td>
+<td>N</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>cont…</em></p>
+<p><strong>otherlisted.txt</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>ACT Symbol</th>
+<th>Security Name</th>
+<th>Exchange</th>
+<th>CQS Symbol</th>
+<th>ETF</th>
+<th>Round Lot Size</th>
+<th>Test Issue</th>
+<th>NASDAQ Symbol</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Agilent Technologies, Inc. Common Stock</td>
+<td>N</td>
+<td>A</td>
+<td>N</td>
+<td>100</td>
+<td>N</td>
+<td>A</td>
+</tr>
+<tr>
+<td>AA</td>
+<td>Alcoa Corporation Common Stock</td>
+<td>N</td>
+<td>AA</td>
+<td>N</td>
+<td>100</td>
+<td>N</td>
+<td>AA</td>
+</tr>
+<tr>
+<td>AAA</td>
+<td>Listed Funds Trust AAF First Priority CLO Bond ETF</td>
+<td>P</td>
+<td>AAA</td>
+<td>Y</td>
+<td>100</td>
+<td>N</td>
+<td>AAA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>cont…</em></p>
+<p>Apparently, we need a list of tickers. That shouldn’t be hard. However, as this the primitive data maintained by Nasdaq, there are something we need to pay attention to before processing the data.</p>
+<ol>
+<li>We need to screen out the <code>Test Issue</code> stocks that is actually not a real company</li>
+<li>To save time later while we processing the stock fundamental data to find out the better quality stock, we can first remove those companies whose <code>financial status</code> are either bankrupt or deficient.</li>
+<li>We remove the stocks that are not listed in our target exchange</li>
+<li>We remove the stocks that have either <code>.</code> or <code>$</code> in their symbol. These are not the stocks that listed in the market that we’re paying attention to.</li>
+</ol>
+<h2 id="Two-methods-Bash-v-s-python"><a href="#Two-methods-Bash-v-s-python" class="headerlink" title="Two methods: Bash v.s. python"></a>Two methods: Bash v.s. python</h2><h3 id="In-Bash"><a href="#In-Bash" class="headerlink" title="In Bash"></a>In Bash</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;[\&quot;<span class="subst">$(echo <span class="string">&quot;<span class="subst">$(</span></span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string"><span class="subst">    echo -en <span class="string">&quot;<span class="subst">$(</span></span></span></span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string"><span class="subst"><span class="string"><span class="subst">            curl -s --compressed &#x27;ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt&#x27; | tail -r | tail -n+2 | tail -r | tail -n+2 | perl -pe &#x27;s/ //g&#x27; | tr &#x27;|&#x27; &#x27; &#x27; | awk &#x27;&#123;printf $1<span class="string">&quot; &quot;</span>&#125; &#123;print $4&#125;&#x27;</span></span></span></span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string"><span class="subst"><span class="string"><span class="subst">        )</span>\n<span class="subst">$(</span></span></span></span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string"><span class="subst"><span class="string"><span class="subst">            curl -s --compressed &#x27;ftp://ftp.nasdaqtrader.com/SymbolDirectory/otherlisted.txt&#x27;  | tail -r | tail -n+2 | tail -r | tail -n+2 | perl -pe &#x27;s/ //g&#x27; | tr &#x27;|&#x27; &#x27; &#x27; | awk &#x27;&#123;printf $1<span class="string">&quot; &quot;</span>&#125; &#123;print $7&#125;&#x27;</span></span></span></span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string"><span class="subst"><span class="string"><span class="subst">        )</span>&quot;</span> | grep -v &#x27;Y$&#x27; | awk &#x27;&#123;print $1&#125;&#x27; | grep -v &#x27;[^a-zA-Z]&#x27; | sort</span></span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string"><span class="subst">    )</span>&quot;</span> | perl -pe &#x27;s/\n/<span class="string">&quot;,&quot;</span>/g&#x27;)</span>\&quot;]</span></span><br></pre></td></tr></table></figure>
+<h3 id="In-Python"><a href="#In-Python" class="headerlink" title="In Python"></a>In Python</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">from</span> io <span class="keyword">import</span> StringIO</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_tradable_tickers</span>() -&gt; list:</span></span><br><span class="line">    <span class="comment"># * Get all the text from Nasdaq</span></span><br><span class="line">    proc = subprocess.Popen([</span><br><span class="line">            <span class="string">&quot;curl&quot;</span>, <span class="string">&quot;-s&quot;</span>, <span class="string">&quot;--compressed&quot;</span>, <span class="string">&quot;ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt&quot;</span></span><br><span class="line">        ], </span><br><span class="line">        stdout=subprocess.PIPE</span><br><span class="line">    )</span><br><span class="line">    nasdaq_text, err = proc.communicate()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># * Get all the text from Nasdaq</span></span><br><span class="line">    proc = subprocess.Popen([</span><br><span class="line">        <span class="string">&quot;curl&quot;</span>, <span class="string">&quot;-s&quot;</span>, <span class="string">&quot;--compressed&quot;</span>, <span class="string">&quot;ftp://ftp.nasdaqtrader.com/SymbolDirectory/otherlisted.txt&quot;</span></span><br><span class="line">        ], </span><br><span class="line">        stdout=subprocess.PIPE</span><br><span class="line">    )</span><br><span class="line">    other_text, err = proc.communicate()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># * Convert them into DataFrame</span></span><br><span class="line">    nasdaqlisted = pd.read_csv(StringIO(nasdaq_text.decode(<span class="string">&#x27;utf-8&#x27;</span>)), sep=<span class="string">&#x27;|&#x27;</span>, header=<span class="number">0</span>)</span><br><span class="line">    otherlisted = pd.read_csv(StringIO(other_text.decode(<span class="string">&#x27;utf-8&#x27;</span>)), sep=<span class="string">&#x27;|&#x27;</span>, header=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># * Remove the </span></span><br><span class="line">    <span class="comment"># * 1. test issue stocks, </span></span><br><span class="line">    <span class="comment"># * 2. not in GM market, </span></span><br><span class="line">    <span class="comment"># * 3. financially broke company, </span></span><br><span class="line">    <span class="comment"># * 4. ticker that has &quot;.&quot; or &quot;$&quot; </span></span><br><span class="line">    <span class="comment"># * from the DataFrame</span></span><br><span class="line">    nasdaqlisted = nasdaqlisted[~nasdaqlisted[<span class="string">&#x27;Test Issue&#x27;</span>].str.contains(<span class="string">&#x27;Y&#x27;</span>, na=<span class="literal">False</span>)][nasdaqlisted[<span class="string">&#x27;Market Category&#x27;</span>].eq(<span class="string">&#x27;G&#x27;</span>)][nasdaqlisted[<span class="string">&#x27;Financial Status&#x27;</span>].eq(<span class="string">&#x27;N&#x27;</span>)]</span><br><span class="line">    nasdaqlisted = nasdaqlisted[~nasdaqlisted[<span class="string">&#x27;Symbol&#x27;</span>].str.contains(<span class="string">&#x27;\.|\$&#x27;</span>, na=<span class="literal">False</span>, regex=<span class="literal">True</span>)]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># * Remove the </span></span><br><span class="line">    <span class="comment"># * 1. test issue stocks, </span></span><br><span class="line">    <span class="comment"># * 2. not in NYSE, </span></span><br><span class="line">    <span class="comment"># * 3. ticker that has &quot;.&quot; or &quot;$&quot; </span></span><br><span class="line">    <span class="comment"># * from the DataFrame</span></span><br><span class="line">    otherlisted = otherlisted[~otherlisted[<span class="string">&#x27;Test Issue&#x27;</span>].str.contains(<span class="string">&#x27;Y&#x27;</span>, na=<span class="literal">False</span>)][otherlisted[<span class="string">&#x27;Exchange&#x27;</span>].isin([<span class="string">&#x27;A&#x27;</span>, <span class="string">&#x27;N&#x27;</span>, <span class="string">&#x27;P&#x27;</span>])]</span><br><span class="line">    otherlisted = otherlisted[~otherlisted[<span class="string">&#x27;ACT Symbol&#x27;</span>].str.contains(<span class="string">&#x27;\.|\$&#x27;</span>, na=<span class="literal">False</span>, regex=<span class="literal">True</span>)]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># * To remove the duplicated tickers by using set</span></span><br><span class="line">    tickers = list(set(nasdaqlisted[<span class="string">&#x27;Symbol&#x27;</span>].values.tolist() + otherlisted[<span class="string">&#x27;ACT Symbol&#x27;</span>].values.tolist()))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> tickers</span><br></pre></td></tr></table></figure>
+<h1 id="Take-away"><a href="#Take-away" class="headerlink" title="Take away"></a>Take away</h1><p>You can take away as many as possible. The codes in the pictures are free to use.</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://quant.stackexchange.com/questions/1640/where-to-download-list-of-all-common-stocks-traded-on-nyse-nasdaq-and-amex">How to get all common stock tickers</a></li>
+<li><a target="_blank" rel="noopener" href="http://bsym.bloomberg.com/sym/">Bloomberg source</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.nasdaqtrader.com/trader.aspx?id=symboldirdefs">Nasdaq FTP folder</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/NASDAQ">Nasdaq Market tiers &amp; categories</a></li>
+</ul>
+</blockquote>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Investing/" rel="tag"># Investing</a>
+              <a href="/tags/How2/" rel="tag"># How2</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/10/macd-strategy/" rel="prev" title="How to save your silver bullets with MACD strategy?">
+      <i class="fa fa-chevron-left"></i> How to save your silver bullets with MACD strategy?
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%9CHow-to-get-a-list-of-tickers-listed-in-NYSE-or-Nasdaq-%E2%80%9D"><span class="nav-number">1.0.1.</span> <span class="nav-text">“How to get a list of tickers listed in NYSE or Nasdaq?”</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Solution"><span class="nav-number">2.</span> <span class="nav-text">Solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Two-methods-Bash-v-s-python"><span class="nav-number">2.1.</span> <span class="nav-text">Two methods: Bash v.s. python</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#In-Bash"><span class="nav-number">2.1.1.</span> <span class="nav-text">In Bash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#In-Python"><span class="nav-number">2.1.2.</span> <span class="nav-text">In Python</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Take-away"><span class="nav-number">3.</span> <span class="nav-text">Take away</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
