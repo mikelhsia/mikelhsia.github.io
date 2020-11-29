@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Tradable securities are the securities that are available to be traded on the market that day. Each security could be either add into or remove from this tradable set such as delisted, company bankru">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【How 2】 Vol. 3. How to produce a quality tradable securities for backtesting">
+<meta property="og:url" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Tradable securities are the securities that are available to be traded on the market that day. Each security could be either add into or remove from this tradable set such as delisted, company bankru">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/survivor_bias.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step2-1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step2-2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step2-3.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step2-4.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step3.png">
+<meta property="article:published_time" content="2020-11-26T08:55:13.000Z">
+<meta property="article:modified_time" content="2020-11-29T16:44:44.302Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Backtesting">
+<meta property="article:tag" content="how2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【How 2】 Vol. 3. How to produce a quality tradable securities for backtesting | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【How 2】 Vol. 3. How to produce a quality tradable securities for backtesting
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-11-26 16:55:13" itemprop="dateCreated datePublished" datetime="2020-11-26T16:55:13+08:00">2020-11-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-30 00:44:44" itemprop="dateModified" datetime="2020-11-30T00:44:44+08:00">2020-11-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/how2/" itemprop="url" rel="index"><span itemprop="name">how2</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/" class="post-meta-item leancloud_visitors" data-flag-title="【How 2】 Vol. 3. How to produce a quality tradable securities for backtesting" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/cover.png" class="" width="500">
+<p><code>Tradable securities</code> are the securities that are available to be traded on the market that day. Each security could be either add into or remove from this tradable set such as <a target="_blank" rel="noopener" href="https://www.merriam-webster.com/dictionary/delist">delisted</a>, company bankrupt, and so on. It’s important for us to obtain this list before we place the order on the day, otherwise, we’re probably going to buy or sell the securities that are not available on the market.</p>
+<p>In this article, I’m going to talk about how I built mine by <strong>reverse engineering</strong> what I have in order to build this tradable securities list. Even though it’s probably not the most accurate one, but could be a start for those who don’t have enough resources to get these tradable securities from elsewhere.</p>
+<a id="more"></a>
+<h1 id="Why-we-need-this-list"><a href="#Why-we-need-this-list" class="headerlink" title="Why we need this list?"></a>Why we need this list?</h1><p>You may ask, what do we need the list for? We could simply use all the stock symbols available on the list in the article <a href="https://mikelhsia.github.io/2020/10/19/2020-10-19-get-all-tradable-tickers/#more">【How 2】 Vol. 1. How 2 get all tradable tickers in US markets</a>, right?</p>
+<p>No. There is one common bias here that needs to be avoided or mitigated to a certain degree:</p>
+<h2 id="Survivor-bias"><a href="#Survivor-bias" class="headerlink" title="Survivor bias"></a>Survivor bias</h2><p>This bias indicates that the result we’re looking at today, actually already went through a series of selection, competition, or elimination.</p>
+<p>For example, we’re analyzing a two-day lookback period and deduced that all the stocks whose symbols start with “A” will very likely to make a positive return this year. When we look back 2 days from <strong>2014-01-09</strong>, we don’t know the existence of stock “AAZ”. The stocks we’re looking at are the <code>survivors</code> from the market competition, inducing us to come to this false conclusion. Hence, on the next day of 2014-01-09, a new stock “ABZ” come to the market. You are very likely to lose more money on the stock as it has “Z” at the end of its symbol that is actually not a good stock, just like the previous market loser “AAZ”.</p>
+<img data-src="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/survivor_bias.png" class="" width="500">
+<p>So using the tradable securities of today to backtest against the historic pricing data would not help us to better predict the future, because we’re looking at the past data through a filtering glasses called “future”.</p>
+<p>You must be smart enough and be able to figure out the data format we need to represent the stocks that are available each historic day on the market by now:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&#x27;2014-11-03&#x27;</span>: [ <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;aacg&#x27;</span>, <span class="string">&#x27;aaic&#x27;</span>, <span class="string">&#x27;aal&#x27;</span>, ... ],</span><br><span class="line">    <span class="string">&#x27;2014-11-04&#x27;</span>: [ <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;aacg&#x27;</span>, <span class="string">&#x27;aal&#x27;</span>, ... ],</span><br><span class="line">    <span class="string">&#x27;2014-11-05&#x27;</span>: [ <span class="string">&#x27;a&#x27;</span>, ... ],</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Then-the-problem-is-…"><a href="#Then-the-problem-is-…" class="headerlink" title="Then, the problem is …"></a>Then, the problem is …</h1><p>The problem is, I haven’t seen any public data out there that are provided except the dataset <code>QTradableStocksUS()</code> on Quantopian. Also, we can’t use data provided by NASDAQ or NYSE, as this data is not going to help us waiving the <strong>survivor bias</strong> that we mentioned above. Then, how do we produce a somewhat quality tradable stocks set for backtesting?</p>
+<h1 id="Methodology-and-thoughts"><a href="#Methodology-and-thoughts" class="headerlink" title="Methodology and thoughts"></a>Methodology and thoughts</h1><p>I’m going to quickly explain how I built the tradable stocks set based on what I have. If you’re not interested, you can directly go to the bottom of the article to download the tradable stock set since 2014-11-03. If you still have the last piece of conscience in you, please bear with me and read this through …</p>
+<h2 id="Reverse-engineering"><a href="#Reverse-engineering" class="headerlink" title="Reverse-engineering"></a>Reverse-engineering</h2><p>Since there is no public data for the historic tradable stock symbols, I’m thinking maybe we can somewhat confirm the fact that the stock traded publicly on the market that day is included in the tradable securities. So we can say, <strong><em>if a stock has a close price and trading volume that is not zero, this stock must be included in the tradable securities</em></strong>. Therefore, here’s what I’m going to do:</p>
+<h3 id="1-Download-the-historic-price-of-all-stocks-that-I-can-find"><a href="#1-Download-the-historic-price-of-all-stocks-that-I-can-find" class="headerlink" title="1. Download the historic price of all stocks that I can find."></a>1. Download the historic price of all stocks that I can find.</h3><p>Use the below code to download all necessary stock historic daily prices from Tiingo. And, I use <code>multiprocessing</code> package to speed up this process.<br><img data-src="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step1.png" class="" width="800"></p>
+<h3 id="2-Combine-these-historic-prices-on-the-key-“date”-into-one-big-table"><a href="#2-Combine-these-historic-prices-on-the-key-“date”-into-one-big-table" class="headerlink" title="2. Combine these historic prices on the key “date” into one big table."></a>2. Combine these historic prices on the key “date” into one big table.</h3><p>By following the below process, you can get a big table that has the date on the index and the stock symbol in the column.<br><img data-src="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step2-1.png" class="" width="800"><br>The result will look like the table below:<br><img data-src="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step2-2.png" class="" width="800"></p>
+<p>Then one important step that we need to do is to look at the data and see how many data were missing from the source provided. By using the <code>seaborn.heatmap()</code> to visualize the data and find the gap. We’re not going to check all the stocks as there are 14k stocks on my list. So I’m going to inspect stock No. 2000~3000. Here’s the data from 1989 to 2020-11-23:<br><img data-src="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step2-3.png" class="" width="500"></p>
+<p>It seems a lot of data was missing from the beginning. As my backtest won’t include the datetime this long ago, I’m targeting to get data from 2014-11-03 to 2020-11-23. Now the diagram looks like this:<br><img data-src="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step2-4.png" class="" width="500"></p>
+<p>Um… It’s better now. Let’s use this as a base to move on.</p>
+<h3 id="3-Go-through-this-big-table-by-day-and-mark-the-stock-that-has-“Close”-price-and-“Volume”-is-not-zero-as-true"><a href="#3-Go-through-this-big-table-by-day-and-mark-the-stock-that-has-“Close”-price-and-“Volume”-is-not-zero-as-true" class="headerlink" title="3. Go through this big table by day, and mark the stock that has “Close” price and “Volume” is not zero as true."></a>3. Go through this big table by day, and mark the stock that has “Close” price and “Volume” is not zero as true.</h3><p>Here we’re going to produce the positive mark for each stock to see whether we’re going to include it into the tradable securities or not. There is one more thing that needs to be paid attention to: <strong>Data missing rate</strong>. We’re not going to pick the stock that misses daily ‘Close’ price data more than 10% of the time. Because the stock could be delisted for a while due to several reasons. But missing data 10% of the entire time is not normal from what I see.</p>
+<p>So here’s what I do:<br><img data-src="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/step3.png" class="" width="800"></p>
+<p>Of course, the <code>missing_rate_threshold</code> can be adjusted as your need. For now, I’m going to keep it to <strong>90</strong> as <strong>90%</strong> of the entire time we observed from 2014-11-03 to 2020-11-23.</p>
+<h3 id="4-Generate-tradable-stock-symbols-by-Timestamp"><a href="#4-Generate-tradable-stock-symbols-by-Timestamp" class="headerlink" title="4. Generate tradable stock symbols by Timestamp"></a>4. Generate tradable stock symbols by Timestamp</h3><p>To get the tradable securities on the day of 2014-11-03, let’s first transform this <code>pd.DataFrame</code> into a listed dictionary. After getting our <code>final_dict</code>, we then generate the <code>pd.Timestamp</code> as an index to retrieve the symbols we need. Lastly, we remove the Nan and Null data with <code>pd.isna()</code> function. Then we’ll get the tradable securities on the day of 2014-11-03.<br></p>
+<h1 id="To-conclude"><a href="#To-conclude" class="headerlink" title="To conclude"></a>To conclude</h1><p>Now we’ve come to the end of this article. I hope putting my train of thought here would make it easier for you to understand. Or leave your comments and let me know where I can explain better. Hope this helps people who are on the same road as I am.</p>
+<hr>
+<h1 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h1><h2 id="Attach-the-entire-code-here"><a href="#Attach-the-entire-code-here" class="headerlink" title="Attach the entire code here"></a>Attach the entire code here</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> multiprocessing</span><br><span class="line"><span class="keyword">import</span> sys, os</span><br><span class="line"></span><br><span class="line"><span class="comment">##################################################################</span></span><br><span class="line"><span class="comment"># Global variables</span></span><br><span class="line">NUM_OF_PROCESSORS = <span class="number">200</span></span><br><span class="line">STOCK_PRICE_DATA_PATH = <span class="string">&#x27;/Users/michael/Desktop/stocks/&#x27;</span></span><br><span class="line">META_JSON_FILE_PATH = <span class="string">&#x27;[FILE_WHERE_YOUR_STORE_YOUR_TIINGO_META_DATA]&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##################################################################</span></span><br><span class="line"><span class="comment"># Get all symbols provided in the meta.json from Tiingo website</span></span><br><span class="line"><span class="keyword">with</span> open(META_JSON_FILE_PATH, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">    content = fp.read()</span><br><span class="line">content = json.loads(content)</span><br><span class="line">df = pd.json_normalize(content)</span><br><span class="line">stock_symbol_set = df.ticker.to_list()</span><br><span class="line"></span><br><span class="line"><span class="comment">##################################################################</span></span><br><span class="line"><span class="comment"># Create a table to keep track of which stock has been up to date</span></span><br><span class="line">init_datetime = pd.to_datetime(<span class="number">0</span>)</span><br><span class="line">update_table = pd.Series(</span><br><span class="line">    [init_datetime]*len(stock_symbol_set),</span><br><span class="line">    index=stock_symbol_set</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">##################################################################</span></span><br><span class="line"><span class="comment"># Multiprocessing Pool to download pricing data from Tiingo</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">download_historic_price_by_symbol</span>(<span class="params">symbol: str</span>) -&gt; bool:</span></span><br><span class="line">    <span class="keyword">global</span> update_table</span><br><span class="line">    now = datetime.now()</span><br><span class="line">    until_today=now.strftime(<span class="string">&#x27;%Y-%m-%d&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># print(os.path.join(STOCK_PRICE_DATA_PATH, f&#x27;&#123;symbol&#125;.csv&#x27;))</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(os.path.join(STOCK_PRICE_DATA_PATH, <span class="string">f&#x27;<span class="subst">&#123;symbol&#125;</span>.csv&#x27;</span>)):</span><br><span class="line">        json = requests.get([YOUR_TIINGO_REQUEST_URL_WITH_SYMBOL_AND_TOKEN])</span><br><span class="line">        <span class="keyword">if</span> json == <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        pd.json_normalize(json).to_csv(</span><br><span class="line">            os.path.join(</span><br><span class="line">                STOCK_PRICE_DATA_PATH,</span><br><span class="line">                <span class="string">f&#x27;<span class="subst">&#123;symbol&#125;</span>.csv&#x27;</span></span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line">        update_table[symbol] = now</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> multiprocessing.Pool(NUM_OF_PROCESSORS) <span class="keyword">as</span> pool:</span><br><span class="line">    results = []</span><br><span class="line">    <span class="keyword">for</span> symbol <span class="keyword">in</span> stock_symbol_set:</span><br><span class="line">        results.append(</span><br><span class="line">            pool.apply_async(</span><br><span class="line">                download_historic_price_by_symbol,</span><br><span class="line">                args=(</span><br><span class="line">                    symbol,</span><br><span class="line">                )</span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    pool.close()</span><br><span class="line">    pool.join()</span><br><span class="line"></span><br><span class="line">    result_list = [res.get() <span class="keyword">for</span> res <span class="keyword">in</span> results]</span><br><span class="line"></span><br><span class="line">update_table.to_csv(os.path.join(STOCK_PRICE_DATA_PATH, <span class="string">&#x27;.update_table.csv&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">##################################################################</span></span><br><span class="line"><span class="comment"># Combine these csv into one big sheet on key &#x27;date&#x27;</span></span><br><span class="line"><span class="comment"># Screen out the stocks that has no data in the csv</span></span><br><span class="line"><span class="comment"># Place the symbol only if it has pricing data,</span></span><br><span class="line"><span class="comment"># and also when it&#x27;s trading volume is greater than 0</span></span><br><span class="line">result_df = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">path = <span class="string">&#x27;/Users/michael/Desktop/stocks&#x27;</span></span><br><span class="line">files = os.listdir(path)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> f <span class="keyword">in</span> files:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        df = pd.read_csv(os.path.join(path, f))</span><br><span class="line">        <span class="keyword">if</span> len(df) == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        df = df[df.volume &gt; <span class="number">0</span>]</span><br><span class="line">        df[<span class="string">&#x27;ticker&#x27;</span>] = f.split(<span class="string">&#x27;.&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">        df = df.loc[:, [<span class="string">&#x27;date&#x27;</span>, <span class="string">&#x27;ticker&#x27;</span>]]</span><br><span class="line"><span class="comment">#         print(df)</span></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(f, e)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> result_df <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        result_df = df</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        result_df = pd.merge(result_df, df, on=<span class="string">&#x27;date&#x27;</span>, how=<span class="string">&#x27;outer&#x27;</span>)</span><br><span class="line"></span><br><span class="line">result_df.sort_values(<span class="string">&#x27;date&#x27;</span>, inplace=<span class="literal">True</span>)</span><br><span class="line">result_df.index = result_df.date.values</span><br><span class="line">result_df.drop(<span class="string">&#x27;date&#x27;</span>, axis=<span class="number">1</span>, inplace=<span class="literal">True</span>)</span><br><span class="line">result_df.to_csv(<span class="string">&#x27;/Users/michael/Desktop/big_sheet.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">##################################################################</span></span><br><span class="line"><span class="comment"># Producing preliminary tradable stock set</span></span><br><span class="line">df = pd.read_csv(<span class="string">&#x27;/Users/michael/Desktop/big_sheet.csv&#x27;</span>)</span><br><span class="line">df.index = pd.to_datetime(df.date.values)</span><br><span class="line"></span><br><span class="line"><span class="comment"># This means starting from 2014-11-03</span></span><br><span class="line">num = <span class="number">13300</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Make sure we don&#x27;t erase the stocks that</span></span><br><span class="line"><span class="comment"># delisted during our time span in tradable set</span></span><br><span class="line">missing_rate_threshold = <span class="number">90</span></span><br><span class="line"></span><br><span class="line">total_row = df[num:].shape[<span class="number">0</span>]</span><br><span class="line">missing_row = df[num:].isnull().sum()</span><br><span class="line">rate_of_missing = (total_row - missing_row)/total_row * <span class="number">100</span></span><br><span class="line">final_df = df.loc[:, rate_of_missing &gt; missing_rate_threshold]</span><br><span class="line">final_df = final_df[num:]</span><br><span class="line"></span><br><span class="line">final_df.to_csv(<span class="string">&#x27;/Users/michael/Desktop/tradable_set.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># final_df = pd.read_csv(&#x27;/Users/michael/Desktop/tradable_set.csv&#x27;)</span></span><br><span class="line"><span class="comment"># final_dict = final_df.T.to_dict(&#x27;list&#x27;)</span></span><br><span class="line"><span class="comment"># d = pd.Timestamp(&#x27;2014-11-03&#x27;, tz=&#x27;UTC&#x27;)</span></span><br><span class="line"><span class="comment"># tradable = [s for s in final_df[d if not pd.isna(s)]</span></span><br></pre></td></tr></table></figure>
+<h2 id="Download-the-tradable-securities-set-here"><a href="#Download-the-tradable-securities-set-here" class="headerlink" title="Download the tradable securities set here"></a>Download the tradable securities set here</h2><p>Click <a href="20141103_tradable_set.csv.zip" title="20141103_tradable_set.csv.zip">here</a> to download the file for tradable stock set since <u>2014-11-03</u></p>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+              <a href="/tags/how2/" rel="tag"># how2</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/21/2020-11-17-launch-of-macd-strategy/" rel="prev" title="【Cont.】 How to save your silver bullets with MACD strategy?">
+      <i class="fa fa-chevron-left"></i> 【Cont.】 How to save your silver bullets with MACD strategy?
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-we-need-this-list"><span class="nav-number">1.</span> <span class="nav-text">Why we need this list?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Survivor-bias"><span class="nav-number">1.1.</span> <span class="nav-text">Survivor bias</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Then-the-problem-is-%E2%80%A6"><span class="nav-number">2.</span> <span class="nav-text">Then, the problem is …</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Methodology-and-thoughts"><span class="nav-number">3.</span> <span class="nav-text">Methodology and thoughts</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Reverse-engineering"><span class="nav-number">3.1.</span> <span class="nav-text">Reverse-engineering</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Download-the-historic-price-of-all-stocks-that-I-can-find"><span class="nav-number">3.1.1.</span> <span class="nav-text">1. Download the historic price of all stocks that I can find.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Combine-these-historic-prices-on-the-key-%E2%80%9Cdate%E2%80%9D-into-one-big-table"><span class="nav-number">3.1.2.</span> <span class="nav-text">2. Combine these historic prices on the key “date” into one big table.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Go-through-this-big-table-by-day-and-mark-the-stock-that-has-%E2%80%9CClose%E2%80%9D-price-and-%E2%80%9CVolume%E2%80%9D-is-not-zero-as-true"><span class="nav-number">3.1.3.</span> <span class="nav-text">3. Go through this big table by day, and mark the stock that has “Close” price and “Volume” is not zero as true.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Generate-tradable-stock-symbols-by-Timestamp"><span class="nav-number">3.1.4.</span> <span class="nav-text">4. Generate tradable stock symbols by Timestamp</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#To-conclude"><span class="nav-number">4.</span> <span class="nav-text">To conclude</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Misc"><span class="nav-number">5.</span> <span class="nav-text">Misc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Attach-the-entire-code-here"><span class="nav-number">5.1.</span> <span class="nav-text">Attach the entire code here</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Download-the-tradable-securities-set-here"><span class="nav-number">5.2.</span> <span class="nav-text">Download the tradable securities set here</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
