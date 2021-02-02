@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="In previous posts, we’ve been talking about the momentum strategies like MACD strategy and turtle strategy. These are the standard strategies based on the hypothesis that when the environmental varia">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Factor analysis】 Vol. 1. Introduction the idea of factor analysis">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="In previous posts, we’ve been talking about the momentum strategies like MACD strategy and turtle strategy. These are the standard strategies based on the hypothesis that when the environmental varia">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/cover.jpeg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/kingdom.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/queue.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/thinker.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/edu.jpg">
+<meta property="article:published_time" content="2021-01-31T02:04:16.000Z">
+<meta property="article:modified_time" content="2021-02-02T09:14:17.257Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Research">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/cover.jpeg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Factor analysis】 Vol. 1. Introduction the idea of factor analysis | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Factor analysis】 Vol. 1. Introduction the idea of factor analysis
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-01-31 10:04:16" itemprop="dateCreated datePublished" datetime="2021-01-31T10:04:16+08:00">2021-01-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-02-02 17:14:17" itemprop="dateModified" datetime="2021-02-02T17:14:17+08:00">2021-02-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Factor-Analysis/" itemprop="url" rel="index"><span itemprop="name">Factor Analysis</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/01/31/2021-01-31-factor-analysis/" class="post-meta-item leancloud_visitors" data-flag-title="【Factor analysis】 Vol. 1. Introduction the idea of factor analysis" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/01/31/2021-01-31-factor-analysis/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/01/31/2021-01-31-factor-analysis/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2021/01/31/2021-01-31-factor-analysis/cover.jpeg" class="" width="400">
+<p>In previous posts, we’ve been talking about the <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/m/momentum_investing.asp"><strong>momentum strategies</strong></a> like <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/#more">MACD strategy</a> and <a href="https://mikelhsia.github.io/2020/12/26/20202-12-26-turtle-strategy/#more">turtle strategy</a>. These are the standard strategies based on the hypothesis that when the environmental variables, such as price moving average, technical indicators, and other subjective numbers, meet certain requirements, the stock price would follow the trends and continue to go up/down. The scholars believe that the momentum would continue pushing the stock price further if such investor confidence has been established.</p>
+<p>Other than that, there is also another methodology out there, called <strong>factor analysis</strong>. To explain this in detail, I’m going to separate this huge topic into several parts: <a id="more"></a></p>
+<ol>
+<li>Introduction the idea of factor analysis</li>
+<li>Get ready: preparing and cleaning data</li>
+<li>Construct your own factors</li>
+<li>Data processing</li>
+<li>Scoring</li>
+<li>Performance analysis</li>
+<li>Optimization</li>
+</ol>
+<h1 id="What-is-factor-analysis"><a href="#What-is-factor-analysis" class="headerlink" title="What is factor analysis"></a>What is factor analysis</h1><p>I’m not going to intimidate you with lengthy and smart-ass sentences with tons of big words. Otherwise, I’m going to drive away the last group of the audience that I have left. Let me try to tell you a story then you’ll get to know the objective of factor analysis.</p>
+<h1 id="Story-starts-here"><a href="#Story-starts-here" class="headerlink" title="Story starts here"></a>Story starts here</h1><h2 id="Long-long-time-ago…"><a href="#Long-long-time-ago…" class="headerlink" title="Long long time ago…"></a>Long long time ago…</h2><blockquote>
+<img data-src="/2021/01/31/2021-01-31-factor-analysis/kingdom.png" class="" width="300">
+<p>In a small country somewhere on the earth, there’s a king who is the kindest and the most merciful one this country ever had. The kind king has ruled this country for decades.<br>One day, an idea struck the king: after all the hard work my team and I have done, are my people feel happy about our doings? And how are we going to keep or improve the level of happiness of our people? So the king has assigned this task to the Minister of the Realm.</p>
+<p>Easy enough, the Minister has designed a survey to investigate the degree of happiness of the people. They have collected the following information of every individual in the realm: <strong>gender, age, occupation, location, income, marital status, and the number of social gatherings per week</strong>. At the bottom of the survey, the Minister also requests each individual to evaluate the degree of happiness of himself/herself. He used Excel to put together all the survey and would like to present this sheet to the king. Here’s how this excel sheet looks like:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>Degree of Happiness (0~100)</strong></th>
+<th>Gender</th>
+<th>Age</th>
+<th>Occupation</th>
+<th>Location</th>
+<th>Income</th>
+<th>Marital Status</th>
+<th>Number of social gathering per week</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>60</td>
+<td>male</td>
+<td>28</td>
+<td>miner</td>
+<td>village A</td>
+<td>$2,000</td>
+<td>single</td>
+<td>2</td>
+</tr>
+<tr>
+<td>80</td>
+<td>female</td>
+<td>32</td>
+<td>housewife</td>
+<td>village B</td>
+<td>$100</td>
+<td>married</td>
+<td>5</td>
+</tr>
+<tr>
+<td>77</td>
+<td>male</td>
+<td>63</td>
+<td>retired</td>
+<td>village C</td>
+<td>$500</td>
+<td>divorced</td>
+<td>12</td>
+</tr>
+<tr>
+<td>58</td>
+<td>female</td>
+<td>22</td>
+<td>OL</td>
+<td>village A</td>
+<td>$1,300</td>
+<td>in a relationship</td>
+<td>7</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+</div>
+<img data-src="/2021/01/31/2021-01-31-factor-analysis/queue.png" class="" width="500">
+</blockquote>
+<p><br><br>This is what we called <strong>“data collection”</strong>. We collect abundant data regarding a question or a specific phenomenon that we’re trying to understand and explain. So here the question we’re trying to understand is that how happy the people in the country are, and how we can further increase the satisfaction of the people by increasing income level, promoting more social events among people, or even by adding a moat. All we need to do is to dig into the data and discover valuable and meaningful interpretation.<br><br></p>
+<h2 id="The-next-step…"><a href="#The-next-step…" class="headerlink" title="The next step…"></a>The next step…</h2><blockquote>
+<p><em>At the home of the Minister…</em></p>
+<p>Minister: Ummmm….<br><img data-src="/2021/01/31/2021-01-31-factor-analysis/thinker.jpg" class="" width="250"></p>
+<p>The Minister was contemplating how to put together an actionable plan and to present this to the king. He can calculate the average degree of happiness of everyone and tell the king how happy his people are? That probably gonna cost him his job if he presents this sloppy report. But what else could he get from this sheet full of numbers?</p>
+<p>The son of the Minister, who majored in statistics in college, happened to hear his father’s moaning. He patted on his father’s shoulder and told his father that two magic words would save his brain juice: <strong>“Factor Analysis”</strong></p>
+</blockquote>
+<p>The foundation of the factor analysis is simple and can be summarized into this one-line formula:</p>
+<script type="math/tex; mode=display">y = b_1x_1 + b_2x_2 + ... + b_nx_n + \alpha</script><p>This is the formula that we all are acquainted with when we’re in junior and senior high. But now we’re giving the actual meaning to this formula. The degree of happiness is the <strong>dependent variable</strong>, and the rest are <strong>independent variables</strong> or <strong>“factors”</strong>. After mapping the terminology, it would make this formula more sense to you:</p>
+<script type="math/tex; mode=display">
+Degree\ of\ happiness = b_1 * Gender + b_2 * Age + b_3 * Occupation ... + b_n * Number\ of\ social\ gathering\ per\ week  + \alpha</script><p><em>where</em></p>
+<ul>
+<li><em>$b_1, b_2, … b_n$ are coefficients, could be any natural number (positive/negative)</em></li>
+<li><em>$\alpha$ stands for the part of degree of happiness that cannot be explained by given factors</em></li>
+</ul>
+<p>Therefore, if we can decipher these coefficients in the formula, we’re able to find out which factor contributes the most to the level of happiness of the people in this country. For example, let’s assume the coefficient of income level is 0.008. This indicating that for every $1,000 extra income you gain, your degree of happiness gain 8 points.<br><br></p>
+<h2 id="More-work-to-do-then-the-happy-ending"><a href="#More-work-to-do-then-the-happy-ending" class="headerlink" title="More work to do, then the happy ending"></a>More work to do, then the happy ending</h2><blockquote>
+<p>Minister: Cool! Finally, my money paid off….., I mean, finally you’ve learned something useful. But here comes the question, how can we get those coefficients from the data we have collected from the survey?<br><img data-src="/2021/01/31/2021-01-31-factor-analysis/edu.jpg" class="" width="350"></p>
+<p>The son of the Minister showed him several matured tools existing in the market. They fed the data into the program and get the approximated numbers of those coefficients. The Minister is very happy to present this new finding to the king…</p>
+</blockquote>
+<p>That’s the end of the story. After all, we’re not writing a novel here. At least we get the general idea of what factor analysis and usage from the story, hopefully.</p>
+<h1 id="Factor-analysis-application-of-stock-market"><a href="#Factor-analysis-application-of-stock-market" class="headerlink" title="Factor analysis application of stock market"></a>Factor analysis application of stock market</h1><p>Factor analysis not only can be applied to survey analysis, but also to the post-marketing campaign, financial model, business plan, online ads traffic, and even the mobile app traffic analysis. As these events and incidents have the tendency of having one major objective and collecting lots of data according to the inputs and outputs, they would be the perfect subjects to apply factor analysis and understand what happened after the program launched. Once we would be able to condense into the formula as we described above, it would give us the knowledge to interpret the collected data and probability to predict the future.</p>
+<p>Let’s step back and take a look at what would happen if we apply factor analysis to the stock market. We now use daily return as our dependent variable, and we get to choose any indicator that could potentially contribute to the stock growth or decline of the stock price. In a nutshell, we’re trying to understand how much of the price change of today can be explained by the picked factors yesterday(stock price, trading volume, or company-wise fundamental…). So in the end, the formula would look like this:</p>
+<script type="math/tex; mode=display">
+today's price change(in\ \%) = b_1 * yesterday\ close\ price + b_2 * yesterday\ trading\ volume + b_3 * yesterday\ ROE + \alpha</script><p>By having this formula as the result of you performing factor analysis, you’ll be able to:</p>
+<ul>
+<li>explain the historic price movement of the stock market and become a famous scholar.</li>
+<li>or predict tomorrow’s stock price using historic data and make a profit out of it.</li>
+</ul>
+<p>How exciting this could be!! But be aware, that factor analysis itself is merely deducting and extrapolating the coefficients through the data we’ve been given. There are pitfalls we need to pay attention to, such as</p>
+<ol>
+<li>biased data were provided</li>
+<li>duplicated data or missing data</li>
+<li>false assumption</li>
+<li>overfitting to an optimal situation to maximize the return</li>
+<li>simply luck</li>
+</ol>
+<p>So don’t get too excited when you achieved a good result after performing factor analysis. You need to further exam each step over and over again until you inspect this model from all angles.</p>
+<hr>
+<h1 id="That’s-all"><a href="#That’s-all" class="headerlink" title="That’s all"></a>That’s all</h1><p>That’s pretty much about the introduction of what factor analysis. I hope I make it clear enough, and we’ll start walking through the implementation step-by-step starting the next series.</p>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Research/" rel="tag"># Research</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/26/2020-12-26-turtle-strategy/" rel="prev" title="Experiment of Turtle trading strategy">
+      <i class="fa fa-chevron-left"></i> Experiment of Turtle trading strategy
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-factor-analysis"><span class="nav-number">1.</span> <span class="nav-text">What is factor analysis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Story-starts-here"><span class="nav-number">2.</span> <span class="nav-text">Story starts here</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Long-long-time-ago%E2%80%A6"><span class="nav-number">2.1.</span> <span class="nav-text">Long long time ago…</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-next-step%E2%80%A6"><span class="nav-number">2.2.</span> <span class="nav-text">The next step…</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#More-work-to-do-then-the-happy-ending"><span class="nav-number">2.3.</span> <span class="nav-text">More work to do, then the happy ending</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Factor-analysis-application-of-stock-market"><span class="nav-number">3.</span> <span class="nav-text">Factor analysis application of stock market</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#That%E2%80%99s-all"><span class="nav-number">4.</span> <span class="nav-text">That’s all</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
