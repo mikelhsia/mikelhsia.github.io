@@ -6,7 +6,7 @@
   <link href="http://mikelhsia.github.io/atom.xml" rel="self"/>
   
   <link href="http://mikelhsia.github.io/"/>
-  <updated>2021-02-08T12:41:34.638Z</updated>
+  <updated>2021-02-15T05:03:45.068Z</updated>
   <id>http://mikelhsia.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【How 2】 Vol. 4. How to produce the S&amp;P 500 Historical Components &amp; Changes</title>
+    <link href="http://mikelhsia.github.io/2021/02/15/2021-02-15-how2-snp500-historic-composition/"/>
+    <id>http://mikelhsia.github.io/2021/02/15/2021-02-15-how2-snp500-historic-composition/</id>
+    <published>2021-02-15T05:59:41.000Z</published>
+    <updated>2021-02-15T05:03:45.068Z</updated>
+    
+    <content type="html"><![CDATA[<img data-src="/2021/02/15/2021-02-15-how2-snp500-historic-composition/cover.jpg" class="" width="250"><p>We’ve talked about the definition of <strong>survivor bias</strong> and the impact if we didn’t notice and resolve it in <a href="https://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/">【How 2】 Vol. 3. How to produce a quality tradable securities for backtesting</a>. One of the most critical topics that we need to address is to get the accurate list of components of your target portfolio over time when developing your investing strategy. Therefore, I’m gonna use S&amp;P 500 Index as the example to go through this post, and we’re gonna use the result to the later series in <a href="https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/">【Factor analysis】 Vol. 1. Introduction the idea of factor analysis</a>.</p><a id="more"></a><iframe src="https://nbviewer.jupyter.org/github/mikelhsia/Python/blob/master/jupyter_notebook_for_blogs/S%26P500_history.ipynb" width="100%" height="1200" frameborder="0"></iframe>]]></content>
+    
+    
+    <summary type="html">&lt;img data-src=&quot;/2021/02/15/2021-02-15-how2-snp500-historic-composition/cover.jpg&quot; class=&quot;&quot; width=&quot;250&quot;&gt;
+&lt;p&gt;We’ve talked about the definition of &lt;strong&gt;survivor bias&lt;/strong&gt; and the impact if we didn’t notice and resolve it in &lt;a href=&quot;https://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/&quot;&gt;【How 2】 Vol. 3. How to produce a quality tradable securities for backtesting&lt;/a&gt;. One of the most critical topics that we need to address is to get the accurate list of components of your target portfolio over time when developing your investing strategy. Therefore, I’m gonna use S&amp;amp;P 500 Index as the example to go through this post, and we’re gonna use the result to the later series in &lt;a href=&quot;https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/&quot;&gt;【Factor analysis】 Vol. 1. Introduction the idea of factor analysis&lt;/a&gt;.&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="how2" scheme="http://mikelhsia.github.io/categories/how2/"/>
+    
+    
+    <category term="Backtesting" scheme="http://mikelhsia.github.io/tags/Backtesting/"/>
+    
+    <category term="how2" scheme="http://mikelhsia.github.io/tags/how2/"/>
+    
+  </entry>
   
   <entry>
     <title>【Factor analysis】 Vol. 2. Get ready - preparing and cleaning data</title>
@@ -500,32 +524,6 @@ width: 45%;
     <category term="javascript" scheme="http://mikelhsia.github.io/tags/javascript/"/>
     
     <category term="jQuery" scheme="http://mikelhsia.github.io/tags/jQuery/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Learn Docker Technologies from Udemy</title>
-    <link href="http://mikelhsia.github.io/2017/05/07/2017-05-07-learn-docker-technologies-from-udemy/"/>
-    <id>http://mikelhsia.github.io/2017/05/07/2017-05-07-learn-docker-technologies-from-udemy/</id>
-    <published>2017-05-07T00:19:47.000Z</published>
-    <updated>2020-08-20T08:28:08.821Z</updated>
-    
-    <content type="html"><![CDATA[<img data-src="/2017/05/07/2017-05-07-learn-docker-technologies-from-udemy/docker.png" class="" width="200"><p>TBD</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;img data-src=&quot;/2017/05/07/2017-05-07-learn-docker-technologies-from-udemy/docker.png&quot; class=&quot;&quot; width=&quot;200&quot;&gt;
-&lt;p&gt;TBD&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="Notes" scheme="http://mikelhsia.github.io/categories/Notes/"/>
-    
-    
-    <category term="Docker" scheme="http://mikelhsia.github.io/tags/Docker/"/>
     
   </entry>
   
