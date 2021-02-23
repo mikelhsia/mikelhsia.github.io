@@ -20,23 +20,22 @@
     var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Notes about how to utilize Django session to achieve caching user info.">
+  <meta name="description" content="Previous reading  【Factor analysis】 Vol. 1. Introduction the idea of factor analysis 【Factor analysis】 Vol. 2. Get ready - preparing and cleaning data  After we got the fundamental data we needed fro">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python Django Online Shop Setup">
-<meta property="og:url" content="http://mikelhsia.github.io/2017/08/18/2018-08-18-Django-online-shop/index.html">
+<meta property="og:title" content="【Factor analysis】 Vol. 3. Construct your own factor">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/index.html">
 <meta property="og:site_name" content="Michael&#39;s blog">
-<meta property="og:description" content="Notes about how to utilize Django session to achieve caching user info.">
+<meta property="og:description" content="Previous reading  【Factor analysis】 Vol. 1. Introduction the idea of factor analysis 【Factor analysis】 Vol. 2. Get ready - preparing and cleaning data  After we got the fundamental data we needed fro">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://mikelhsia.github.io/2017/08/18/2018-08-18-Django-online-shop/python-django.png">
-<meta property="article:published_time" content="2017-08-18T04:57:40.000Z">
-<meta property="article:modified_time" content="2020-08-20T08:31:45.487Z">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/cover.jpg">
+<meta property="article:published_time" content="2021-02-23T12:04:16.000Z">
+<meta property="article:modified_time" content="2021-02-23T14:54:08.855Z">
 <meta property="article:author" content="Michael Hsia">
-<meta property="article:tag" content="Python">
-<meta property="article:tag" content="Django">
+<meta property="article:tag" content="Research">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://mikelhsia.github.io/2017/08/18/2018-08-18-Django-online-shop/python-django.png">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/cover.jpg">
 
-<link rel="canonical" href="http://mikelhsia.github.io/2017/08/18/2018-08-18-Django-online-shop/">
+<link rel="canonical" href="http://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/">
 
 
 <script id="page-configurations">
@@ -49,7 +48,7 @@
   };
 </script>
 
-  <title>Python Django Online Shop Setup | Michael's blog</title>
+  <title>【Factor analysis】 Vol. 3. Construct your own factor | Michael's blog</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
     <script>
@@ -180,7 +179,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2017/08/18/2018-08-18-Django-online-shop/">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -193,7 +192,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Python Django Online Shop Setup
+          【Factor analysis】 Vol. 3. Construct your own factor
         </h1>
 
         <div class="post-meta">
@@ -202,28 +201,22 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2017-08-18 12:57:40" itemprop="dateCreated datePublished" datetime="2017-08-18T12:57:40+08:00">2017-08-18</time>
+              <time title="Created: 2021-02-23 20:04:16 / Modified: 22:54:08" itemprop="dateCreated datePublished" datetime="2021-02-23T20:04:16+08:00">2021-02-23</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-20 16:31:45" itemprop="dateModified" datetime="2020-08-20T16:31:45+08:00">2020-08-20</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Notes/" itemprop="url" rel="index"><span itemprop="name">Notes</span></a>
+                  <a href="/categories/Factor-Analysis/" itemprop="url" rel="index"><span itemprop="name">Factor Analysis</span></a>
                 </span>
             </span>
 
           
-            <span id="/2017/08/18/2018-08-18-Django-online-shop/" class="post-meta-item leancloud_visitors" data-flag-title="Python Django Online Shop Setup" title="Views">
+            <span id="/2021/02/23/2021-02-11-factor-analysis-3/" class="post-meta-item leancloud_visitors" data-flag-title="【Factor analysis】 Vol. 3. Construct your own factor" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -238,8 +231,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2017/08/18/2018-08-18-Django-online-shop/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2017/08/18/2018-08-18-Django-online-shop/" itemprop="commentCount"></span>
+    <a title="valine" href="/2021/02/23/2021-02-11-factor-analysis-3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/23/2021-02-11-factor-analysis-3/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -254,43 +247,133 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <img data-src="/2017/08/18/2018-08-18-Django-online-shop/python-django.png" class="" width="600">
-<p>Notes about how to utilize Django session to achieve caching user info.</p>
+        <img data-src="/2021/02/23/2021-02-11-factor-analysis-3/cover.jpg" class="" width="500">
+<p><em>Previous reading</em></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/"><em>【Factor analysis】 Vol. 1. Introduction the idea of factor analysis</em></a></li>
+<li><a href="https://mikelhsia.github.io/2021/02/08/2021-02-03-factor-analysis-factors/"><em>【Factor analysis】 Vol. 2. Get ready - preparing and cleaning data</em></a></li>
+</ul>
+<p>After we got the fundamental data we needed from any data source you preferred or paid as in the previous post, we’re now going to generate <strong>factors</strong> to be used in the factor analysis.</p>
 <a id="more"></a>
-<h1 id="Building-e-commerce-shop"><a href="#Building-e-commerce-shop" class="headerlink" title="Building e-commerce shop"></a>Building e-commerce shop</h1><ul>
-<li>Building Category and Product </li>
-<li>Building Catalog views</li>
-</ul>
-<h2 id="Building-Django-Session"><a href="#Building-Django-Session" class="headerlink" title="Building Django Session"></a>Building Django Session</h2><p>You can set a variable in the session like this:<br><code>request.session[&#39;foo&#39;] = &#39;bar&#39;</code><br>Retrieve a session key:<br><code>request.session.get(&#39;foo&#39;)</code><br>Delete a key you stored in the session:<br><code>del request.session[&#39;foo&#39;]”</code></p>
-<p>Django stores sessions in the database using the Session model of the <code>django.contrib.sessions</code> application.</p>
-<p>Django offers the following options for storing session data:</p>
+<h1 id="What-is-factor"><a href="#What-is-factor" class="headerlink" title="What is factor?"></a>What is factor?</h1><p>Do you still remember the survey data that was collected by the Minister in the story mentioned in our first post in the series?</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>Degree of Happiness (0~100)</strong></th>
+<th>Gender</th>
+<th>Age</th>
+<th>Occupation</th>
+<th>Location</th>
+<th>Income</th>
+<th>Marital Status</th>
+<th>Number of social gathering per week</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>60</td>
+<td>male</td>
+<td>28</td>
+<td>miner</td>
+<td>village A</td>
+<td>$2,000</td>
+<td>single</td>
+<td>2</td>
+</tr>
+<tr>
+<td>80</td>
+<td>female</td>
+<td>32</td>
+<td>housewife</td>
+<td>village B</td>
+<td>$100</td>
+<td>married</td>
+<td>5</td>
+</tr>
+<tr>
+<td>77</td>
+<td>male</td>
+<td>63</td>
+<td>retired</td>
+<td>village C</td>
+<td>$500</td>
+<td>divorced</td>
+<td>12</td>
+</tr>
+<tr>
+<td>58</td>
+<td>female</td>
+<td>22</td>
+<td>OL</td>
+<td>village A</td>
+<td>$1,300</td>
+<td>in a relationship</td>
+<td>7</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The objective we’re trying to solve here is to understand how happy the people in the country are. Then the other data such as <em>gender, age, occupation, location, …</em> are what we called <strong>factors</strong>. Factors are quantified traits that we use to describe the objective. Take the survey data above as an example, you might come to the conclusion that the people from a certain location would be happier than the people from another location, or people whose income level is higher tend to be happier than people whose income level is lower. By combining all the influences of all factors, then we’ll get this final formula as below:</p>
+<script type="math/tex; mode=display">Degree\ of\ happiness = b_1 * Gender + b_2 * Age + b_3 * Occupation ... + b_n * Number\ of\ social\ gathering\ per\ week  + \alpha</script><p><em>where</em></p>
 <ul>
-<li><em>Database sessions</em>: Session data is stored in the database. This is the default session engine.</li>
-<li><em>File-based sessions</em>: Session data is stored in the file system.</li>
-<li><em>Cached sessions</em>: Session data is stored in a cache backend. You can specify cache backends using the <code>CACHES</code> setting. Storing session data in a cache system offers best performance.</li>
-<li><em>Cached database sessions</em>: Session data is stored in a write-through cache and database. Reads only use the database if the data is not already in the cache.</li>
-<li><em>Cookie-based sessions</em>: Session data is stored in the cookies that are sent to the browser.”</li>
+<li><em>$b_1, b_2, … b_n$ are coefficients, could be any natural number (positive/negative)</em></li>
+<li>*$\alpha$ stands for the part of degree of happiness that cannot be explained by given factors</li>
 </ul>
-<p>You can customize sessions with other settings. Here are some of the important session related settings:</p>
+<h1 id="Common-factors-in-the-stock-market"><a href="#Common-factors-in-the-stock-market" class="headerlink" title="Common factors in the stock market"></a>Common factors in the stock market</h1><p>The application of factor analysis to the stock market would be similar, and we have explained this in the <a href="https://mikelhsia.github.io/2021/02/08/2021-02-03-factor-analysis-factors/">first post in this series</a>. The formula would look like this:</p>
+<script type="math/tex; mode=display">today's price change(\%) = b_1 * yesterday\ close\ price + b_2 * yesterday\ trading\ volume + b_3 * yesterday\ ROE + ... + \alpha</script><p>The existing factors can be categorized but not limited to the below types:</p>
 <ul>
-<li><strong>SESSION_COOKIE_AGE</strong>: This is the duration of session cookies in seconds. The default value is 1209600 (2 weeks).</li>
-<li><strong>SESSION_COOKIE_DOMAIN</strong>: This domain is used for session cookies. Set this to .mydomain.com to enable cross-domain cookies.</li>
-<li><strong>SESSION_COOKIE_SECURE</strong>: This is a boolean indicating that the cookie should only be sent if the connection is an HTTPS connection.</li>
-<li><strong>SESSION_EXPIRE_AT_BROWSER_CLOSE</strong>: This is a boolean indicating that the session has to expire when the browser is closed.</li>
-<li><strong>SESSION_SAVE_EVERY_REQUEST</strong>: This is a boolean that, if True, will save the session to the database on every request. The session expiration is also updated each time.”</li>
+<li>Fundamental factors<ul>
+<li>Fundamental factors are extracted directly from the company report. They directly present how the company operates from the official accounting book.</li>
+<li>Ex: <em>net working capital, total profit, EBIT, EBITDA, total asset, total debt, … etc.</em></li>
 </ul>
-<h2 id="Building-shopping-cart-by-using-session"><a href="#Building-shopping-cart-by-using-session" class="headerlink" title="Building shopping cart by using session"></a>Building shopping cart by using session</h2><ul>
-<li>When a cart is needed, we check if a custom session key is set. If no cart is set in the session, we create a new cart and save it in the cart session key.</li>
-<li>For successive requests, we perform the same check and get the cart items from the cart session key. We retrieve the cart items from the session and their related Product objects from the database.</li>
+</li>
+<li>Quality factors<ul>
+<li>Quality factors are derived from fundamental factors to represent the ability to make a profit for a company. The more profit a company can make, the better the quality of this company is the central assumption of this type of factors.</li>
+<li>Ex: <em>net profit ratio, debt to equity ratio, net profit to operate revenue TTM, … etc.</em></li>
 </ul>
-<h2 id="Context-processors"><a href="#Context-processors" class="headerlink" title="Context processors"></a>Context processors</h2><p>Context processor is a Python function that takes the <code>request</code> object as an argument and returns a dictionarty that gets added to the request context and available to <strong><em>all</em></strong> the templates rendered using <code>RequestContext</code></p>
-<ul>
-<li><code>django.template.context_processors.debug</code>: This sets the Boolean debug and sql_queries variables in the context representing the list of SQL queries executed in the request</li>
-<li><code>django.template.context_processors.request</code>: This sets the request variable in the context</li>
-<li><code>django.contrib.auth.context_processors.auth</code>: This sets the user variable in the request</li>
-<li><code>django.contrib.messages.context_processors.messages</code>: This sets a messages variable in the context containing all messages that have been sent using the messages framework.<br>Django also enables <code>django.template.context_processors.csrf</code> to avoid cross-site request forgery attacks. This context processor is not present in the settings, but it is always enabled and cannot be turned off for security reasons.</li>
+</li>
+<li>Momentum factors<ul>
+<li>The momentum factors is a relatively new type of factor comparing to the rest. According to the explanation of financial behavior, the high and low of this factor are actually generated by the behavior of the majority of the investors at the moment. In other words, it implicitly explains the <strong>trend</strong> of the stock price.</li>
+<li>Ex: <em>60-day price rate of change, turnover rate, … etc.</em></li>
 </ul>
-<h2 id="Including-OrderItem-inline-in-the-admin-site"><a href="#Including-OrderItem-inline-in-the-admin-site" class="headerlink" title="Including OrderItem inline in the admin site"></a>Including OrderItem inline in the admin site</h2><h2 id="Creating-customer-orders"><a href="#Creating-customer-orders" class="headerlink" title="Creating customer orders"></a>Creating customer orders</h2>
+</li>
+<li>Technical factors<ul>
+<li>This type of factor is produced from technical analysis and theory from scholars. The <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/#more">MACD indicator</a> that we introduced before is also one of the technical factors.</li>
+<li>MACD indicator, Bollinger bands, EMAC indicator, KDJ indicator, … etc.</li>
+</ul>
+</li>
+<li>Alternative factors<ul>
+<li>As the realm of machine learning started to thrive these years, there are more and more alternative data that we can utilize and analyze. From the area of the oilfield captured by satellite to every single tweet that tweets about certain stock on Twitter, they can all be captured and processed to quantified indicators to represent the change of emotion/economy over time.</li>
+<li>Ex: <em>Twitter sentiment data</em></li>
+</ul>
+</li>
+</ul>
+<h1 id="How-we-can-get-the-factors-above"><a href="#How-we-can-get-the-factors-above" class="headerlink" title="How we can get the factors above?"></a>How we can get the factors above?</h1><ul>
+<li>Quantitative platforms would provide their proprietary tool or service for professional investors to access.<ul>
+<li><a target="_blank" rel="noopener" href="https://www.joinquant.com/default/index/sdk">JQData</a> is a China-based service that allows you to download the local python package for you to fetch data over the internet.</li>
+</ul>
+</li>
+<li>Paid data sources are also accountable services that provide a wild range of alternative data as well.<ul>
+<li><a target="_blank" rel="noopener" href="https://www.quandl.com/">Quandl</a> is famous for aggregating APIs from various data brokers.</li>
+<li><a target="_blank" rel="noopener" href="https://www.factset.com/">Factset</a> is a traditional data broker since 1978, and big companies such as <strong><em>Barclay</em></strong> and <strong><em>J.P Morgan</em></strong> are also using their service.</li>
+</ul>
+</li>
+<li>Build one yourself. You can download the raw financial data from anywhere and build the factors upon it.</li>
+</ul>
+<p>Below, I’m going to quickly demonstrate the third way and build the factor data with the data we downloaded in <a href="https://mikelhsia.github.io/2021/02/08/2021-02-03-factor-analysis-factors/">the previous post</a>.</p>
+<h1 id="Notebook-Build-your-own-factors-from-the-downloaded-data"><a href="#Notebook-Build-your-own-factors-from-the-downloaded-data" class="headerlink" title="Notebook: Build your own factors from the downloaded data"></a>Notebook: Build your own factors from the downloaded data</h1><iframe src="https://nbviewer.jupyter.org/github/mikelhsia/Python/blob/master/jupyter_notebook_for_blogs/vol_3_construct_your_own_factors.ipynb" width="100%" height="1200" frameborder="0"></iframe>
+
     </div>
     
       
@@ -302,8 +385,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Python/" rel="tag"># Python</a>
-              <a href="/tags/Django/" rel="tag"># Django</a>
+              <a href="/tags/Research/" rel="tag"># Research</a>
           </div>
 
         
@@ -312,13 +394,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2017/08/11/2018-08-11-Django-timehut-4/" rel="prev" title="Python Django Time Hut 4">
-      <i class="fa fa-chevron-left"></i> Python Django Time Hut 4
+    <a href="/2021/02/15/2021-02-15-how2-snp500-historic-composition/" rel="prev" title="【How 2】 Vol. 4. How to produce the S&P 500 Historical Components & Changes">
+      <i class="fa fa-chevron-left"></i> 【How 2】 Vol. 4. How to produce the S&P 500 Historical Components & Changes
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/08/21/2020-08-21-magic-formula-vs-Acquirer-Multiples/" rel="next" title="An investment strategy that takes you three days a year">
-      An investment strategy that takes you three days a year <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -378,7 +457,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Building-e-commerce-shop"><span class="nav-number">1.</span> <span class="nav-text">Building e-commerce shop</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Building-Django-Session"><span class="nav-number">1.1.</span> <span class="nav-text">Building Django Session</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Building-shopping-cart-by-using-session"><span class="nav-number">1.2.</span> <span class="nav-text">Building shopping cart by using session</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Context-processors"><span class="nav-number">1.3.</span> <span class="nav-text">Context processors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Including-OrderItem-inline-in-the-admin-site"><span class="nav-number">1.4.</span> <span class="nav-text">Including OrderItem inline in the admin site</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-customer-orders"><span class="nav-number">1.5.</span> <span class="nav-text">Creating customer orders</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-factor"><span class="nav-number">1.</span> <span class="nav-text">What is factor?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Common-factors-in-the-stock-market"><span class="nav-number">2.</span> <span class="nav-text">Common factors in the stock market</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-we-can-get-the-factors-above"><span class="nav-number">3.</span> <span class="nav-text">How we can get the factors above?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Notebook-Build-your-own-factors-from-the-downloaded-data"><span class="nav-number">4.</span> <span class="nav-text">Notebook: Build your own factors from the downloaded data</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -512,6 +591,59 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 

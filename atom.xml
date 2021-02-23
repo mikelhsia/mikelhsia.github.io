@@ -6,7 +6,7 @@
   <link href="http://mikelhsia.github.io/atom.xml" rel="self"/>
   
   <link href="http://mikelhsia.github.io/"/>
-  <updated>2021-02-15T05:03:45.068Z</updated>
+  <updated>2021-02-23T14:54:08.855Z</updated>
   <id>http://mikelhsia.github.io/</id>
   
   <author>
@@ -17,11 +17,38 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>【Factor analysis】 Vol. 3. Construct your own factor</title>
+    <link href="http://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/"/>
+    <id>http://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/</id>
+    <published>2021-02-23T12:04:16.000Z</published>
+    <updated>2021-02-23T14:54:08.855Z</updated>
+    
+    <content type="html"><![CDATA[<img data-src="/2021/02/23/2021-02-11-factor-analysis-3/cover.jpg" class="" width="500"><p><em>Previous reading</em></p><ul><li><a href="https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/"><em>【Factor analysis】 Vol. 1. Introduction the idea of factor analysis</em></a></li><li><a href="https://mikelhsia.github.io/2021/02/08/2021-02-03-factor-analysis-factors/"><em>【Factor analysis】 Vol. 2. Get ready - preparing and cleaning data</em></a></li></ul><p>After we got the fundamental data we needed from any data source you preferred or paid as in the previous post, we’re now going to generate <strong>factors</strong> to be used in the factor analysis.</p><a id="more"></a><h1 id="What-is-factor"><a href="#What-is-factor" class="headerlink" title="What is factor?"></a>What is factor?</h1><p>Do you still remember the survey data that was collected by the Minister in the story mentioned in our first post in the series?</p><div class="table-container"><table><thead><tr><th><strong>Degree of Happiness (0~100)</strong></th><th>Gender</th><th>Age</th><th>Occupation</th><th>Location</th><th>Income</th><th>Marital Status</th><th>Number of social gathering per week</th></tr></thead><tbody><tr><td>60</td><td>male</td><td>28</td><td>miner</td><td>village A</td><td>$2,000</td><td>single</td><td>2</td></tr><tr><td>80</td><td>female</td><td>32</td><td>housewife</td><td>village B</td><td>$100</td><td>married</td><td>5</td></tr><tr><td>77</td><td>male</td><td>63</td><td>retired</td><td>village C</td><td>$500</td><td>divorced</td><td>12</td></tr><tr><td>58</td><td>female</td><td>22</td><td>OL</td><td>village A</td><td>$1,300</td><td>in a relationship</td><td>7</td></tr><tr><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr></tbody></table></div><p>The objective we’re trying to solve here is to understand how happy the people in the country are. Then the other data such as <em>gender, age, occupation, location, …</em> are what we called <strong>factors</strong>. Factors are quantified traits that we use to describe the objective. Take the survey data above as an example, you might come to the conclusion that the people from a certain location would be happier than the people from another location, or people whose income level is higher tend to be happier than people whose income level is lower. By combining all the influences of all factors, then we’ll get this final formula as below:</p><script type="math/tex; mode=display">Degree\ of\ happiness = b_1 * Gender + b_2 * Age + b_3 * Occupation ... + b_n * Number\ of\ social\ gathering\ per\ week  + \alpha</script><p><em>where</em></p><ul><li><em>$b_1, b_2, … b_n$ are coefficients, could be any natural number (positive/negative)</em></li><li>*$\alpha$ stands for the part of degree of happiness that cannot be explained by given factors</li></ul><h1 id="Common-factors-in-the-stock-market"><a href="#Common-factors-in-the-stock-market" class="headerlink" title="Common factors in the stock market"></a>Common factors in the stock market</h1><p>The application of factor analysis to the stock market would be similar, and we have explained this in the <a href="https://mikelhsia.github.io/2021/02/08/2021-02-03-factor-analysis-factors/">first post in this series</a>. The formula would look like this:</p><script type="math/tex; mode=display">today's price change(\%) = b_1 * yesterday\ close\ price + b_2 * yesterday\ trading\ volume + b_3 * yesterday\ ROE + ... + \alpha</script><p>The existing factors can be categorized but not limited to the below types:</p><ul><li>Fundamental factors<ul><li>Fundamental factors are extracted directly from the company report. They directly present how the company operates from the official accounting book.</li><li>Ex: <em>net working capital, total profit, EBIT, EBITDA, total asset, total debt, … etc.</em></li></ul></li><li>Quality factors<ul><li>Quality factors are derived from fundamental factors to represent the ability to make a profit for a company. The more profit a company can make, the better the quality of this company is the central assumption of this type of factors.</li><li>Ex: <em>net profit ratio, debt to equity ratio, net profit to operate revenue TTM, … etc.</em></li></ul></li><li>Momentum factors<ul><li>The momentum factors is a relatively new type of factor comparing to the rest. According to the explanation of financial behavior, the high and low of this factor are actually generated by the behavior of the majority of the investors at the moment. In other words, it implicitly explains the <strong>trend</strong> of the stock price.</li><li>Ex: <em>60-day price rate of change, turnover rate, … etc.</em></li></ul></li><li>Technical factors<ul><li>This type of factor is produced from technical analysis and theory from scholars. The <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/#more">MACD indicator</a> that we introduced before is also one of the technical factors.</li><li>MACD indicator, Bollinger bands, EMAC indicator, KDJ indicator, … etc.</li></ul></li><li>Alternative factors<ul><li>As the realm of machine learning started to thrive these years, there are more and more alternative data that we can utilize and analyze. From the area of the oilfield captured by satellite to every single tweet that tweets about certain stock on Twitter, they can all be captured and processed to quantified indicators to represent the change of emotion/economy over time.</li><li>Ex: <em>Twitter sentiment data</em></li></ul></li></ul><h1 id="How-we-can-get-the-factors-above"><a href="#How-we-can-get-the-factors-above" class="headerlink" title="How we can get the factors above?"></a>How we can get the factors above?</h1><ul><li>Quantitative platforms would provide their proprietary tool or service for professional investors to access.<ul><li><a href="https://www.joinquant.com/default/index/sdk">JQData</a> is a China-based service that allows you to download the local python package for you to fetch data over the internet.</li></ul></li><li>Paid data sources are also accountable services that provide a wild range of alternative data as well.<ul><li><a href="https://www.quandl.com/">Quandl</a> is famous for aggregating APIs from various data brokers.</li><li><a href="https://www.factset.com/">Factset</a> is a traditional data broker since 1978, and big companies such as <strong><em>Barclay</em></strong> and <strong><em>J.P Morgan</em></strong> are also using their service.</li></ul></li><li>Build one yourself. You can download the raw financial data from anywhere and build the factors upon it.</li></ul><p>Below, I’m going to quickly demonstrate the third way and build the factor data with the data we downloaded in <a href="https://mikelhsia.github.io/2021/02/08/2021-02-03-factor-analysis-factors/">the previous post</a>.</p><h1 id="Notebook-Build-your-own-factors-from-the-downloaded-data"><a href="#Notebook-Build-your-own-factors-from-the-downloaded-data" class="headerlink" title="Notebook: Build your own factors from the downloaded data"></a>Notebook: Build your own factors from the downloaded data</h1><iframe src="https://nbviewer.jupyter.org/github/mikelhsia/Python/blob/master/jupyter_notebook_for_blogs/vol_3_construct_your_own_factors.ipynb" width="100%" height="1200" frameborder="0"></iframe>]]></content>
+    
+    
+    <summary type="html">&lt;img data-src=&quot;/2021/02/23/2021-02-11-factor-analysis-3/cover.jpg&quot; class=&quot;&quot; width=&quot;500&quot;&gt;
+&lt;p&gt;&lt;em&gt;Previous reading&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/&quot;&gt;&lt;em&gt;【Factor analysis】 Vol. 1. Introduction the idea of factor analysis&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://mikelhsia.github.io/2021/02/08/2021-02-03-factor-analysis-factors/&quot;&gt;&lt;em&gt;【Factor analysis】 Vol. 2. Get ready - preparing and cleaning data&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;After we got the fundamental data we needed from any data source you preferred or paid as in the previous post, we’re now going to generate &lt;strong&gt;factors&lt;/strong&gt; to be used in the factor analysis.&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Factor Analysis" scheme="http://mikelhsia.github.io/categories/Factor-Analysis/"/>
+    
+    
+    <category term="Research" scheme="http://mikelhsia.github.io/tags/Research/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【How 2】 Vol. 4. How to produce the S&amp;P 500 Historical Components &amp; Changes</title>
     <link href="http://mikelhsia.github.io/2021/02/15/2021-02-15-how2-snp500-historic-composition/"/>
     <id>http://mikelhsia.github.io/2021/02/15/2021-02-15-how2-snp500-historic-composition/</id>
     <published>2021-02-15T05:59:41.000Z</published>
-    <updated>2021-02-15T05:03:45.068Z</updated>
+    <updated>2021-02-23T14:52:30.531Z</updated>
     
     <content type="html"><![CDATA[<img data-src="/2021/02/15/2021-02-15-how2-snp500-historic-composition/cover.jpg" class="" width="250"><p>We’ve talked about the definition of <strong>survivor bias</strong> and the impact if we didn’t notice and resolve it in <a href="https://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/">【How 2】 Vol. 3. How to produce a quality tradable securities for backtesting</a>. One of the most critical topics that we need to address is to get the accurate list of components of your target portfolio over time when developing your investing strategy. Therefore, I’m gonna use S&amp;P 500 Index as the example to go through this post, and we’re gonna use the result to the later series in <a href="https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/">【Factor analysis】 Vol. 1. Introduction the idea of factor analysis</a>.</p><a id="more"></a><iframe src="https://nbviewer.jupyter.org/github/mikelhsia/Python/blob/master/jupyter_notebook_for_blogs/S%26P500_history.ipynb" width="100%" height="1200" frameborder="0"></iframe>]]></content>
     
@@ -500,30 +527,6 @@ width: 45%;
     <category term="Python" scheme="http://mikelhsia.github.io/tags/Python/"/>
     
     <category term="Django" scheme="http://mikelhsia.github.io/tags/Django/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>jQuery Selector</title>
-    <link href="http://mikelhsia.github.io/2017/05/14/2017-05-14-jQuery-Selector/"/>
-    <id>http://mikelhsia.github.io/2017/05/14/2017-05-14-jQuery-Selector/</id>
-    <published>2017-05-14T06:41:51.000Z</published>
-    <updated>2020-08-20T08:38:03.190Z</updated>
-    
-    <content type="html"><![CDATA[<img data-src="/2017/05/14/2017-05-14-jQuery-Selector/jquery.jpg" class="" width="500"><p>This is just a reference for what I would used frequently when learning jQuery and things…</p><a id="more"></a><table class="reference"><tbody><tr><th align="left" width="25%">语法</th><th align="left" width="65%">描述</th><th align="left" width="10%">实例</th></tr><tr><td>$("*")</td><td>选取所有元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_all2" target="_blank">在线实例</a></td></tr><tr><td>$(this)</td><td>选取当前 HTML 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_this" target="_blank">在线实例</a></td></tr><tr><td>$("p.intro")</td><td>选取 class 为 intro 的<p> 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_pclass" target="_blank">在线实例</a></td></tr><tr><td>$("p:first")</td><td>选取第一个<p> 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_pfirst" target="_blank">在线实例</a></td></tr><tr><td>$("ul li:first")</td><td>选取第一个<ul> 元素的第一个<li> 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_ullifirst" target="_blank">在线实例</a></td></tr><tr><td>$("ul li:first-child")</td><td>选取每个<ul> 元素的第一个<li> 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_ullifirstchild" target="_blank">在线实例</a></td></tr><tr><td>$("[href]")</td><td>选取带有 href 属性的元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_hrefattr" target="_blank">在线实例</a></td></tr><tr><td>$("a[target='_blank']")</td><td>选取所有 target 属性值等于 "_blank" 的 <a> 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_hrefattrblank" target="_blank">在线实例</a></td></tr><tr><td>$("a[target!='_blank']")</td><td>选取所有 target 属性值不等于 "_blank" 的 <a> 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_hrefattrnotblank" target="_blank">在线实例</a></td></tr><tr><td>$(":button")</td><td>选取所有 type="button" 的 <input> 元素 和 <button> 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_button2" target="_blank">在线实例</a></td></tr><tr><td>$("tr:even")</td><td>选取偶数位置的<br /><tr> 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_even" target="_blank">在线实例</a></td></tr><tr><td>$("tr:odd")</td><td>选取奇数位置的<br /><tr> 元素</td><td><a class="tryitbtn" style="width: 55px; padding-top: 0px; padding-bottom: 1px;" href="/try/try.php?filename=tryjquery_sel_odd" target="_blank">在线实例</a></td></tr></tbody></table><p>&nbsp;</p><p>&nbsp;</p><p>在事件中经常使用术语"触发"（或"激发"）例如：<br />"当您按下按键时触发 keypress 事件"。</p><p>常见 DOM 事件：</p><table class="reference"><tbody><tr><th style="width: 23%;">鼠标事件</th><th style="width: 25%;">键盘事件</th><th style="width: 22%;">表单事件</th><th>文档/窗口事件</th></tr><tr><td>click</td><td>keypress</td><td>submit</td><td>load</td></tr><tr><td>dblclick</td><td>keydown</td><td>change</td><td>resize</td></tr><tr><td>mouseenter</td><td>keyup</td><td>focus</td><td>scroll</td></tr><tr><td>mouseleave</td><td></td><td>blur</td><td>unload</td></tr></tbody></table>]]></content>
-    
-    
-    <summary type="html">&lt;img data-src=&quot;/2017/05/14/2017-05-14-jQuery-Selector/jquery.jpg&quot; class=&quot;&quot; width=&quot;500&quot;&gt;
-&lt;p&gt;This is just a reference for what I would used frequently when learning jQuery and things…&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Notes" scheme="http://mikelhsia.github.io/categories/Notes/"/>
-    
-    
-    <category term="javascript" scheme="http://mikelhsia.github.io/tags/javascript/"/>
-    
-    <category term="jQuery" scheme="http://mikelhsia.github.io/tags/jQuery/"/>
     
   </entry>
   
