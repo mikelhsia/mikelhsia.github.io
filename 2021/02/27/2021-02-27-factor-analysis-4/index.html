@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Previous reading  【Factor analysis】 Vol. 1. Introduction the idea of factor analysis 【Factor analysis】 Vol. 2. Get ready - preparing and cleaning data 【Factor analysis】 Vol. 3. Construct your own fac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Factor analysis】 Vol. 4. Factor score">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/02/27/2021-02-27-factor-analysis-4/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Previous reading  【Factor analysis】 Vol. 1. Introduction the idea of factor analysis 【Factor analysis】 Vol. 2. Get ready - preparing and cleaning data 【Factor analysis】 Vol. 3. Construct your own fac">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/02/27/2021-02-27-factor-analysis-4/cover.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/02/27/2021-02-27-factor-analysis-4/ill1.png">
+<meta property="article:published_time" content="2021-02-27T09:18:39.000Z">
+<meta property="article:modified_time" content="2021-02-27T04:29:43.101Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Research">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/02/27/2021-02-27-factor-analysis-4/cover.jpg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2021/02/27/2021-02-27-factor-analysis-4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Factor analysis】 Vol. 4. Factor score | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/02/27/2021-02-27-factor-analysis-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Factor analysis】 Vol. 4. Factor score
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-02-27 17:18:39 / Modified: 12:29:43" itemprop="dateCreated datePublished" datetime="2021-02-27T17:18:39+08:00">2021-02-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Factor-Analysis/" itemprop="url" rel="index"><span itemprop="name">Factor Analysis</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/02/27/2021-02-27-factor-analysis-4/" class="post-meta-item leancloud_visitors" data-flag-title="Factor analysis】 Vol. 4. Factor score" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/02/27/2021-02-27-factor-analysis-4/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/27/2021-02-27-factor-analysis-4/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2021/02/27/2021-02-27-factor-analysis-4/cover.jpg" class="" width="500">
+<p><em>Previous reading</em></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/"><em>【Factor analysis】 Vol. 1. Introduction the idea of factor analysis</em></a></li>
+<li><a href="https://mikelhsia.github.io/2021/02/08/2021-02-03-factor-analysis-factors/"><em>【Factor analysis】 Vol. 2. Get ready - preparing and cleaning data</em></a></li>
+<li><a href="https://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/">【Factor analysis】 Vol. 3. Construct your own factor</a></li>
+</ul>
+<p>After we have collected all the fundamental data and have produced the factor data we need, how we can utilize them to compete with the market and to beat the benchmark return?</p>
+<p>One of the common methods would be <strong>factor score</strong>. In this post, we’re going to describe and implement this factor score method to see how we can rate the stocks that have more potential to rise than the others in the future.<br><a id="more"></a></p>
+<h1 id="What-is-factor-score"><a href="#What-is-factor-score" class="headerlink" title="What is factor score?"></a>What is factor score?</h1><p>The <strong>factor score</strong> is also called the <em>component score</em>. This method essentially uses the factors we have produced to score the quality of the stocks, based on the correlation between the individual factors and the next day’s return. <code>The higher the sum of the correlations of factors, the higher the tendency of the next day&#39;s return</code> is the central idea of using the factor score method to predict the future trend. Therefore, once we have done that for all the stocks that we’re monitoring in our candidate portfolio, we’ll be able to rank the stocks and buy the top N stocks that we perceive will generate a higher return than the others.</p>
+<p>There are two ways of achieving this goal:</p>
+<ol>
+<li>Using linear regression</li>
+<li>Using <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/i/information-coefficient.asp">IC (Information Coefficient)</a> &amp; <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/i/informationratio.asp">IR (Information Ratio)</a></li>
+</ol>
+<p>Linear regression is the most common way to be used in the factor score. However, there are many ways and theories to implement linear regression. Here, let’s use a much easier and simpler way to demonstrate the idea of the factor analysis. We are going to adopt IC/IR method as an example throughout this tutorial.</p>
+<h1 id="Strategy-and-details"><a href="#Strategy-and-details" class="headerlink" title="Strategy and details"></a>Strategy and details</h1><p>Let’s start with detailing our strategy guidelines and define our question here. Using the composition of the S&amp;P 500 index as our candidates, we would like to build a portfolio that tracks the trend of S&amp;P 500, but in the meantime performs better than the S&amp;P 500 index. Here’s how to do it:</p>
+<ol>
+<li>Get the S&amp;P 500 index composition over time.</li>
+<li>Select what factors we’re trying to exam against the score</li>
+<li>Process the factor data.</li>
+<li>Calculate the IC and IR to find out the relationship between the factors and dependent variables.</li>
+<li>Calculate the factor scores</li>
+<li>Check the results</li>
+</ol>
+<h2 id="Get-S-amp-P-500-index-composition-over-time"><a href="#Get-S-amp-P-500-index-composition-over-time" class="headerlink" title="Get S&amp;P 500 index composition over time."></a>Get S&amp;P 500 index composition over time.</h2><p>This part we have covered in <a href="https://mikelhsia.github.io/2021/02/15/2021-02-15-how2-snp500-historic-composition/">【How 2】 Vol. 4. How to produce the S&amp;P 500 Historical Components &amp; Changes</a></p>
+<h2 id="Select-what-factors-we’re-trying-to-exam-against-the-score"><a href="#Select-what-factors-we’re-trying-to-exam-against-the-score" class="headerlink" title="Select what factors we’re trying to exam against the score"></a>Select what factors we’re trying to exam against the score</h2><p>Even though we have tones of factors in our arsenal, we’re not going to use them all.</p>
+<p>Factors are simply objective data and they could have little or even zero correlation with the next day’s return. Just like in the happiness survey in our <a href="https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/">previous post</a>, that not every data in the survey would be highly related to the happiness of the people in the country. Probably the <code>Gender</code> column is meaningless as it’s not the major decisive factor whether people are happy or not. So selecting a defined factor set would be our fundamental assumption to interpret what factors really contribute to the next das return.</p>
+<h2 id="Process-the-factor-data"><a href="#Process-the-factor-data" class="headerlink" title="Process the factor data"></a>Process the factor data</h2><p>Process the factor data to be used in the factor score. There are three steps to standardize our data:</p>
+<h3 id="Winsorization-Removing-the-extreme-data"><a href="#Winsorization-Removing-the-extreme-data" class="headerlink" title="Winsorization (Removing the extreme data)"></a>Winsorization (Removing the extreme data)</h3><p>Winsorization would help us remove the extreme scenarios that affect our final ranking significantly. The blue dots over the line in the below diagram could be the results of unexpected incidents or news such as the <a target="_blank" rel="noopener" href="https://smartasset.com/financial-advisor/gamestop-stock-price-wallstreetbets-reddit">GameStop short squeeze</a> incident not long ago. Therefore, we’d better remove them in order to better rank the stocks.<br><img data-src="/2021/02/27/2021-02-27-factor-analysis-4/ill1.png" class="" width="400"></p>
+<h3 id="Industry-neutralization"><a href="#Industry-neutralization" class="headerlink" title="Industry neutralization"></a>Industry neutralization</h3><p>Industry neutralization removes the difference across industries. For example, the average market cap of the Technology industry in 2020 is around 1.24 billion, but the average market cap of the Energy industry is only 0.23 billion. Therefore, neutralize the industry impact would help us remove this inevitable biased data.</p>
+<h3 id="Standardization"><a href="#Standardization" class="headerlink" title="Standardization"></a>Standardization</h3><p>When we investigate how does stock <code>abc</code> do on EPS 1.2 compares to the industry standard 0.8, which 0.4 difference. On the other hand, stock <code>xyz</code>‘s EPS 15.3 is 3.1 points away from its industry standard. Simply compare 0.4 with 3.1 will not be able to define how <code>abc</code> or <code>xyz</code> do in its own industry. So, Standardization meant to convert the raw data into standardized data.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>-</th>
+<th>abc</th>
+<th>xyz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EPS</td>
+<td>1.2</td>
+<td>15.3</td>
+</tr>
+<tr>
+<td>Industry</td>
+<td>Finance</td>
+<td>Consumer goods</td>
+</tr>
+<tr>
+<td>Industry EPS standard</td>
+<td>0.8</td>
+<td>12.2</td>
+</tr>
+<tr>
+<td>Difference</td>
+<td>+0.4</td>
+<td>+3.1</td>
+</tr>
+<tr>
+<td>Industry EPS standard deviation</td>
+<td>0.2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Standardized score</td>
+<td>0.4/0.2 = <strong>+2</strong></td>
+<td>3.1/2 = <strong>+1.5</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<quote><center><i>So by looking at the standardized score, you can tell that actually stock `abc` does better than stock `xyz`</i></center></quote>
+
+<h2 id="Calculate-the-IC-and-IR"><a href="#Calculate-the-IC-and-IR" class="headerlink" title="Calculate the IC and IR"></a>Calculate the IC and IR</h2><p><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/i/information-coefficient.asp">Information coefficient</a> is to calculate the correlation between the factors and the next day’s return. Therefore, the higher the IC of the factor indicates that this factor would better help predict the next day’s return.</p>
+<p><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/i/informationratio.asp">Information Ratio</a> then stands for whether the IC is stable or not. If IR is high, then it means its IC is more stable and even better in terms of interpreting the change of the next day’s return.</p>
+<script type="math/tex; mode=display">IR = \frac{IC}{standard\ deviation\ of\ IC}</script><p>The reason we calculating the IR is that we need to evaluate the impact on the factor to the next day’s price. So once we are able to get a series of IR, we calculate its weight among all IR in order to know whether this factor is strong and stable enough.</p>
+<h2 id="Get-the-factor-scores"><a href="#Get-the-factor-scores" class="headerlink" title="Get the factor scores"></a>Get the factor scores</h2><p>By having the IR weight series, we can now multiply them with the factor itself, sum them up, and come out of a score to stand for the quality and traits of this stock.</p>
+<h2 id="Check-the-results"><a href="#Check-the-results" class="headerlink" title="Check the results"></a>Check the results</h2><p>As our goal here in this post is to use the factor score to find out the profitable stocks among the S&amp;P 500 index composition stocks, we can examine how effective our factor score work by the following steps:</p>
+<ol>
+<li>Sort the stocks by factor score</li>
+<li>Split the stocks into N groups that contain an equal number of stocks.</li>
+<li>Add up the daily return in the same group and compare it to the other groups over time.</li>
+</ol>
+<p>If the factor set that we define is good, then we expect to see the trend of the accumulate daily return in each group diverge as much as possible as below line chart:<br></p>
+<p>On the other hand, if our factor set is not good enough to interpret the next day’s return, we’ll see the cumulated daily return of each group tangled together. This means that our factor set would not be able to separate the good stocks from bad stocks.<br></p>
+<p>Finally, we might need to go through a various combinations of factors to find out what factor set possesses the capability to rate the stocks, we need to execute the steps from 3~6 multiple times. The effectiveness of the factors would also be voided due to the macroeconomic changes over time. Once we are able to find that factor set, then we can proceed to the next step to get more detail by comparing our portfolio performance against the benchmark portfolio performance.</p>
+<h1 id="Notebook-for-reference"><a href="#Notebook-for-reference" class="headerlink" title="Notebook for reference"></a>Notebook for reference</h1><iframe src="https://nbviewer.jupyter.org/github/mikelhsia/Python/blob/master/jupyter_notebook_for_blogs/vol_4_factor_score.ipynb" width="100%" height="1200" frameborder="0"></iframe>
+    </div>
+    
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Research/" rel="tag"># Research</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/23/2021-02-11-factor-analysis-3/" rel="prev" title="【Factor analysis】 Vol. 3. Construct your own factor">
+      <i class="fa fa-chevron-left"></i> 【Factor analysis】 Vol. 3. Construct your own factor
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-factor-score"><span class="nav-number">1.</span> <span class="nav-text">What is factor score?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Strategy-and-details"><span class="nav-number">2.</span> <span class="nav-text">Strategy and details</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Get-S-amp-P-500-index-composition-over-time"><span class="nav-number">2.1.</span> <span class="nav-text">Get S&amp;P 500 index composition over time.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Select-what-factors-we%E2%80%99re-trying-to-exam-against-the-score"><span class="nav-number">2.2.</span> <span class="nav-text">Select what factors we’re trying to exam against the score</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Process-the-factor-data"><span class="nav-number">2.3.</span> <span class="nav-text">Process the factor data</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Winsorization-Removing-the-extreme-data"><span class="nav-number">2.3.1.</span> <span class="nav-text">Winsorization (Removing the extreme data)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Industry-neutralization"><span class="nav-number">2.3.2.</span> <span class="nav-text">Industry neutralization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Standardization"><span class="nav-number">2.3.3.</span> <span class="nav-text">Standardization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Calculate-the-IC-and-IR"><span class="nav-number">2.4.</span> <span class="nav-text">Calculate the IC and IR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Get-the-factor-scores"><span class="nav-number">2.5.</span> <span class="nav-text">Get the factor scores</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Check-the-results"><span class="nav-number">2.6.</span> <span class="nav-text">Check the results</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Notebook-for-reference"><span class="nav-number">3.</span> <span class="nav-text">Notebook for reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
