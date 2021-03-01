@@ -6,7 +6,7 @@
   <link href="http://mikelhsia.github.io/atom.xml" rel="self"/>
   
   <link href="http://mikelhsia.github.io/"/>
-  <updated>2021-02-27T04:33:39.079Z</updated>
+  <updated>2021-03-01T04:18:41.939Z</updated>
   <id>http://mikelhsia.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【Factor analysis】 Vol. 5. Performance analysis</title>
+    <link href="http://mikelhsia.github.io/2021/03/02/2021-03-03-factor-analysis-5/"/>
+    <id>http://mikelhsia.github.io/2021/03/02/2021-03-03-factor-analysis-5/</id>
+    <published>2021-03-02T04:18:39.000Z</published>
+    <updated>2021-03-01T04:18:41.939Z</updated>
+    
+    <content type="html"><![CDATA[<img data-src="/2021/03/02/2021-03-03-factor-analysis-5/cover.png" class="" width="500"><p>This is the finale of the【Factor analysis】 series. After all the things we have done: downloading the data, generating factor data, and conduct factor scoring, now we’re in the last part to evaluate whether our deeds are effective enough to profit.</p><p>Before analyzing anything, you need to have something to be analyzed. It’s unlikely that we’re going to buy all the good quality stocks, nor we’re able to define a fine line that above which score will make us money. So we have to build a strategy that we deem it’s profitable and then analyze the strategy against the benchmark portfolio, which is S&amp;P 500 index.<br><a id="more"></a></p><h1 id="Build-our-strategy"><a href="#Build-our-strategy" class="headerlink" title="Build our strategy"></a>Build our strategy</h1><p>Before building anything, let’s get to know what kind of index the S&amp;P 500 index is.</p><p>S&amp;P 500 index is a capital-weighted index that consists of the largest 500 companies in the United States. There are several criteria when the committee assesses the company to decide whether to add the company into the S&amp;P 500 index: <code>market capitalization</code>, <code>liquidity</code>, <code>domicile</code>, <code>public float</code>, <code>GlobalIndustry Classification Standard</code>, <code>financial viability</code>, and <code>representation of the industries in the economy of the United States</code>. Therefore, you can see S&amp;P 500 index as a very well-diversified portfolio.</p><p>Our strategy here would focus on tracking the movement of the S&amp;P 500 index by building a diversified portfolio with high-quality stocks that are already existed in the S&amp;P 500 index composition. We hope the diversified part would help us reduce the risk and the high-quality part would deliver the excess return if any.</p><h1 id="Performance-analysis"><a href="#Performance-analysis" class="headerlink" title="Performance analysis"></a>Performance analysis</h1><p>It’s always good to compare what you have found with something that has already built and testified by the public. So once we have built our strategy, we can start with analyzing the performance of our portfolio against the benchmark. There are several things that we can look into for us to make the judgment of whether this strategy fulfills our initial goal:</p><ol><li><strong>The amount of excess return</strong>:<ul><li>This could be the most important criteria or could be the least important one depends on what our ultimate goal when building this strategy. If you were to build a sustainable portfolio that prevents you from suffering the loss in the bearish market, then you can overlook this criterion. But remember, we’re using <code>log return</code> instead of <code>arithmetic average return</code>. So the actual return will be magnified no matter you make or lose money.</li></ul></li><li><strong>Sharpe ratio</strong>:<ul><li>It’s a standard ratio to evaluate how much excess return you can make out of one unit of risk you take.<script type="math/tex; mode=display">Sharpe\ ratio = \frac{Portfolio\ return\ -\ Benchmark\ return}{Portfolio\ standard deviation}</script></li></ul></li><li><strong>Win rate</strong>:<ul><li>Win rate indicating how often you can beat your benchmark portfolio.</li></ul></li></ol><p>Of course, there are more evaluations you can look into. But we can start with these three most simple ones.</p><p>Now let’s dive in and see how we can pull it off.</p><h1 id="Notebook-for-reference"><a href="#Notebook-for-reference" class="headerlink" title="Notebook for reference"></a>Notebook for reference</h1><iframe src="https://nbviewer.jupyter.org/github/mikelhsia/Python/blob/master/jupyter_notebook_for_blogs/vol_5_performance_analysis.ipynb" width="100%" height="1200" frameborder="0"></iframe>]]></content>
+    
+    
+    <summary type="html">&lt;img data-src=&quot;/2021/03/02/2021-03-03-factor-analysis-5/cover.png&quot; class=&quot;&quot; width=&quot;500&quot;&gt;
+&lt;p&gt;This is the finale of the【Factor analysis】 series. After all the things we have done: downloading the data, generating factor data, and conduct factor scoring, now we’re in the last part to evaluate whether our deeds are effective enough to profit.&lt;/p&gt;
+&lt;p&gt;Before analyzing anything, you need to have something to be analyzed. It’s unlikely that we’re going to buy all the good quality stocks, nor we’re able to define a fine line that above which score will make us money. So we have to build a strategy that we deem it’s profitable and then analyze the strategy against the benchmark portfolio, which is S&amp;amp;P 500 index.&lt;br&gt;</summary>
+    
+    
+    
+    <category term="Factor Analysis" scheme="http://mikelhsia.github.io/categories/Factor-Analysis/"/>
+    
+    
+    <category term="Research" scheme="http://mikelhsia.github.io/tags/Research/"/>
+    
+  </entry>
   
   <entry>
     <title>【Factor analysis】 Vol. 4. Factor score</title>
@@ -502,34 +525,6 @@ width: 45%;
     <category term="Python" scheme="http://mikelhsia.github.io/tags/Python/"/>
     
     <category term="Django" scheme="http://mikelhsia.github.io/tags/Django/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python Scrapy folder structure notes</title>
-    <link href="http://mikelhsia.github.io/2017/07/15/2017-07-15-python-scrapy/"/>
-    <id>http://mikelhsia.github.io/2017/07/15/2017-07-15-python-scrapy/</id>
-    <published>2017-07-15T04:57:40.000Z</published>
-    <updated>2020-08-20T08:34:51.617Z</updated>
-    
-    <content type="html"><![CDATA[<img data-src="/2017/07/15/2017-07-15-python-scrapy/scrapy.png" class="" width="500"><p>header_banner_img: </p><h3 id="scrapy-startproject-tutorial"><a href="#scrapy-startproject-tutorial" class="headerlink" title="scrapy startproject tutorial"></a>scrapy startproject tutorial</h3><ul><li><code>scrapy.cfg</code>: 项目的配置文件</li><li><code>project/</code>: 该项目的python模块。之后您将在此加入代码。</li><li><code>project/items.py</code>: 项目中的item文件.</li><li><code>project/pipelines.py</code>: 项目中的pipelines文件.</li><li><code>tutorial/settings.py</code>: 项目的设置文件.</li><li><code>project/spiders/</code>: 放置spider代码的目录.</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;img data-src=&quot;/2017/07/15/2017-07-15-python-scrapy/scrapy.png&quot; class=&quot;&quot; width=&quot;500&quot;&gt;
-&lt;p&gt;header_banner_img: &lt;/p&gt;
-&lt;h3 id=&quot;scrapy-startproject</summary>
-      
-    
-    
-    
-    <category term="Notes" scheme="http://mikelhsia.github.io/categories/Notes/"/>
-    
-    
-    <category term="Python" scheme="http://mikelhsia.github.io/tags/Python/"/>
-    
-    <category term="Scrapy" scheme="http://mikelhsia.github.io/tags/Scrapy/"/>
     
   </entry>
   

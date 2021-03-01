@@ -20,28 +20,22 @@
     var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="The above line chart shows how we have been doing on the enhanced MACD strategy as of today (2020&#x2F;12&#x2F;11 EST). It’s been 19 trading days since we’ve launched our automatic trading script to trade on T">
+  <meta name="description" content="This is the finale of the【Factor analysis】 series. After all the things we have done: downloading the data, generating factor data, and conduct factor scoring, now we’re in the last part to evaluate">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【Cont.】 MACD strategy follow up report">
-<meta property="og:url" content="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/index.html">
+<meta property="og:title" content="【Factor analysis】 Vol. 5. Performance analysis">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/03/02/2021-03-03-factor-analysis-5/index.html">
 <meta property="og:site_name" content="Michael&#39;s blog">
-<meta property="og:description" content="The above line chart shows how we have been doing on the enhanced MACD strategy as of today (2020&#x2F;12&#x2F;11 EST). It’s been 19 trading days since we’ve launched our automatic trading script to trade on T">
+<meta property="og:description" content="This is the finale of the【Factor analysis】 series. After all the things we have done: downloading the data, generating factor data, and conduct factor scoring, now we’re in the last part to evaluate">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/cover_perf.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/w_nasdaq.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/w_djia.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/w_s&p.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/turtle1.jpg">
-<meta property="og:image" content="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/turtle2.jpg">
-<meta property="article:published_time" content="2020-12-12T02:23:14.000Z">
-<meta property="article:modified_time" content="2020-12-13T02:38:57.978Z">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/03/02/2021-03-03-factor-analysis-5/cover.png">
+<meta property="article:published_time" content="2021-03-02T04:18:39.000Z">
+<meta property="article:modified_time" content="2021-03-01T04:18:41.939Z">
 <meta property="article:author" content="Michael Hsia">
-<meta property="article:tag" content="Strategy">
-<meta property="article:tag" content="Momentum">
+<meta property="article:tag" content="Research">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/cover_perf.png">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/03/02/2021-03-03-factor-analysis-5/cover.png">
 
-<link rel="canonical" href="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/">
+<link rel="canonical" href="http://mikelhsia.github.io/2021/03/02/2021-03-03-factor-analysis-5/">
 
 
 <script id="page-configurations">
@@ -54,7 +48,7 @@
   };
 </script>
 
-  <title>【Cont.】 MACD strategy follow up report | Michael's blog</title>
+  <title>【Factor analysis】 Vol. 5. Performance analysis | Michael's blog</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
     <script>
@@ -185,7 +179,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2020/12/12/2020-12-12-macd-strategy-follow-up-report/">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/03/02/2021-03-03-factor-analysis-5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -198,7 +192,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          【Cont.】 MACD strategy follow up report
+          【Factor analysis】 Vol. 5. Performance analysis
         </h1>
 
         <div class="post-meta">
@@ -208,14 +202,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-12-12 10:23:14" itemprop="dateCreated datePublished" datetime="2020-12-12T10:23:14+08:00">2020-12-12</time>
+              <time title="Created: 2021-03-02 12:18:39" itemprop="dateCreated datePublished" datetime="2021-03-02T12:18:39+08:00">2021-03-02</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-12-13 10:38:57" itemprop="dateModified" datetime="2020-12-13T10:38:57+08:00">2020-12-13</time>
+                <time title="Modified: 2021-03-01 12:18:41" itemprop="dateModified" datetime="2021-03-01T12:18:41+08:00">2021-03-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -223,12 +217,12 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                  <a href="/categories/Factor-Analysis/" itemprop="url" rel="index"><span itemprop="name">Factor Analysis</span></a>
                 </span>
             </span>
 
           
-            <span id="/2020/12/12/2020-12-12-macd-strategy-follow-up-report/" class="post-meta-item leancloud_visitors" data-flag-title="【Cont.】 MACD strategy follow up report" title="Views">
+            <span id="/2021/03/02/2021-03-03-factor-analysis-5/" class="post-meta-item leancloud_visitors" data-flag-title="【Factor analysis】 Vol. 5. Performance analysis" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -243,8 +237,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/12/12/2020-12-12-macd-strategy-follow-up-report/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/12/2020-12-12-macd-strategy-follow-up-report/" itemprop="commentCount"></span>
+    <a title="valine" href="/2021/03/02/2021-03-03-factor-analysis-5/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/02/2021-03-03-factor-analysis-5/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -259,79 +253,32 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <img data-src="/2020/12/12/2020-12-12-macd-strategy-follow-up-report/cover_perf.png" class="" width="400">
-<p>The above line chart shows how we have been doing on the <strong>enhanced</strong> <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/#more"><strong>MACD strategy</strong></a> as of today (2020/12/11 EST).</p>
-<p>It’s been 19 trading days since we’ve launched our automatic trading script to trade on TD Ameritrade on 2020/11/17. So far, we have accumulated ~6% of the total investment even with a huge dip on Dec 9th.</p>
-<a id="more"></a>
-<h1 id="MACD-strategy-performance-report-as-of-today"><a href="#MACD-strategy-performance-report-as-of-today" class="headerlink" title="MACD strategy performance report as of today"></a>MACD strategy performance report as of today</h1><div class="table-container">
-<table>
-<thead>
-<tr>
-<th>-</th>
-<th>Number</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Current position</td>
-<td>10</td>
-</tr>
-<tr>
-<td>Positive opening position</td>
-<td>7 (out of 10)</td>
-</tr>
-<tr>
-<td>Negative opening position</td>
-<td>3 (out of 10)</td>
-</tr>
-<tr>
-<td>Closed trade</td>
-<td>1</td>
-</tr>
-<tr>
-<td>Current portfolio total return</td>
-<td>6.13%</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p> From the line chart below, you can tell the portfolio trend that we constructed is quite correlated with the trend of the <a target="_blank" rel="noopener" href="https://www.nasdaq.com/solutions/nasdaq-index-data-cns">Nasdaq index (.IXIC)</a>. Meaning, we have a quite correlation with the Nasdaq index.</p>
-<img data-src="/2020/12/12/2020-12-12-macd-strategy-follow-up-report/w_nasdaq.png" class="" width="400">
-<p>In the meantime, if you look at the Dow Jones Index and S&amp;P 500 Index, you’ll see we’re actually doubled in return as of today.<br><img data-src="/2020/12/12/2020-12-12-macd-strategy-follow-up-report/w_djia.png" class="" width="400"><br><img data-src="/2020/12/12/2020-12-12-macd-strategy-follow-up-report/w_s&p.png" class="" width="400"></p>
-<p>Hence, I think we’re doing pretty good so far. Even though the market is still tumbling and the US government hesitated to pull up the economy stimulation for COVID-19, our MACD strategy is still doing ok. Stay tuned for the follow-up report on more detailed analysis until we get enough data to analyze.</p>
-<h1 id="What-I-did"><a href="#What-I-did" class="headerlink" title="What I did"></a>What I did</h1><p>As we all know in <a href="https://mikelhsia.github.io/2020/11/10/2020-11-08-macd-strategy-implementation/#more">my previous article</a>, that Quantopian has disabled their entire service and switched their business to serve enterprise customers (<a target="_blank" rel="noopener" href="https://factset.quantopian.com/">as in here</a>), I’ve been struggling to find a good substitution in my backtesting process.</p>
-<p><strong>QuantConnect</strong> seems pretty solid and reliable, and its API documentation is very clear. Even though the way to use their APIs is very different from Quantopian and not intuitive to my sense, but it’s still ok to cope with. However, I’ve been spent days trying to run backtesting on QuantConnect, the speed is insanely slow even with VPN. In the end, I have to give up on it.</p>
-<p>Then I see people also talking about <a target="_blank" rel="noopener" href="https://www.quantrocket.com/"><strong>QuantRocket</strong></a>. It’s essentially a python library run inside docker. To run backtesting, you need to spin up this docker image on your local PC or laptop and connect to the docker container. I simply don’t like how it works and complicated. Plus I didn’t find useful API documentation on their website. So again, I gave it up.</p>
-<p><strong>Python backtrader package</strong><br>This looks to me is the most promising solution that I can find so far. It is very flexible and easy to use. If you know python and happen to be a former Quantopian user, you’ll find a sense of familiarity with this python package. The <code>broker</code>, <code>strategy</code>, <code>data</code>, <code>analyzer</code>, <code>indicators</code> modules are very well written and easy to inherit then build upon it. Nevertheless, one single and the most crucial issue that I can’t resolve by myself, where it’s also not one of the issues that <code>backtrader</code> tries to solve: <strong>data source</strong>.</p>
-<p>Several issues spotted during the exploration <code>backtrader</code> module and I still yet to be able to address regarding ingesting data feed in backtrader:</p>
+        <img data-src="/2021/03/02/2021-03-03-factor-analysis-5/cover.png" class="" width="500">
+<p>This is the finale of the【Factor analysis】 series. After all the things we have done: downloading the data, generating factor data, and conduct factor scoring, now we’re in the last part to evaluate whether our deeds are effective enough to profit.</p>
+<p>Before analyzing anything, you need to have something to be analyzed. It’s unlikely that we’re going to buy all the good quality stocks, nor we’re able to define a fine line that above which score will make us money. So we have to build a strategy that we deem it’s profitable and then analyze the strategy against the benchmark portfolio, which is S&amp;P 500 index.<br><a id="more"></a></p>
+<h1 id="Build-our-strategy"><a href="#Build-our-strategy" class="headerlink" title="Build our strategy"></a>Build our strategy</h1><p>Before building anything, let’s get to know what kind of index the S&amp;P 500 index is.</p>
+<p>S&amp;P 500 index is a capital-weighted index that consists of the largest 500 companies in the United States. There are several criteria when the committee assesses the company to decide whether to add the company into the S&amp;P 500 index: <code>market capitalization</code>, <code>liquidity</code>, <code>domicile</code>, <code>public float</code>, <code>GlobalIndustry Classification Standard</code>, <code>financial viability</code>, and <code>representation of the industries in the economy of the United States</code>. Therefore, you can see S&amp;P 500 index as a very well-diversified portfolio.</p>
+<p>Our strategy here would focus on tracking the movement of the S&amp;P 500 index by building a diversified portfolio with high-quality stocks that are already existed in the S&amp;P 500 index composition. We hope the diversified part would help us reduce the risk and the high-quality part would deliver the excess return if any.</p>
+<h1 id="Performance-analysis"><a href="#Performance-analysis" class="headerlink" title="Performance analysis"></a>Performance analysis</h1><p>It’s always good to compare what you have found with something that has already built and testified by the public. So once we have built our strategy, we can start with analyzing the performance of our portfolio against the benchmark. There are several things that we can look into for us to make the judgment of whether this strategy fulfills our initial goal:</p>
 <ol>
-<li>How to handle stocks that are delisted for good?</li>
-<li>How to handle stocks that are delisted temporarily due to SEC’s command?</li>
-<li>How to merge multiple stock pricing data that are different in the start and end date?</li>
-</ol>
-<p>I’ve been spending ~2 weeks but the progress is limited. Therefore, I turned to the local quantitative platform again since they’ve been existed for years: <a target="_blank" rel="noopener" href="https://www.joinquant.com">JoinQuant</a>. This also means, now I’m switching back to China stock market and need to find another broker that has API supports. Maybe <a target="_blank" rel="noopener" href="https://openapi.futunn.com/futu-api-doc/intro/opend.html#%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D">Futuniuniu</a> in the near future.</p>
-<h1 id="What-I’m-doing"><a href="#What-I’m-doing" class="headerlink" title="What I’m doing"></a>What I’m doing</h1><p>Right now I’m working on one of the conventional trading strategies from history on JoinQuant: <strong>Turtle strategy</strong>.</p>
-<p>Here are a few articles about <strong>Turtle strategy</strong> itself and the history of it:</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://analyzingalpha.com/turtle-trading">Turtle Trading: History, Strategy &amp; Complete Rules</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.businessinsider.com/turtle-trading-rules-trend-following-investing-based-on-20-amp-55-day-highs-2011-8">Turtle trading rules trend-following investing based on 20 amp 55-day highs</a></li>
+<li><strong>The amount of excess return</strong>:<ul>
+<li>This could be the most important criteria or could be the least important one depends on what our ultimate goal when building this strategy. If you were to build a sustainable portfolio that prevents you from suffering the loss in the bearish market, then you can overlook this criterion. But remember, we’re using <code>log return</code> instead of <code>arithmetic average return</code>. So the actual return will be magnified no matter you make or lose money.</li>
 </ul>
-<p>It’s an interesting story and fun to read. Also, I believe there’s a lot of things that I can learn from rebuilding this strategy and put them into practice. Hopefully, I can present you with a turtle strategy that looks like:<br><img data-src="/2020/12/12/2020-12-12-macd-strategy-follow-up-report/turtle1.jpg" class="" width="250"></p>
-<p>and not like:<br><img data-src="/2020/12/12/2020-12-12-macd-strategy-follow-up-report/turtle2.jpg" class="" width="250"></p>
-<p>Cheers.</p>
-
+</li>
+<li><strong>Sharpe ratio</strong>:<ul>
+<li>It’s a standard ratio to evaluate how much excess return you can make out of one unit of risk you take.<script type="math/tex; mode=display">Sharpe\ ratio = \frac{Portfolio\ return\ -\ Benchmark\ return}{Portfolio\ standard deviation}</script></li>
+</ul>
+</li>
+<li><strong>Win rate</strong>:<ul>
+<li>Win rate indicating how often you can beat your benchmark portfolio.</li>
+</ul>
+</li>
+</ol>
+<p>Of course, there are more evaluations you can look into. But we can start with these three most simple ones.</p>
+<p>Now let’s dive in and see how we can pull it off.</p>
+<h1 id="Notebook-for-reference"><a href="#Notebook-for-reference" class="headerlink" title="Notebook for reference"></a>Notebook for reference</h1><iframe src="https://nbviewer.jupyter.org/github/mikelhsia/Python/blob/master/jupyter_notebook_for_blogs/vol_5_performance_analysis.ipynb" width="100%" height="1200" frameborder="0"></iframe>
     </div>
     
-      
-        <div>
-    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
-        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard earned money.
-    </i></p>
-</div>
-
-
-
-
       
     
 
@@ -341,8 +288,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
-              <a href="/tags/Momentum/" rel="tag"># Momentum</a>
+              <a href="/tags/Research/" rel="tag"># Research</a>
           </div>
 
         
@@ -351,13 +297,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/" rel="prev" title="【How 2】 Vol. 3. How to produce a quality tradable securities for backtesting">
-      <i class="fa fa-chevron-left"></i> 【How 2】 Vol. 3. How to produce a quality tradable securities for backtesting
+    <a href="/2021/02/27/2021-02-27-factor-analysis-4/" rel="prev" title="【Factor analysis】 Vol. 4. Factor score">
+      <i class="fa fa-chevron-left"></i> 【Factor analysis】 Vol. 4. Factor score
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/12/26/2020-12-26-turtle-strategy/" rel="next" title="Experiment of Turtle trading strategy">
-      Experiment of Turtle trading strategy <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -417,7 +360,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MACD-strategy-performance-report-as-of-today"><span class="nav-number">1.</span> <span class="nav-text">MACD strategy performance report as of today</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-I-did"><span class="nav-number">2.</span> <span class="nav-text">What I did</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-I%E2%80%99m-doing"><span class="nav-number">3.</span> <span class="nav-text">What I’m doing</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Build-our-strategy"><span class="nav-number">1.</span> <span class="nav-text">Build our strategy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Performance-analysis"><span class="nav-number">2.</span> <span class="nav-text">Performance analysis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Notebook-for-reference"><span class="nav-number">3.</span> <span class="nav-text">Notebook for reference</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
