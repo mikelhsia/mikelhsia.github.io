@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Machine learning has been a black box for most people. We have been told how powerful it is to address our questions with the terms such as CNN, LSTM, training data, modeling, …. Also, machine learni">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Machine Learning】 10 minutes to learn what I know about machine learning in quantitative trading">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Machine learning has been a black box for most people. We have been told how powerful it is to address our questions with the terms such as CNN, LSTM, training data, modeling, …. Also, machine learni">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/cover.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/category.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/math.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/classifier.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/process.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/rtn.png">
+<meta property="article:published_time" content="2021-04-22T06:42:59.000Z">
+<meta property="article:modified_time" content="2021-05-09T03:11:35.098Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/cover.jpg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Machine Learning】 10 minutes to learn what I know about machine learning in quantitative trading | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Machine Learning】 10 minutes to learn what I know about machine learning in quantitative trading
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-04-22 14:42:59" itemprop="dateCreated datePublished" datetime="2021-04-22T14:42:59+08:00">2021-04-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-05-09 11:11:35" itemprop="dateModified" datetime="2021-05-09T11:11:35+08:00">2021-05-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Notes/" itemprop="url" rel="index"><span itemprop="name">Notes</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/04/22/2021-04-22-machine-learning-intro/" class="post-meta-item leancloud_visitors" data-flag-title="【Machine Learning】 10 minutes to learn what I know about machine learning in quantitative trading" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/04/22/2021-04-22-machine-learning-intro/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/22/2021-04-22-machine-learning-intro/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2021/04/22/2021-04-22-machine-learning-intro/cover.jpg" class="" width="600">
+<p>Machine learning has been a black box for most people. We have been told how powerful it is to address our questions with the terms such as CNN, LSTM, training data, modeling, …. Also, machine learning has been practicing in so many fields such as medical, finance, macroeconomic, marketing, …etc to address the most difficult and complex questions.</p>
+<p>Using machine learning as a tool to beat the market would be our goal here. Therefore, I’ve put together a list of questions that I used to have and will address them one by one in this post, hoping this would help people who have the same questions as I did. The fundamental ideas and theories behind machine learning are all about math, which I’m not going to over in this article as it would take ages to explain them in a better way than all the other existing articles that you can find on the internet.</p>
+<p>The questions are:</p>
+<ul>
+<li>What does Machine learning do in the finance world?</li>
+<li>How does machine learning work?</li>
+<li>What are the FAMQ (Frequently Asked Myself Questions)?</li>
+<li>Postlogue: What is our ultimate goal of developing a quantitative investment strategy?<a id="more"></a>
+</li>
+</ul>
+<h1 id="What-does-Machine-learning-do-in-the-finance-world"><a href="#What-does-Machine-learning-do-in-the-finance-world" class="headerlink" title="What does Machine learning do in the finance world?"></a>What does Machine learning do in the finance world?</h1><img data-src="/2021/04/22/2021-04-22-machine-learning-intro/category.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+    <i>Machine learning category diagram</i>
+</p>
+
+<p>There are two kinds of machine learning algorithms: <code>supervised learning</code> v.s. <code>unsupervised learning</code>, which is used to address different types of questions.</p>
+<h2 id="Supervised-learning"><a href="#Supervised-learning" class="headerlink" title="Supervised learning"></a>Supervised learning</h2><p><strong>Supervised learning</strong> is about using the existing data set to deduce a valid intrinsic pattern/relation between the data provided and the dependent variable. The term <code>supervised</code> indicates that the learning process is somewhat <code>monitored or instructed</code> by engineers telling the program what is the expected data while training the model. As explained in the article <a href="https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/">【Factor analysis】 Vol. 1. Introduction the idea of factor analysis</a>, the dependent variable is the target variable that you’re trying to predict, and usually is in linear scale or is labeled/assigned to an absolute number or string. When our dependent variable is in scale form (from 0~100, -10000~10000, …), this is the time to use a <strong>linear regression model</strong>. On the other hand, we’re trying to predict whether a red object with 10 cm height and 20 cm width is a tomato or an apple, this is the time to apply the <strong>classification model</strong>. Once we have decided what kind of question we’re trying to solve, we started with using the historic data to develop the equation to describe the relationship between an object and its attribute. In the end, we feed the data into this equation to produce the predicted dependent variable.</p>
+<p><em>Linear regression sample data</em></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>No. of the citizen</th>
+<th><strong>Degree of Happiness (0~100)</strong></th>
+<th>Gender</th>
+<th>Age</th>
+<th>Occupation</th>
+<th>Location</th>
+<th>Income</th>
+<th>Marital Status</th>
+<th>Number of social gathering per week</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No. 1</td>
+<td><strong>60</strong></td>
+<td>male</td>
+<td>28</td>
+<td>miner</td>
+<td>village A</td>
+<td>$2,000</td>
+<td>single</td>
+<td>2</td>
+</tr>
+<tr>
+<td>No. 2</td>
+<td><strong>80</strong></td>
+<td>female</td>
+<td>32</td>
+<td>housewife</td>
+<td>village B</td>
+<td>$100</td>
+<td>married</td>
+<td>5</td>
+</tr>
+<tr>
+<td>No. 3</td>
+<td><strong>77</strong></td>
+<td>male</td>
+<td>63</td>
+<td>retired</td>
+<td>village C</td>
+<td>$500</td>
+<td>divorced</td>
+<td>12</td>
+</tr>
+<tr>
+<td>No. 4</td>
+<td><strong>58</strong></td>
+<td>female</td>
+<td>22</td>
+<td>OL</td>
+<td>village A</td>
+<td>$1,300</td>
+<td>in a relationship</td>
+<td>7</td>
+</tr>
+<tr>
+<td>No. 5</td>
+<td><strong>? (Predict the value of happiness)</strong></td>
+<td>male</td>
+<td>33</td>
+<td>miner</td>
+<td>village C</td>
+<td>$1,800</td>
+<td>married</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Classification sample data</em></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>No. of the citizen</th>
+<th><strong>Level of Happiness</strong></th>
+<th>Gender</th>
+<th>Age</th>
+<th>Occupation</th>
+<th>Location</th>
+<th>Income</th>
+<th>Marital Status</th>
+<th>Number of social gathering per week</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No. 1</td>
+<td><strong>Not happy</strong></td>
+<td>male</td>
+<td>28</td>
+<td>miner</td>
+<td>village A</td>
+<td>$2,000</td>
+<td>single</td>
+<td>2</td>
+</tr>
+<tr>
+<td>No. 2</td>
+<td><strong>Happy</strong></td>
+<td>female</td>
+<td>32</td>
+<td>housewife</td>
+<td>village B</td>
+<td>$100</td>
+<td>married</td>
+<td>5</td>
+</tr>
+<tr>
+<td>No. 3</td>
+<td><strong>Very happy</strong></td>
+<td>male</td>
+<td>63</td>
+<td>retired</td>
+<td>village C</td>
+<td>$500</td>
+<td>divorced</td>
+<td>12</td>
+</tr>
+<tr>
+<td>No. 4</td>
+<td><strong>Not happy</strong></td>
+<td>female</td>
+<td>22</td>
+<td>OL</td>
+<td>village A</td>
+<td>$1,300</td>
+<td>in a relationship</td>
+<td>7</td>
+</tr>
+<tr>
+<td>No. 5</td>
+<td><strong>? (Predict the level of happiness)</strong></td>
+<td>male</td>
+<td>33</td>
+<td>miner</td>
+<td>village C</td>
+<td>$1,800</td>
+<td>married</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Taking the example from that article, the <code>Degree of Happiness</code> would be the dependent variable that we’re trying to predict. By using the equation we developed based on the data feed of citizen No. 1 ~ No. 4, we can somewhat speculate the degree of happiness of citizen No. 5. To tell you the truth, it just feels like you’re taking a math exam, and there are a dozen of equations with answers were on the paper but not the last one. You were asked to check the equations listed and find the hidden pattern so that you can fill in the last blank square.</p>
+<img data-src="/2021/04/22/2021-04-22-machine-learning-intro/math.jpg" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>Machine learning is just like a program to solve this question</i>
+</p>
+
+
+<p>For more detail, you can check out this video from <code>Andrew Ng</code> for his Stanford University open courses to know more about supervised learning.</p>
+<iframe src="//player.bilibili.com/player.html?aid=625601196&bvid=BV1gt4y117Fa&cid=188142998&page=3" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+<h2 id="Unsupervised-learning"><a href="#Unsupervised-learning" class="headerlink" title="Unsupervised learning"></a>Unsupervised learning</h2><p>Contrary to supervised learning, <strong>unsupervised learning</strong> indicates that the model can be trained without human intervention. The model would be able to classify and label the data into several different groups. But unsupervised learning wouldn’t be able to apply to the scenario if you would like to predict the exact value in linear scale as no reference values from human beings were provided.</p>
+<img data-src="/2021/04/22/2021-04-22-machine-learning-intro/classifier.jpg" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>Illustration of unsupervised learning plotting</i>
+</p>
+
+<p>You can see the dotted line in the above image as the trained unsupervised learning model. As soon as there are new input data plotted in this two-dimensional plane, the classifier would be able to identify this new point belongs to group green or group red. In the meantime, the dotted line itself will be adjusted according to the new added value by changing its shape.</p>
+<p>Check the below video if you want to know more detail about unsupervised learning.</p>
+<iframe src="//player.bilibili.com/player.html?aid=625601196&bvid=BV1gt4y117Fa&cid=188143030&page=4" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width=50%> </iframe>
+
+<h1 id="How-does-machine-learning-work"><a href="#How-does-machine-learning-work" class="headerlink" title="How does machine learning work?"></a>How does machine learning work?</h1><p>Since we have the big picture of what machine learning is about, there are certain steps to follow in order to build our own machine learning boilerplate.<br><img data-src="/2021/04/22/2021-04-22-machine-learning-intro/process.png" class="" width="400"></p>
+<p style="text-align:center; color: grey;">
+    <i>Process of how machine learning works</i>
+</p>
+
+<h2 id="Data-Curating"><a href="#Data-Curating" class="headerlink" title="Data Curating"></a>Data Curating</h2><p>First of all, we need to collect all the data we need. In the article <a href="https://mikelhsia.github.io/2020/11/10/2020-11-08-macd-strategy-implementation/">【How 2】 Vol. 2. How to build an automated stock trading script</a>, there are several sources that we can get historic data from:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.quandl.com/">Quandl</a></li>
+<li><a target="_blank" rel="noopener" href="https://pypi.org/project/yfinance/">yfinance</a></li>
+<li><a target="_blank" rel="noopener" href="https://iexcloud.io/">IEX Cloud</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.tiingo.com/account/api/usage">Tiingo</a><br>After getting the raw historic data you need, the data still needs to be cleaned, indexed, sorted, and even adjusted to fit your needs. There’s a sentence that I read somewhere that really illustrate the importance of this stage:<blockquote>
+<p><em>The data provided decide the celling of your strategy return, and implementation of your machine learning is how you approach this celling.</em></p>
+</blockquote>
+</li>
+</ul>
+<p>Therefore, making sure you have quality data is very crucial before proceeding to the next step.</p>
+<h2 id="Feature-Discover-Analyze"><a href="#Feature-Discover-Analyze" class="headerlink" title="Feature Discover/Analyze"></a>Feature Discover/Analyze</h2><p>Features/factors are the meaningful signals/data that transformed from the raw data, such as historic open/close/high/low price of each stock, or EPS that processed from the numbers in the balance sheet. Here’s a quick introduction of factors that help you understand what factors are about: <a href="https://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/">【Factor analysis】 Vol. 3. Construct your own factor</a></p>
+<h2 id="Training-the-model"><a href="#Training-the-model" class="headerlink" title="Training the model"></a>Training the model</h2><p>Simply put, we use the data that we acquired from the previous two steps and feed it into the program in order to deduce the equation that describes the relationship between dependent and independent variables. The deliverable of this stage is the trained model that will be carried into the next stage.</p>
+<p>However, the reality is that the above scenario usually takes weeks and even months to complete. First of all, there are numerous models to choose from, depending on what kind of questions you’re trying to solve. Secondly, you also need to do research on what are the best parameters such as <code>learning rate</code>(<em>linear regression</em>) and <code>number of leaves</code>(<em>decision tree</em>) that best fit your model and dataset. By the time you finally find the right model and the parameters that give you the best training score, you were told that your model is <code>overfitted</code>, which means that your model is only valid in a very specific situation. Then again you need to go back to the beginning to strip off those restrictions that you put on the model.</p>
+<p>Training the model is probably the most suffering and unbearable period for a data scientist in terms of time and the number of frustrations. But, the outcome would be rewarding as long as you’re able to produce a well-trained model that proved to be able to predict the outcome.</p>
+<h2 id="Predicting-the-expected-variable"><a href="#Predicting-the-expected-variable" class="headerlink" title="Predicting the expected variable"></a>Predicting the expected variable</h2><p>This is the most critical but requires the least effort part among the entire processes. We generate the predicted value by feeding the latest factor data into the equation. In the <code>linear regression</code> type of models, we will get the exact numbers as our prediction, or we will get a label when applying <code>classification</code> type of models. Then we can generate buy/sell signals according to the outputs and further form our investment strategy.</p>
+<h2 id="Forming-strategy-and-backtest"><a href="#Forming-strategy-and-backtest" class="headerlink" title="Forming strategy and backtest"></a>Forming strategy and backtest</h2><p>Lastly, we will need to put everything we have together to form the investment strategy. This investment strategy will include the buy/sell signals from the previous step so that we know when to add certain stocks to our portfolio or remove them. Then, we evaluate the profitability of this strategy based on the backtest results. Once we confirm that this strategy would bring us a high enough sharp ratio and low enough risk, then this strategy is good to go.</p>
+<h1 id="What-are-the-FAMQs-Frequently-Asked-Myself-Questions"><a href="#What-are-the-FAMQs-Frequently-Asked-Myself-Questions" class="headerlink" title="What are the FAMQs (Frequently Asked Myself Questions)?"></a>What are the FAMQs (Frequently Asked Myself Questions)?</h1><p>Working on your quantitative research is a process of putting your thoughts together. In order to prove your strategy works and is profitable, you have to question each step in your research to make sure you’re logically bullet-proof. Survivor bias, look-ahead bias, and data snooping are the problems and biases that you need to discover and address before moving your strategy to the implementation stage. I found I asked the following questions to myself so many times and turned out these questions did help me spot the issues buried inside the codes.</p>
+<h2 id="Are-we-using-yesterday’s-data-to-predict-tomorrow’s-return"><a href="#Are-we-using-yesterday’s-data-to-predict-tomorrow’s-return" class="headerlink" title="Are we using yesterday’s data to predict tomorrow’s return?"></a>Are we using yesterday’s data to predict tomorrow’s return?</h2><p>When training your model and predicting the future stock return, you need to make sure you’re using the data that is already publicly available on the day. For example, we have sample data that looks like below:</p>
+<img data-src="/2021/04/22/2021-04-22-machine-learning-intro/rtn.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>Sample data including close price in monthly frequency</i>
+</p>
+
+<p>In order to train our model correctly, we need to use currently available data to predict the future return. <code>VOL5</code>, <code>VOL60</code>, <code>ROC5</code> are the factors we use in the model training, which are only available <strong>AFTER the market is closed on the day</strong>. We use <code>data[&#39;close&#39;].pct_change()</code> to calculate the monthly return in <code>rtn</code> column. However, if you look at the <em>2015-03-31</em> row, you’ll find out actually using the after-market-close data to predict the price change of the same month (It requires a bit of imagination and the sense of time). This would give us a relatively high model score as the close price and the return we calculated are highly correlated. Therefore, we need to shift the <code>rtn</code> column to the previous month into <code>rtn_shifted</code> column, so that logically we will train our model with today’s available data against next month’s return.</p>
+<p>This is the must-ask question before you start feeding your data into your training model. Also, this time-related relationship would change based on your data source and the sample period of your data. So do ask yourself this question every time after you processed your data and before you start training your model.</p>
+<h2 id="Should-we-use-classifier-or-linear-regression-type-of-models"><a href="#Should-we-use-classifier-or-linear-regression-type-of-models" class="headerlink" title="Should we use classifier or linear regression type of models?"></a>Should we use <code>classifier</code> or <code>linear regression</code> type of models?</h2><p>As explained in the above section, there are two types of models for you to choose and you decide which one could better solve your question. We realize that the <code>classifier</code> type of model works better than the <code>linear regression</code> type of model from the past experience. The reason is that the stock return is fluctuated and is very easy to be influenced by extreme values caused by <em>black swan incidents</em>.</p>
+<p>To mitigate the impact from the extreme values, we can label the records that we deem profitable to <strong>True</strong> and label the ones that we see as not profitable as <strong>False</strong>. So obviously, we reshape our question from <strong>predicting the exact future return</strong> to <strong>finding out the stocks that we think are profitable</strong>. Doesn’t this sound much more feasible for our program to find a boundary separating profitable and not profitable stocks than find the exact stock return? For example, we can label <code>True</code> to the stocks that have one month return is higher than 8% (including the commission fee that we need to pay and the slippage that happened when the stocks bought and sold), and label the rest to <code>False</code>.</p>
+<p>Once we process our data this way, we can remove the noise to a certain extent and increase the accuracy of our machine learning model.</p>
+<h2 id="What-is-the-best-size-for-the-data-when-training-the-model"><a href="#What-is-the-best-size-for-the-data-when-training-the-model" class="headerlink" title="What is the best size for the data when training the model?"></a>What is the best size for the data when training the model?</h2><p>Sometimes the data scientist found out that their machine learning wouldn’t converge while training their model because their model wouldn’t be able to find the optimal equation. Then one of the solutions is to acquire more data to be added into the training set so that the program will have enough data to judge when and where to converge and to find the optimal equation. However, this solution is not 100% true when applying the machine learning algorithm to quantitative investment.</p>
+<p>Theoretically speaking, the stock prices were impacted by the most recent corporate news and facts. As time passes by, the magnitude of the impact will gradually fall off. If we use the trained model trained with data 10 years ago, the ability to predict the future price is weakening as the market would no longer recognize the corporate news and facts.</p>
+<p>Hence, the size of your training data wouldn’t matter, but the immediacy of the data does. Historic data within two years (24 months) would be recommended to be used to training your model.</p>
+<h1 id="Postlogue-What-is-our-ultimate-goal-of-developing-a-quantitative-investment-strategy"><a href="#Postlogue-What-is-our-ultimate-goal-of-developing-a-quantitative-investment-strategy" class="headerlink" title="Postlogue: What is our ultimate goal of developing a quantitative investment strategy?"></a>Postlogue: What is our ultimate goal of developing a quantitative investment strategy?</h1><p>After reading various articles regarding developing quantitative strategies and studying critical metrics that show how to better evaluate the strategy performance, I was convinced that pursuing high return and low risk of the strategy would be our mission. However, I read a quote from the book <code>Advances in Financial Machine Learning</code> by <code>Marcos Lopez De Pardo</code> that really inspired me.</p>
+<blockquote>
+<p><strong>Think it like running a business.</strong></p>
+<p>Professionals develop methods to mass-produce strategies. The money is not in making a car, it is in making a car factory.</p>
+<p>Therefore your goal is to run a research lab like a factory, where true discoveries are not born out of inspiration, but out of methodic hard work.</p>
+</blockquote>
+<p>By saying that, we should put more attention to building the processes and tools so that we can conduct the quantitative research in a faster and more accurate fashion, instead of dedicating indefinite time to <strong>PERFECT</strong> our high-return strategy. Any high-return strategy would eventually be retired one day as the macroeconomics shifts or as the regime changes. Or to say, there’s no such a strategy that keeps making profits without investor’s constant attention to adopting all the potential changes in their strategy variables.</p>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/20/2021-04-20-annual-summary/" rel="prev" title="My 2020 Annual Transcript">
+      <i class="fa fa-chevron-left"></i> My 2020 Annual Transcript
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-does-Machine-learning-do-in-the-finance-world"><span class="nav-number">1.</span> <span class="nav-text">What does Machine learning do in the finance world?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Supervised-learning"><span class="nav-number">1.1.</span> <span class="nav-text">Supervised learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unsupervised-learning"><span class="nav-number">1.2.</span> <span class="nav-text">Unsupervised learning</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-does-machine-learning-work"><span class="nav-number">2.</span> <span class="nav-text">How does machine learning work?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-Curating"><span class="nav-number">2.1.</span> <span class="nav-text">Data Curating</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Feature-Discover-Analyze"><span class="nav-number">2.2.</span> <span class="nav-text">Feature Discover&#x2F;Analyze</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Training-the-model"><span class="nav-number">2.3.</span> <span class="nav-text">Training the model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Predicting-the-expected-variable"><span class="nav-number">2.4.</span> <span class="nav-text">Predicting the expected variable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Forming-strategy-and-backtest"><span class="nav-number">2.5.</span> <span class="nav-text">Forming strategy and backtest</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-are-the-FAMQs-Frequently-Asked-Myself-Questions"><span class="nav-number">3.</span> <span class="nav-text">What are the FAMQs (Frequently Asked Myself Questions)?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Are-we-using-yesterday%E2%80%99s-data-to-predict-tomorrow%E2%80%99s-return"><span class="nav-number">3.1.</span> <span class="nav-text">Are we using yesterday’s data to predict tomorrow’s return?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Should-we-use-classifier-or-linear-regression-type-of-models"><span class="nav-number">3.2.</span> <span class="nav-text">Should we use classifier or linear regression type of models?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-the-best-size-for-the-data-when-training-the-model"><span class="nav-number">3.3.</span> <span class="nav-text">What is the best size for the data when training the model?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Postlogue-What-is-our-ultimate-goal-of-developing-a-quantitative-investment-strategy"><span class="nav-number">4.</span> <span class="nav-text">Postlogue: What is our ultimate goal of developing a quantitative investment strategy?</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
