@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="In the post 【Machine Learning】 Part II - How to build a machine learning boilerplate?, we have successfully built our machine learning boilerplate. By having this template, we can develop an advanced">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Machine Learning】 Part III - 4 myths about practicing quant trading with machine learning">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="In the post 【Machine Learning】 Part II - How to build a machine learning boilerplate?, we have successfully built our machine learning boilerplate. By having this template, we can develop an advanced">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/cover.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/LR.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/SVM.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/XGBoost.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/data.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/training.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/sample.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/excess_rtn.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/n_features_vs_AUC.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/n_features_vs_excess_rtn.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/relation_tperiod_AUC.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/excess_rtn_by_tperiod.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/c_m_o.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/auc_vs_rtn.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/auc_vs_rtn_by_kernel.png">
+<meta property="article:published_time" content="2021-06-14T06:44:49.000Z">
+<meta property="article:modified_time" content="2021-06-18T04:58:18.849Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/cover.jpg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Machine Learning】 Part III - 4 myths about practicing quant trading with machine learning | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Machine Learning】 Part III - 4 myths about practicing quant trading with machine learning
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-06-14 14:44:49" itemprop="dateCreated datePublished" datetime="2021-06-14T14:44:49+08:00">2021-06-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-06-18 12:58:18" itemprop="dateModified" datetime="2021-06-18T12:58:18+08:00">2021-06-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Notes/" itemprop="url" rel="index"><span itemprop="name">Notes</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/" class="post-meta-item leancloud_visitors" data-flag-title="【Machine Learning】 Part III - 4 myths about practicing quant trading with machine learning" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/cover.jpg" class="" width="600">
+<p>In the post <a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">【Machine Learning】 Part II - How to build a machine learning boilerplate?</a>, we have successfully built our machine learning boilerplate. By having this template, we can develop an advanced machine learning trading strategy upon. However, even with the strategy result that looks profoundly profitable, we still won’t be able to know how much money we can make by looking at the accuracy rate of our machine learning trading algorithm.</p>
+<p>In order to better understand whether the results from the output of our model are really concerning our portfolio return, I put together a rather simple strategy and run several backtests with different parameters. In the end, we’re going to answer several frequently asked questions in order to decrypt the myths of machine learning trading algorithms.</p>
+<a id="more"></a>
+<p>Here I introduced the <a target="_blank" rel="noopener" href="https://www.joinquant.com/">JoinQuant platform</a> into our toolset in order to backtest our strategy. After several times of tuning and research to further advance our preliminary machine learning boilerplate, I’ve executed 108 backtest on the JoinQuant platform to see how well the strategy could perform if we launch this machine learning strategy to the stock market. By summarizing the results from these 108 backtest, there are a few things that are interesting for beginners of quant trading to learn before developing their own machine learning quantitative trading strategies.</p>
+<h1 id="Setup-before-we-start"><a href="#Setup-before-we-start" class="headerlink" title="Setup before we start"></a>Setup before we start</h1><h2 id="Quick-introduction-of-the-machine-learning-models"><a href="#Quick-introduction-of-the-machine-learning-models" class="headerlink" title="Quick introduction of the machine learning models"></a>Quick introduction of the machine learning models</h2><p>I picked three different machine learning models to see whether different models will greatly impact the outcome of the strategy. Three models are: <code>Logistic regression</code>, <code>SVM</code> with Gaussian kernel, and <code>XGBoost</code>. I’m not going to cover the theory of each model as our focus in this article is to extract some valuable insights from the backtest results.</p>
+<h3 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h3><p><code>Logistic regression</code> is one of the most commonly used algorithms in the field. Similar to the theory of linear regression as we explain <strong>Supervised Learning</strong> <a href="https://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">here</a>, the input data will be fed into the pipeline to produce a final score. Logistic regression simply applies the <strong><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Sigmoid_function">Sigmoid function</a></strong> to convert the final score into either 0 or 1. We’re going to get an array of [1, 0, 0, 1, …, 0] as the outcome from the logistic regression, which we can reinterpret the array into [True, False, False, True, …, False] as our final results.</p>
+<p>In other words, we’re trying to find the exact line to separate the 0’s and the 1’s.<br><img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/LR.png" class="" width="500"></p>
+<p style="text-align:center; color: grey;">
+    <i>The classic linear regression model</i>
+</p>
+
+<h3 id="SVM-Support-Vector-Machine"><a href="#SVM-Support-Vector-Machine" class="headerlink" title="SVM (Support Vector Machine)"></a>SVM (Support Vector Machine)</h3><p><code>SVM</code> is a variant of <code>logistic regression</code>. Instead of finding the exact line to separate all the 0’s and the 1’s, we’re adding a buffer parameter (the penalty term <em>C</em> in the diagram) into the model. By adding this buffer, the model would be much more resilient to the test data.</p>
+<img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/SVM.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+    <i>SVM is a more flexible classification model</i>
+</p>
+
+<h3 id="XGBoost"><a href="#XGBoost" class="headerlink" title="XGBoost"></a>XGBoost</h3><p>XGBoost is a tree-like classification model. By inputting data into the tree-like trained model, the model will generate relative scores in each end leaf. After adding up all the scores presented in the leaves and applying the <strong>sigmoid function</strong>, we will have our final prediction for that specific test data. Essentially, it’s a different technique than the previous two algorithms.<br><img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/XGBoost.png" class="" width="500"></p>
+<p style="text-align:center; color: grey;">
+    <i>XGBoost is essentially a type of decision tree</i>
+</p>
+
+<h2 id="Data-and-factors"><a href="#Data-and-factors" class="headerlink" title="Data and factors"></a>Data and factors</h2><p>Below are the data and factors that I used to train the model. You can reference <a target="_blank" rel="noopener" href="https://www.joinquant.com/help/api/help#name:factor_values">here</a> to know what these factors stand for.<br><img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/data.png" class="" width="200"></p>
+<p style="text-align:center; color: grey;">
+    <i>Factor data</i>
+</p>
+
+<p>Also, I neutralized the data against the industry category and market capitalization, and winsorized the data to mitigate the extreme data as standard steps to process the data.</p>
+<h2 id="How-to-train-the-model"><a href="#How-to-train-the-model" class="headerlink" title="How to train the model"></a>How to train the model</h2><p>I’m going to train the data as we said in <a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">this article</a>. I didn’t split the CV data from the original data, as our purpose is to train the model constantly with the latest data instead of using the same batch of data over and over again. Standardization and Principal Component Analysis (PCA) were also applied to the data before training the model.</p>
+<img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/training.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+    <i>Rolling over the data to include new data and exclude old data</i>
+</p>
+
+<h2 id="Our-strategy"><a href="#Our-strategy" class="headerlink" title="Our strategy"></a>Our strategy</h2><p>Let’s quickly put together our trade strategy to be used in this backtest experiment:</p>
+<ol>
+<li>Collect and adjust our portfolio on monthly basis.</li>
+<li>Label the stocks that have the top 30% daily return as +ve data, and the stocks that have the bottom 30% as -ve data. This label is what we used in the <code>y_data</code> to train our model.</li>
+<li>Portfolio capacity set to be 20, meaning we can hold at most 20 stocks at the same time.</li>
+<li>There are two variants regarding how to pick the stocks we’re going to buy:<br>4.1. Buy the top 20 stocks that have the highest probabilities to be +ve.<br>4.2. Buy the stocks that were predicted +ve.</li>
+<li>We set our stop-gain point at 70%, and stop-loss point at 8%. 70% of stop gain would not stop us from gaining the margin of the top 30% stocks, and 8% would simply be my personal risk-aversion level.</li>
+</ol>
+<h1 id="Resolving-myths"><a href="#Resolving-myths" class="headerlink" title="Resolving myths"></a>Resolving myths</h1><p>These 108 backtest were conducted with the test data from 2019-09-29 to 2021-05-07. The parameters include: the types of machine learning algorithms, the length of training periods, the number of selected factors, when to place orders, … etc. The benchmark is the <a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E4%B8%AD%E8%AF%81500%E6%8C%87%E6%95%B0/9192904?fromtitle=%E4%B8%AD%E8%AF%81500&amp;fromid=17200509&amp;fr=aladdin"><code>ZZ500 index</code></a>, and the benchmark return during the test period is <strong>28.74%</strong>.</p>
+<p>To show you what the result would be like, I screenshot one of the backtest results:<br><img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/sample.png" class="" width="500"></p>
+<p style="text-align:center; color: grey;">
+    <i>Backtest results ran on JoinQuant</i>
+</p>
+
+<p>However, it’s still quite difficult to find out what is the best case that has all the parameters right simply by looking at the numbers and chart. Here I put all the data into one CSV sheet and visualized the data to extract a few insights from different angles. Hopefully, we can get an idea of what are the most crucial parameters that we need to consider before we throw this strategy into the market. They are:</p>
+<ul>
+<li>Which of the machine learning algorithms has better performance?</li>
+<li>How many features we should use?</li>
+<li>How much data we should use to train our model?</li>
+<li>When should we trade our target stock?</li>
+<li>Is AUC the indicator we use to evaluate our model?</li>
+</ul>
+<h2 id="Which-of-the-machine-learning-algorithms-has-better-performance"><a href="#Which-of-the-machine-learning-algorithms-has-better-performance" class="headerlink" title="Which of the machine learning algorithms has better performance?"></a>Which of the machine learning algorithms has better performance?</h2><img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/excess_rtn.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>Excess return by machine learning models</i>
+    <br>
+    <small></small><i>The red dots indicate the excess return compares to the ZZ500 benchmark return of 28.74%</i></small>
+</p>
+
+<p>The <code>LogisticRegression</code> from sklearn.linear_model seems to have the most stable excess portfolio return ranging from ~15% to ~70%. <code>XGBoost</code> seems to be the best model as it gave us the best potential portfolio return ranging from 18% to 120%. As for the <code>svm.svc (support vector machine model)</code>, which has too much downside risk and could potentially cause us to lose money, would be the least desirable model to utilize at the first glance.</p>
+<h2 id="How-many-features-we-should-use"><a href="#How-many-features-we-should-use" class="headerlink" title="How many features we should use?"></a>How many features we should use?</h2><img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/n_features_vs_AUC.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>AUC v.s. number of features selected</i>
+</p>
+
+<p>I’ve run the backtest with 20, 30, 40 features using function <code>RFE (Recursive feature elimination)</code> in sklearn.feature_selection, which will analyze the features and then select the most relevant features. By looking at the diagram, you can tell that except for the <code>Logistic Regression</code> model, the higher AUC you will get if you picked more features to train your model. That might indicates that our model is capable of predicting more accurately if more features were accounted for.</p>
+<blockquote>
+<p>AUC: AUC is the model evaluation indicator ranging from 0 to 1, which is used to evaluate the accuracy of your classification model. When 0.5 &lt; AUC &lt; 1, you actually own a pretty good machine learning model that classifies True or False.</p>
+</blockquote>
+<img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/n_features_vs_excess_rtn.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>Excess return by the number of features selected</i>
+</p>
+
+<p>There is no clear increase of excess return even though we have higher AUC when you look at the above diagram. The red dots of excess return are dispersed all over the chart. The distribution of red dots is even more separated if we picked 40 features. This phenomenon potentially tells us that our model is over-fitting with 40-feature data, rendering a lower ability to predict the future. On the other hand, if we look at the scenario of <code>XGBoost</code> model with 40 features, this is the scenario that gives us the highest excess return with tolerable variance. So this could be one of our parameter combinations to apply to our final model.</p>
+<h2 id="How-much-data-we-should-use-to-train-our-model"><a href="#How-much-data-we-should-use-to-train-our-model" class="headerlink" title="How much data we should use to train our model?"></a>How much data we should use to train our model?</h2><img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/relation_tperiod_AUC.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>Training periods v.s. AUC</i>
+</p>
+
+<p>Machine learning is an algorithm that aggregates historical data to form a pattern and further uses this pattern to predict the future. The more data you feed into the model, the algorithm will have much more ideas to decide whether a specific scenario will happen or not. However, this doesn’t 100% apply to the stock market as there are too many variables and events that cannot be quantified as inputs to feed into the model. Also, stock prices and indicators are time series that the recent data is more relevant than the data three years ago. The above diagram perfectly explains that the accuracy and AUC of the model won’t hugely increase even you have more data to train your model.</p>
+<p>On the contrary, longer periods of training data seem to sabotage the accuracy and AUC. As presented in the below diagram, both excess return of <code>svm.svc</code> and excess return of <code>XGBoost</code> decrease when the training periods increase. Seems the <strong>‘freshness’</strong> of financial data will dissipate over time.</p>
+<img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/excess_rtn_by_tperiod.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>Excess return by training periods</i>
+</p>
+
+<h2 id="When-should-we-trade-our-target-stock"><a href="#When-should-we-trade-our-target-stock" class="headerlink" title="When should we trade our target stock?"></a>When should we trade our target stock?</h2><p>If you’re an algo trader who adjusts your portfolio on a daily/weekly/monthly basis, I believe you have the same question as I do: <strong><em>When should I place my order on the day I adjust my portfolio?</em></strong>. The stock prices fluctuate in one intraday. Therefore the timing we place our order could potentially impact our portfolio return.</p>
+<p>Here I did a quick experiment by backtesting each scenario two times, one scenario places orders around 09:30 after the market is open, and the other places orders around 14:40 before the market closes. Interestingly, the second scenario has a 77.78% probability to win the first. Meaning, if we place our orders before the market closes, we will have a 77.78% of chance to generate more profit. See the below diagram for the distribution of return differences by models:</p>
+<img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/c_m_o.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>Return difference between placing orders after the market is opened and placing orders before the market closed</i>
+</p>
+
+<p>There are a few possible reasons I have in mind that might explain why this is happening:</p>
+<ul>
+<li>In the training process, I use close price to label the stocks instead of the open price. So, placing orders before the market closes will help me get closer to the trained model.</li>
+<li>When there’s bad news happening, the stock prices incline to move a lot faster than any other time. Stock prices drop drastically in the pre-market, and will reach our stop -oss point right after the market opened. However, a movement like this tends to bounce back more or less on the same day in the afternoon. So placing orders in the afternoon would prevent us from stopping loss too early.</li>
+<li>A lot of intraday traders and speculators tend to close their positions before the market closes as they have done their work exploiting insider news or any other news. When all the speculations have been digested by the market, the stock price will be much more reasonable and stable.</li>
+</ul>
+<h2 id="Is-AUC-the-indicator-we-use-to-evaluate-our-models"><a href="#Is-AUC-the-indicator-we-use-to-evaluate-our-models" class="headerlink" title="Is AUC the indicator we use to evaluate our models?"></a>Is AUC the indicator we use to evaluate our models?</h2><p>As explained in the above questions, AUC is the indicator to evaluate the accuracy of your classification model. But, does the AUC has a positive relationship with our portfolio return? Let’s first take a look at the regression plot between the AUC and the portfolio return of all our backtest below.</p>
+<img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/auc_vs_rtn.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>AUC v.s. return</i>
+</p>
+
+<p>The diagram above doesn’t imply a positive correlation between AUC and portfolio return. The regression slope is quite flat, indicating AUC has a close-to-zero connection with the portfolio return. So it almost is a random walk. No way!! How could weeks of work tell me that this model is useless!?</p>
+<p>Calm down. Let me use another angle to diagnose this plot again. I’m adding another dimension to separate the dots by the model we use. Now let’s see how it looks like.</p>
+<img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/auc_vs_rtn_by_kernel.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>AUC v.s. return(by models)</i>
+</p>
+
+<p>Wow wow! Now it looks different. The diagram actually tells me that the <code>XGBoost</code> model and the <code>Logistic Regression</code> model contain a certain degree of positive correlation between AUC and portfolio return. This relationship will be buried if we look at each dot is from the identical model.</p>
+<p>There are two possible reasons that why the first diagram can’t tell us there’s a potential positive correlation but the second one can:</p>
+<ul>
+<li>The regression was contaminated by the outlier examples lies in the bottom right quadrant.</li>
+<li>We shouldn’t compare AUC across different models.</li>
+</ul>
+<h1 id="Before-we-close-this-topic"><a href="#Before-we-close-this-topic" class="headerlink" title="Before we close this topic"></a>Before we close this topic</h1><p>I believe that 108 backtests are actually not enough to help us cover every spectrum in order to answer these questions. However, I think this could be a starting point for you to understand how we can approach these types of questions in order to evaluate the effectiveness of our machine learning trading algorithm.</p>
+<p>See you next time.</p>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/10/2021-05-14-machine-learning-prototype/" rel="prev" title="【Machine Learning】 Part II - How to build a machine learning boilerplate?">
+      <i class="fa fa-chevron-left"></i> 【Machine Learning】 Part II - How to build a machine learning boilerplate?
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Setup-before-we-start"><span class="nav-number">1.</span> <span class="nav-text">Setup before we start</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-introduction-of-the-machine-learning-models"><span class="nav-number">1.1.</span> <span class="nav-text">Quick introduction of the machine learning models</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Logistic-Regression"><span class="nav-number">1.1.1.</span> <span class="nav-text">Logistic Regression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SVM-Support-Vector-Machine"><span class="nav-number">1.1.2.</span> <span class="nav-text">SVM (Support Vector Machine)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XGBoost"><span class="nav-number">1.1.3.</span> <span class="nav-text">XGBoost</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-and-factors"><span class="nav-number">1.2.</span> <span class="nav-text">Data and factors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-train-the-model"><span class="nav-number">1.3.</span> <span class="nav-text">How to train the model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Our-strategy"><span class="nav-number">1.4.</span> <span class="nav-text">Our strategy</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Resolving-myths"><span class="nav-number">2.</span> <span class="nav-text">Resolving myths</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Which-of-the-machine-learning-algorithms-has-better-performance"><span class="nav-number">2.1.</span> <span class="nav-text">Which of the machine learning algorithms has better performance?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-many-features-we-should-use"><span class="nav-number">2.2.</span> <span class="nav-text">How many features we should use?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-much-data-we-should-use-to-train-our-model"><span class="nav-number">2.3.</span> <span class="nav-text">How much data we should use to train our model?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-should-we-trade-our-target-stock"><span class="nav-number">2.4.</span> <span class="nav-text">When should we trade our target stock?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Is-AUC-the-indicator-we-use-to-evaluate-our-models"><span class="nav-number">2.5.</span> <span class="nav-text">Is AUC the indicator we use to evaluate our models?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Before-we-close-this-topic"><span class="nav-number">3.</span> <span class="nav-text">Before we close this topic</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
