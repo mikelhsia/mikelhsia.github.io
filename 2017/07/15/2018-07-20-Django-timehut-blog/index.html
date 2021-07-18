@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://mikelhsia.github.io/2017/07/15/2018-07-20-Django-timehut-blog/python-django.png">
 <meta property="article:published_time" content="2017-07-15T04:57:40.000Z">
-<meta property="article:modified_time" content="2020-08-20T08:31:16.249Z">
+<meta property="article:modified_time" content="2021-06-18T09:54:10.643Z">
 <meta property="article:author" content="Michael Hsia">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="Django">
@@ -210,17 +210,8 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-20 16:31:16" itemprop="dateModified" datetime="2020-08-20T16:31:16+08:00">2020-08-20</time>
+                <time title="Modified: 2021-06-18 17:54:10" itemprop="dateModified" datetime="2021-06-18T17:54:10+08:00">2021-06-18</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Notes/" itemprop="url" rel="index"><span itemprop="name">Notes</span></a>
-                </span>
-            </span>
 
           
             <span id="/2017/07/15/2018-07-20-Django-timehut-blog/" class="post-meta-item leancloud_visitors" data-flag-title="Python Django Setup" title="Views">
@@ -257,7 +248,7 @@
         <img data-src="/2017/07/15/2018-07-20-Django-timehut-blog/python-django.png" class="" width="600">
 <p>Recently, I’m digging into python Django framework to practice python and to learn a skill when I quit my job as a project manager _(or get fired)_. So here are some notes that I’ve put together that helps me understand what and which I should do. It’s also a flow that I follow every time learning a new framework in any programming language.</p>
 <h3 id="settings-py-and-any-other-configurations"><a href="#settings-py-and-any-other-configurations" class="headerlink" title="settings.py and any other configurations"></a>settings.py and any other configurations</h3><blockquote>
-<p>Get familiar with the settings and configs would save you a lot of efforts.<br><a id="more"></a><br>Whenever you found a function/feature that is missing in the framework you’re learning, don’t panic. First looking into the settings and its documentation, which you sometimes found out the author of this framework has already thought of this and put them in the settings as an option for you to enable/disable. </p>
+<p>Get familiar with the settings and configs would save you a lot of efforts.<br><a id="more"></a><br>Whenever you found a function/feature that is missing in the framework you’re learning, don’t panic. First looking into the settings and its documentation, which you sometimes found out the author of this framework has already thought of this and put them in the settings as an option for you to enable/disable.</p>
 </blockquote>
 <p>I guess the reason why they (the authors) doing this is because they don’t want to spook you with tens of thousands of settings, switches, unknown file paths, and API keys and such.<br><!--more--><br><code>The first line of codes I&#39;m looking at while learning Django</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DATABASES &#x3D; &#123;</span><br><span class="line">    &#39;default&#39;: &#123;</span><br><span class="line">        &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,   # 数据库引擎</span><br><span class="line">        &#39;NAME&#39;: &#39;mydb&#39;,       # 你要存储数据的库名，事先要创建之</span><br><span class="line">        &#39;USER&#39;: &#39;root&#39;,         # 数据库用户名</span><br><span class="line">        &#39;PASSWORD&#39;: &#39;1234&#39;,     # 密码</span><br><span class="line">        &#39;HOST&#39;: &#39;localhost&#39;,    # 主机</span><br><span class="line">        &#39;PORT&#39;: &#39;3306&#39;,         # 数据库使用的端口</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="Database-migration"><a href="#Database-migration" class="headerlink" title="Database migration"></a>Database migration</h3><p>Why I’m looking into this is because I had another <code>scrapy</code> project that scraped tons of things into the database, as back then I don’t know what I would like to do with the information I scraped.</p>
@@ -329,8 +320,6 @@
 <p>in feeds.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from django.contrib.syndication.views import Feed</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
 
     </div>
-    
-      
     
 
     
@@ -429,20 +418,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">32</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
