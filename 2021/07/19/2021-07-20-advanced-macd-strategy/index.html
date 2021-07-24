@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content=".foo table th:nth-of-type(1){ width: 5%; } .foo table th:nth-of-type(2){ width: 10% ; } .foo table th:nth-of-type(3){ width: 10%; } .foo table th:nth-of-type(4){ width: 45%; } .foo table th:nth-of-t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Optimize your MACD strategies with advanced indicators">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content=".foo table th:nth-of-type(1){ width: 5%; } .foo table th:nth-of-type(2){ width: 10% ; } .foo table th:nth-of-type(3){ width: 10%; } .foo table th:nth-of-type(4){ width: 45%; } .foo table th:nth-of-t">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/decidophobia.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/indicators.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/macd_hist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/spy.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/simple-simple.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/simple-history.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/simple-saucer.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/simple-lame.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/signal-simple.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/signal-history.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/signal-saucer.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/signal-lame.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/history-simple.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/history-history.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/history-saucer.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/history-lame.png">
+<meta property="article:published_time" content="2021-07-18T18:35:44.000Z">
+<meta property="article:modified_time" content="2021-07-24T08:52:18.565Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Momentum">
+<meta property="article:tag" content="Strategy">
+<meta property="article:tag" content="Research">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Optimize your MACD strategies with advanced indicators | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Optimize your MACD strategies with advanced indicators
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-07-19 02:35:44" itemprop="dateCreated datePublished" datetime="2021-07-19T02:35:44+08:00">2021-07-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-07-24 16:52:18" itemprop="dateModified" datetime="2021-07-24T16:52:18+08:00">2021-07-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/07/19/2021-07-20-advanced-macd-strategy/" class="post-meta-item leancloud_visitors" data-flag-title="Optimize your MACD strategies with advanced indicators" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/07/19/2021-07-20-advanced-macd-strategy/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/07/19/2021-07-20-advanced-macd-strategy/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/cover.png" class="" width="600">
+<style>
+.foo table th:nth-of-type(1){
+width: 5%;
+}
+.foo table th:nth-of-type(2){
+width: 10%
+;
+}
+.foo table th:nth-of-type(3){
+width: 10%;
+}
+.foo table th:nth-of-type(4){
+width: 45%;
+}
+.foo table th:nth-of-type(5){
+width: 30%;
+}
+</style>
+
+<p><br><br>In the post <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/">How to save your silver bullets with MACD strategy?</a>, we have backtested the strategy of MACD and the other six different momentum indicators. In the end, the combination of MACD and the awesome oscillator is the better and seemingly profitable one among all six combinations. But, we won’t stop right there. In order to raise our portfolio win rate and return, we will discuss a few variants of MACD and Awesome Oscillator to derive different buy and sell signals.</p>
+<a id="more"></a>
+<hr>
+
+<h1 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h1><p>How to calculate the MACD and awesome oscillator and the others have been introduced in <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/">How to save your silver bullets with MACD strategy?</a>, so we’re skipping all the entry-level knowledge. Instead, we’re going to touch on how to utilize the generated indicators to put together the strategies that are profitable.</p>
+<p>I have found three different ways to generate MACD trading signals and four to generate awesome oscillator trading signals. Therefore, we will conduct $3 * 4 = 12$ backtest to see which combination would bring us more profits.</p>
+<hr>
+
+<h1 id="About-the-trading-strategy"><a href="#About-the-trading-strategy" class="headerlink" title="About the trading strategy"></a>About the trading strategy</h1><h2 id="Platform"><a href="#Platform" class="headerlink" title="Platform"></a>Platform</h2><p>As said in the previous post, Quantopian has already retired from the market. So I need to migrate the original trading script from Quantopian to <a target="_blank" rel="noopener" href="https://www.quantconnect.com/">QuantConnect</a>. To know more details about QuantConnect, you can check out the post <a href="https://mikelhsia.github.io/2021/07/18/2021-07-05-pros-cons-of-quantconnect/">Step up your game in Quant trading - Backtest platforms QuantConnect v.s. Quantopian review</a></p>
+<h2 id="Universe"><a href="#Universe" class="headerlink" title="Universe"></a>Universe</h2><p>Universe stands for a group of specific securities that are traded in the market. We are not going to put all the tradable securities in our basket because:</p>
+<ul>
+<li>Save memory and time while running our trading script.</li>
+<li>Not all securities in the market work well with the momentum strategy.</li>
+<li>Remove market noise by selecting the best fitting securities and put them into our universe.</li>
+</ul>
+<img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/decidophobia.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+    <i>Universe could help you focus on the securities that best-fit your strategy</i>
+</p>
+
+<p>So picking our universe would be an essential step to avoid decidophobia in selecting the numerous securities in the market.</p>
+<p>Here my assumption is that the securities in the <code>technology</code> sector would be influenced by the momentum factor the most. So we’re picking the technology stocks and sort them by <code>pbRatio</code>, <code>EPS</code>, <code>ROE</code>.</p>
+<h2 id="Prepping-MACD-and-Awesome-Oscillator-indicators"><a href="#Prepping-MACD-and-Awesome-Oscillator-indicators" class="headerlink" title="Prepping MACD and Awesome Oscillator indicators"></a>Prepping MACD and Awesome Oscillator indicators</h2><p>We are using the traditional MACD and awesome oscillator setup and no additional twist.</p>
+<img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/indicators.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+    <i>MACD and Awesome Oscillator indicators setup</i>
+</p>
+
+<h2 id="MACD-and-Awesome-Oscillator-signals"><a href="#MACD-and-Awesome-Oscillator-signals" class="headerlink" title="MACD and Awesome Oscillator signals"></a>MACD and Awesome Oscillator signals</h2><p>To follow the mindset of our previous strategy setup, we need both MACD and awesome oscillator trading signals to be true in order to trigger buy or sell actions. Here we extend our strategy and use three different ways to generate trading signals using MACD indicators:</p>
+<blockquote>
+<p>I. Simple MACD: We set our MACD trading signal to <code>True</code> when MACD is greater than 0, and to <code>False</code> when MACD is lower than 0.</p>
+</blockquote>
+<p>By the definition of <code>Talib</code> python package, MACD indicates $EMA_{short\ term} - EMA_{long\ term}$. So the <code>True</code> trading signal essentially telling you that the target stock price rising speed is faster than before.</p>
+<blockquote>
+<p>II. Signal MACD: We set our MACD trading signal to <code>True</code> when our MACD signal is over MACD, and set to <code>False</code> when MACD signal is below MACD.</p>
+</blockquote>
+<p>MACD signal passing above MACD shows the start of the up-trending momentum.</p>
+<blockquote>
+<p>III. Historic MACD: Set MACD trading signal to <code>True</code> when Hist[n] &gt; 0 and Hist[n-1] &lt; 0 and Hist[n-2] &lt; 0, while n is the current date.</p>
+</blockquote>
+<p>This strategy is meant to capture the scenarios when the momentum is about to revert. So we are going to buy when the MACD histogram bar turns from red to green, and to sell when the bar turns from green to red in order to capture the movement between peak and bottom. See the below illustration for the exact trading timing.</p>
+<img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/macd_hist.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+    <i>MACD histogram stands for the beginning of a upward/downward trend</i>
+</p>
+
+
+<p>In the meantime, there are four different ways to generate trading signals using awesome indicators:</p>
+<blockquote>
+<p>I. Simple AO: We set our AO trading signal to <code>True</code> when the value of AO is greater than 0.</p>
+</blockquote>
+<p>By the definition of the AO indicator, we will execute the buy and sell action only when</p>
+<script type="math/tex; mode=display">SMA(\frac{(High - Low)}{2},\ 5\ periods) > SMA(\frac{(High - Low)}{2},\ 34\ periods)</script><p>, which shows a strong up/down trending momentum in the recent five days.</p>
+<blockquote>
+<p>II. Historic AO: We set our AO trading signal to <code>True</code> when AO[n-2], AO[n-1] &lt; 0, AO[n] &gt; 0 where n is the current date.</p>
+</blockquote>
+<p>The disadvantage of the previous method is that we couldn’t judge whether the signal was triggered at the beginning or at the end of the up-trend. To be able to do that, we can add a queue to store the AO values of the previous day. So we can advance our strategy to <code>Turn green light when we have a green bar after we received two consecutive red bars</code>.</p>
+<blockquote>
+<p>III. AO Saucer</p>
+</blockquote>
+<p>This is a traditional AO strategy. We set our buy signal to <code>True</code> when the AO is above the zero-line and the AO histogram having two consecutive red bars where the second red bar is smaller than the first red one and the third bar of the histogram is green. On the contrary, we’ll launch a sell signal when the opposite signals were triggered.</p>
+<blockquote>
+<p>IV. Lame Oscillator</p>
+</blockquote>
+<p>This is an alternative AO strategy that I found in <a target="_blank" rel="noopener" href="https://medium.com/swlh/creating-a-profitable-version-of-the-macd-oscillator-trading-differently-ae3da2fe9728">this post</a>. The Lame Oscillator is the mirror view image of the Awesome Oscillator, where</p>
+<script type="math/tex; mode=display">Lame Oscillator = - Awesome Oscillator = - (EMA_{short\ term} - EMA_{long\ term})</script><p>And with <code>go long (buy) whenever the bars change to green</code>, you actually turning a momentum indicator (<em>awesome oscillator</em>) into a mean-reversion indicator (<em>lame oscillator</em>).</p>
+<h2 id="Backtest-setup"><a href="#Backtest-setup" class="headerlink" title="Backtest setup"></a>Backtest setup</h2><h3 id="Duration"><a href="#Duration" class="headerlink" title="Duration"></a>Duration</h3><p>We started our backtest from 2020/01/03 to 2021/06/30.</p>
+<p>During this backtest period, there are events that caused the market to be very volatile, such as:</p>
+<ol>
+<li>COVID-19 caused the market to plummet at the beginning of 2020</li>
+<li>US oil prices turned negative for the first time in history on April 20th, 2020.</li>
+<li>Tesla stock price rocket high since added into S&amp;P 500 on Dec 21st, 2020.</li>
+<li>Nasdaq and S&amp;P 500 to record high on June 22nd, 2021.</li>
+</ol>
+<p>This process of gradually recovering from the great landslide is an excellent case to validate whether our portfolio outgrows the other securities.</p>
+<img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/spy.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+    <i>SPY benchmark return from 2020/01/03 to 2021/06/30</i>
+</p>
+
+<h3 id="Capacity"><a href="#Capacity" class="headerlink" title="Capacity"></a>Capacity</h3><p>The maximum number of positions in our portfolio is <code>20</code>. This is a number that I feel comfortable with and enough to diversify the risk. Also keeping the capacity at 20 won’t generate too much transaction cost to reduce our profit earned.</p>
+<h3 id="Benchmark-equity"><a href="#Benchmark-equity" class="headerlink" title="Benchmark equity"></a>Benchmark equity</h3><p><code>SPDR S&amp;P 500 (SPY)</code></p>
+<hr>
+
+<h1 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h1><p>As instructed in <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/">How to save your silver bullets with MACD strategy?</a>, we combined our MACD indicator with secondary indicator, awesome indicator, and place buy/sell order only when both signals are <code>True</code>. By having three types of MACD trading signals and four types of awesome oscillator trading signals, we’re going to conduct backtest against each combination in order to find valuable insights:</p>
+<table>
+<thead>
+<tr style='background: lightgrey;'>
+<th>No.</th>
+<th>MACD</th>
+<th>AO</th>
+<th>PSR</th>
+<th>Unrealized</th>
+<th>Fee</th>
+<th>Net profit</th>
+<th>Return</th>
+<th>Total Trades</th>
+<th>Sharpe</th>
+<th>Average Win</th>
+<th>Average Loss</th>
+<th>Compounding annual return</th>
+<th>Profit-loss ratio</th>
+<th>Win rate</th>
+<th>Alpha</th>
+<th>Beta</th>
+<th>Annual STD</th>
+<th>Information ratio</th>
+<th>Treynor ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style='background: green; color: white;'>1</td>
+<td style='background: green; color: white;'>simple</td>
+<td style='background: green; color: white;'>simple</td>
+<td>63.632%</td>
+<td>12580.06</td>
+<td>-901.77</td>
+<td>66572.85</td>
+<td>78.28%</td>
+<td>386</td>
+<td>1.53</td>
+<td>0.57%</td>
+<td>-0.42%</td>
+<td>47.336%</td>
+<td>1.34</td>
+<td>71%</td>
+<td>0.479</td>
+<td>-0.194</td>
+<td>0.284</td>
+<td>0.505</td>
+<td>-2.246</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>2</td>
+<td style='background: green; color: white;'>simple</td>
+<td style='background: green; color: white;'>history</td>
+<td>34.555$</td>
+<td>5468.21</td>
+<td>-602.82</td>
+<td>81386.32</td>
+<td>86.30%</td>
+<td>235</td>
+<td>1.024</td>
+<td>1.09%</td>
+<td>-0.62%</td>
+<td>51.747%</td>
+<td>1.76</td>
+<td>71%</td>
+<td>0.75</td>
+<td>-0.141</td>
+<td>0.702</td>
+<td>0.65</td>
+<td>-5.101</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>3</td>
+<td style='background: green; color: white;'>simple</td>
+<td style='background: green; color: white;'>saucer</td>
+<td>85.070%</td>
+<td style='background: red; color: white;'>77031.19</td>
+<td>-67.35</td>
+<td>10746.71</td>
+<td>87.77%</td>
+<td style='background: red; color: white;'>30</td>
+<td>2.152</td>
+<td>2.66%</td>
+<td>-0.28%</td>
+<td>52.547%</td>
+<td>9.68</td>
+<td>80%</td>
+<td>0.457</td>
+<td>-0.037</td>
+<td>0.208</td>
+<td>0.659</td>
+<td>-12.102</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>4</td>
+<td style='background: green; color: white;'>simple</td>
+<td style='background: green; color: white;'>lame</td>
+<td>77.616%</td>
+<td style='background: red; color: white;'>89100.19</td>
+<td>-626.11</td>
+<td>34429.91</td>
+<td>122.96%</td>
+<td>310</td>
+<td>2.038</td>
+<td>1.10%</td>
+<td>-0.55%</td>
+<td>71.163%</td>
+<td>1.98</td>
+<td style='background: red; color: white;'>46%</td>
+<td>0.667</td>
+<td>-0.133</td>
+<td>0.313</td>
+<td>0.966</td>
+<td>-4.8</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>5</td>
+<td style='background: green; color: white;'>signal</td>
+<td style='background: green; color: white;'>simple</td>
+<td>62.294%</td>
+<td>2891.42</td>
+<td>-1552.71</td>
+<td>81655.38</td>
+<td>77.26%</td>
+<td>784</td>
+<td>1.504</td>
+<td>0.39%</td>
+<td>-0.55%</td>
+<td>46.771%</td>
+<td>0.72</td>
+<td>75%</td>
+<td>0.474</td>
+<td>-0.192</td>
+<td>0.287</td>
+<td>0.494</td>
+<td>-2.247</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>6</td>
+<td style='background: green; color: white;'>signal</td>
+<td style='background: green; color: white;'>history</td>
+<td>64.655%</td>
+<td>18826.02</td>
+<td>-865.60</td>
+<td>80217.01</td>
+<td>98.23%</td>
+<td>370</td>
+<td>1.613</td>
+<td>0.78%</td>
+<td>-0.81%</td>
+<td>58.193%</td>
+<td>0.96</td>
+<td>74%</td>
+<td>0.595</td>
+<td>-0.21</td>
+<td>0.34</td>
+<td>0.705</td>
+<td>-2.606</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>7</td>
+<td style='background: green; color: white;'>signal</td>
+<td style='background: green; color: white;'>saucer</td>
+<td>58.717%</td>
+<td>9274.61</td>
+<td>-498.98</td>
+<td>60188.65</td>
+<td>69.03%</td>
+<td>210</td>
+<td>1.386</td>
+<td>0.93%</td>
+<td>-1.01%</td>
+<td>42.165%</td>
+<td>0.92</td>
+<td>78%</td>
+<td>0.427</td>
+<td>-0.152</td>
+<td>0.283</td>
+<td>0.41</td>
+<td>-2.588</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>8</td>
+<td style='background: green; color: white;'>signal</td>
+<td style='background: green; color: white;'>lame</td>
+<td>45.533%</td>
+<td>3227.54</td>
+<td>-1648.22</td>
+<td>45332.09</td>
+<td style='background: red; color: white;'>46.94%</td>
+<td>842</td>
+<td>1.038</td>
+<td>0.46%</td>
+<td>-0.42%</td>
+<td>29.427%</td>
+<td>1.08</td>
+<td style='background: red; color: white;'>58%</td>
+<td>0.326</td>
+<td>-0.178</td>
+<td>0.275</td>
+<td>0.15</td>
+<td>-1.602</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>9</td>
+<td style='background: green; color: white;'>history</td>
+<td style='background: green; color: white;'>simple</td>
+<td>61.309%</td>
+<td>2243.49</td>
+<td>-1079.29</td>
+<td>69660.57</td>
+<td>70.87%</td>
+<td>393</td>
+<td>1.449</td>
+<td>0.64%</td>
+<td>-0.46%</td>
+<td>43.203%</td>
+<td>1.39</td>
+<td>67%</td>
+<td>0.436</td>
+<td>-0.173</td>
+<td>0.274</td>
+<td>0.425</td>
+<td>-2.3</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>10</td>
+<td style='background: green; color: white;'>history</td>
+<td style='background: green; color: white;'>history</td>
+<td>61.450%</td>
+<td>2289.94</td>
+<td>-1098.91</td>
+<td>70060.83</td>
+<td>71.30%</td>
+<td>336</td>
+<td>1.453</td>
+<td>0.64%</td>
+<td>-0.45%</td>
+<td>43.442%</td>
+<td>1.41</td>
+<td>67%</td>
+<td>0.438</td>
+<td>-0.173</td>
+<td>0.275</td>
+<td>0.429</td>
+<td>-2.307</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>11</td>
+<td style='background: green; color: white;'>history</td>
+<td style='background: green; color: white;'>saucer</td>
+<td>90.552%</td>
+<td style='background: red; color: white;'>83437.15</td>
+<td>-85.20</td>
+<td>39405.77</td>
+<td>122.79%</td>
+<td style='background: red; color: white;'>34</td>
+<td>2.53</td>
+<td>4.46%</td>
+<td>-1.29%</td>
+<td>71.079%</td>
+<td>3.46</td>
+<td>89%</td>
+<td>0.616</td>
+<td>-0.057</td>
+<td>0.238</td>
+<td>1.044</td>
+<td>-10.545</td>
+</tr>
+<tr>
+<td style='background: green; color: white;'>12</td>
+<td style='background: green; color: white;'>history</td>
+<td style='background: green; color: white;'>lame</td>
+<td>47.657%</td>
+<td>20467.80</td>
+<td>-164.71</td>
+<td>31814.14</td>
+<td>52.15%</td>
+<td>88</td>
+<td>1.098</td>
+<td>1.97%</td>
+<td>-0.77%</td>
+<td>32.488%</td>
+<td>2.57</td>
+<td style='background: red; color: white;'>59%</td>
+<td>0.345</td>
+<td>-0.135</td>
+<td>0.287</td>
+<td>0.221</td>
+<td>-2.332</td>
+</tr>
+</tbody>
+</table>
+
+<p>I believe it is a good practice to set up some baselines before starting to look at the line chart of our portfolio return over time. These basic guidelines stand for the limitations and capabilities of the strategy to our own knowledge. In our backtest results, we marked anomaly numbers from the summarized table above in <strong><i style="color: red;">RED</i></strong> color.</p>
+<ol>
+<li>First of all, we drop the backtests that have little <code>trades (number of transactions)</code>. Our strategy aims to capture the momentum between the buy signals and sell signals, so 30 trades generated in one and a half years doesn’t mean our strategy is ineffective. We simply wouldn’t be able to judge whether our strategy is consistently profitable over years with this little in samples.</li>
+<li>The same logic applies to <code>Unrealized (return)</code>. We consider trades to be successful when we buy security, hold for a period, and then sell to close the position. Without closing the positions, we won’t be able to test the profit-taking ability of our strategy. Therefore we wouldn’t prefer these scenarios.</li>
+<li>Other factors like the <code>winning rate</code> and the <code>total portfolio return</code> are also things for us to decide whether it’s a good strategy or not. Here we ruled out the strategies that have a low winning rate or total return.</li>
+</ol>
+<p>Once we have our baselines in place, let’s summarize our comments in the below table.</p>
+
+<div class='foo'>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>No.</th>
+<th>MACD</th>
+<th>AO</th>
+<th>Diagram</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>simple</td>
+<td>simple</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/simple-simple.png" class="" width="400"></td>
+<td>This is a great example of our desired strategy. <br>Even though our total return plummets during the COVID-19 event, our portfolio managed to grow steadily and to grow in the spread between total return and the benchmark return. Compounding annual rate 47.336% is good enough to be a quant strategy to trade on daily basis.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>simple</td>
+<td>history</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/simple-history.png" class="" width="400"></td>
+<td>Even though we have an attractive portfolio return, you’ll notice that our portfolio return has no difference from the benchmark return the 90% of the time. Our only profit gain started in a spike in Feb 2021. As our aim is to find a strategy that can create consistent profit, I wouldn’t say this strategy is appropriate and meet our goal.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>simple</td>
+<td>saucer</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/simple-saucer.png" class="" width="400"></td>
+<td>At first glance, this seems to be the perfect strategy as we don’t see a drastic drop during COVID-19, and the portfolio return outgrows steadily compared to benchmark return. However, this test scenario is against the guidelines that the number of trades is too little for us to confirm this signal as valid.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>simple</td>
+<td>lame</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/simple-lame.png" class="" width="400"></td>
+<td>Apparently the <code>Lame</code> indicator would be able to help us locate the good-quality stock, but couldn’t close the position under our exit strategy. This would be a good strategy if we can improve the exit strategy of this scenario.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>signal</td>
+<td>simple</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/signal-simple.png" class="" width="400"></td>
+<td>This strategy is not impressive as it took too long to recover from the pandemic collapse.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>signal</td>
+<td>history</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/signal-history.png" class="" width="400"></td>
+<td>Same as above</td>
+</tr>
+<tr>
+<td>7</td>
+<td>signal</td>
+<td>saucer</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/signal-saucer.png" class="" width="400"></td>
+<td>Same as above</td>
+</tr>
+<tr>
+<td>8</td>
+<td>signal</td>
+<td>lame</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/signal-lame.png" class="" width="400"></td>
+<td>Same as above</td>
+</tr>
+<tr>
+<td>9</td>
+<td>history</td>
+<td>simple</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/history-simple.png" class="" width="400"></td>
+<td>Same as the strategies in 5, 6, 7, 8, that this strategy took too long to surpass the benchmark return.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>history</td>
+<td>history</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/history-history.png" class="" width="400"></td>
+<td>Same as the strategies in 5, 6, 7, 8, that this strategy took too long to surpass the benchmark return.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>history</td>
+<td>saucer</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/history-saucer.png" class="" width="400"></td>
+<td>Same as scenario 3, the positions were built up too slowly as there were too few trading signals triggered. Could be a profitable strategy, but we need more signals and valid trades to justify whether this is a valid strategy.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>history</td>
+<td>lame</td>
+<td><img data-src="/2021/07/19/2021-07-20-advanced-macd-strategy/history-lame.png" class="" width="400"></td>
+<td>Same as the strategies in 5, 6, 7, 8, that this strategy took too long to surpass the benchmark return.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+
+<hr>
+
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><p>Unfortunately, the new methods to generate trading signals didn’t really help to improve the quality of our MACD trading strategy. The <code>Signal MACD</code> and the <code>Historic MACD</code> based scenarios didn’t produce a better performance at all. So once again we can confirm that our original MACD strategy with <code>Simple MACD</code> and <code>Simple AO</code> is a good enough strategy for now. But in the meantime, we have discovered two more possible optional strategies with <code>AO Saucer</code> indicators in backtesting 3 and 11. As long as we can generate more samples, we can justify our backtest results to see whether these newly generated samples are still giving the edge to make a consistent profit.</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://medium.com/swlh/creating-a-profitable-version-of-the-macd-oscillator-trading-differently-ae3da2fe9728">Creating a profitable MACD strategy</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/codex/bitcoin-trade-automation-with-awesome-oscillator-in-python-51f2c52c5b25">Bitcoin trade automation with awesome oscillator</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/pi-capital-union/awesome-oscillator-f1f58d99a155">Advanced strategy in awesome oscillator</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@voltzuk/using-the-awesome-oscillator-to-find-bitcoin-buy-and-sell-signals-46dedcd9eb22">Using the awesome oscillator to find bitcoin buy and sell signals</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Momentum/" rel="tag"># Momentum</a>
+              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
+              <a href="/tags/Research/" rel="tag"># Research</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/18/2021-07-05-pros-cons-of-quantconnect/" rel="prev" title="Step up your game in Quant trading - Backtest platforms QuantConnect v.s. Quantopian  review">
+      <i class="fa fa-chevron-left"></i> Step up your game in Quant trading - Backtest platforms QuantConnect v.s. Quantopian  review
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Objective"><span class="nav-number">1.</span> <span class="nav-text">Objective</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#About-the-trading-strategy"><span class="nav-number">2.</span> <span class="nav-text">About the trading strategy</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Platform"><span class="nav-number">2.1.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Universe"><span class="nav-number">2.2.</span> <span class="nav-text">Universe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prepping-MACD-and-Awesome-Oscillator-indicators"><span class="nav-number">2.3.</span> <span class="nav-text">Prepping MACD and Awesome Oscillator indicators</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MACD-and-Awesome-Oscillator-signals"><span class="nav-number">2.4.</span> <span class="nav-text">MACD and Awesome Oscillator signals</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-setup"><span class="nav-number">2.5.</span> <span class="nav-text">Backtest setup</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Duration"><span class="nav-number">2.5.1.</span> <span class="nav-text">Duration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Capacity"><span class="nav-number">2.5.2.</span> <span class="nav-text">Capacity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Benchmark-equity"><span class="nav-number">2.5.3.</span> <span class="nav-text">Benchmark equity</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Performance"><span class="nav-number">3.</span> <span class="nav-text">Performance</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">4.</span> <span class="nav-text">Summary</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
