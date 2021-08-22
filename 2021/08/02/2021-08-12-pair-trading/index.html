@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Pair trading is just like a man leashing a dog. They never apart too far away.   New Column started! In this new column, we’re going to start by introducing the idea and principle behind this fa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Pair Trading】Introduction to pair trading strategy">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Pair trading is just like a man leashing a dog. They never apart too far away.   New Column started! In this new column, we’re going to start by introducing the idea and principle behind this fa">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/cover.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/stores.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/step1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/step2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/step3.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/cclvsrcl.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/methods.png">
+<meta property="article:published_time" content="2021-08-02T07:02:21.000Z">
+<meta property="article:modified_time" content="2021-08-22T07:46:27.809Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Strategy">
+<meta property="article:tag" content="Research">
+<meta property="article:tag" content="Pair Trading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/cover.jpg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Pair Trading】Introduction to pair trading strategy | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Pair Trading】Introduction to pair trading strategy
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-02 15:02:21" itemprop="dateCreated datePublished" datetime="2021-08-02T15:02:21+08:00">2021-08-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-08-22 15:46:27" itemprop="dateModified" datetime="2021-08-22T15:46:27+08:00">2021-08-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/08/02/2021-08-12-pair-trading/" class="post-meta-item leancloud_visitors" data-flag-title="【Pair Trading】Introduction to pair trading strategy" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/08/02/2021-08-12-pair-trading/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/02/2021-08-12-pair-trading/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2021/08/02/2021-08-12-pair-trading/cover.jpg" class="" width="600">
+<p style="text-align:center; color: grey;">
+    <i>Pair trading is just like a man leashing a dog. They never apart too far away.</i>
+</p>
+
+<p>New Column started! In this new column, we’re going to start by introducing the idea and principle behind this famous strategy. In the later posts, we’ll do research using different famous methods in pair trading. Hopefully, we’ll cover the fundamental knowledge of pair trading as much as possible.</p>
+<p>Pairs trading is among the most popular trading strategies in many markets. This particular strategy involves simultaneous taking two correlated assets in different directions, using one asset in the pair to hedge the risk of the other one. Essentially, it is a market-neutral strategy.</p>
+<a id="more"></a>
+<h1 id="What-is-the-pair-strategy"><a href="#What-is-the-pair-strategy" class="headerlink" title="What is the pair strategy?"></a>What is the pair strategy?</h1><p>Imagine this, if there are two convenience stores (A &amp; B) opened in one area. They import their ingredients from the same farm and sell the same meat product at the same price <code>$10</code>. Both stores are making a good profit. As the product price of both stores tracks closely to each other, it’s expected that there won’t be a big difference in prices.</p>
+<img data-src="/2021/08/02/2021-08-12-pair-trading/stores.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Store A and store B</i>
+</p>
+
+<p>One day, the farm raises the price of the ingredient, causing the owner of store A to decide to raise the price to <code>$12</code> to spread the cost to his customers. Unfortunately, the owner of store B was out of town so the price in store B stays at <code>$10</code>. According to our past experience, we expect the price difference to converge after the owner of store B comes back to town. As a clever consumer, what you should do to get benefits from this opportunity?</p>
+<p>Should we buy more products from store B and store them in our warehouse at a cheaper price? Nah…. What if the farm again drops the price so that the product price would incline to drop as well. Our stock in the warehouse would be considered overpriced. The risk of taking either asset in one direction would be considered tremendous.</p>
+<p>…</p>
+<p>I believe as clever as you have already come up with the plan. We can buy the lower-priced product from store B, and sell it to the customers who want to buy the higher-priced product from store A. By doing that, there will be a <code>$2</code> profit <strong>per trade</strong>. We treat the price in store A and the price in store B as a pair. Whenever a price difference expands to certain degree, we could leverage the same strategy to buy the cheap one and sell the other expensive one. This can be exploited over and over again as long as the relationship between the price in store A and the price in store B doesn’t go away.</p>
+<p>And, that is the pair trading strategy.</p>
+<h1 id="History-of-pair-strategy"><a href="#History-of-pair-strategy" class="headerlink" title="History of pair strategy"></a>History of pair strategy</h1><p>Pair trading is a methodology and practice that derive from statistical arbitrage trading. It first appeared in the theory developed by Australian investor and hedge fund manager Alfred Winslow Jones in the 1950s. However, due to the nature of the pair trading strategy, these strategies were not made possible until the 1980s when computers gradually become popular.</p>
+<p>In 1987, Morgan Stanley disclosed the fact that they have made over 50 million dollars on pair trading strategy. The money at that time was like 10 times more valuable than the same amount today. Therefore you could imagine the amount of money they have made with a single strategy. Even the details of this strategy were revealed over time, the pair strategy is still the most popular market-neutral strategy these days.</p>
+<p>I learn from <a target="_blank" rel="noopener" href="https://blog.pairtradefinder.com/best-trading-strategy-ever/">here</a> that pair strategy has been identified as the trading strategy used by <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Jim_Simons_(mathematician"><strong><em>Jim Simons</em></strong></a>), the most successful and smart hedge fund manager. He has publicly stated that the strategy his hedge fund adopting is contrarian: <code>often buying stocks (that) recently out of favor, and selling those recently in favor</code>.</p>
+<p><div><iframe width='300' src="https://www.youtube.com/embed/lnSGgfv7Fv0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></p>
+<p style="text-align:center; color: grey;">
+  <i>The Founder and President of Renaissance Technologies had to say publicly in Congressional testimony</i>
+</p>
+
+<p><br><div style="border: 2pt solid lightgrey;border-radius: 4pt;box-shadow: 7px 7px lightgrey;padding: 1.3em;width:80%;margin:auto;">
+<i><b style="font-size:1.3em;padding: 1.3em;color:grey;">"We often buying stocks (that) recently out of favor, and selling those recently in favor"</b></i>
+</div><br></p>
+<h1 id="The-principle-of-pair-trading"><a href="#The-principle-of-pair-trading" class="headerlink" title="The principle of pair trading"></a>The principle of pair trading</h1><p>Even though with all these talks and examples to explain what pair trading is, the principle of the pair trading is actually surprisingly simple. First we need to find out the right pair that the price movements of two assets follow a pattern. Let’s take the stock pair <code>KEY-RF</code> for example.</p>
+<img data-src="/2021/08/02/2021-08-12-pair-trading/step1.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+  <i>The correlation between KEY and RF is fairly high</i>
+</p>
+
+<p>The price movements of <strong>KeyCorp(<a target="_blank" rel="noopener" href="https://finance.yahoo.com/quote/KEY/">KEY</a>)</strong> and <strong>Regions Financial Corporation(<a target="_blank" rel="noopener" href="https://finance.yahoo.com/quote/RF/">RF</a>)</strong> are very similar. But how similar they are? One way to do it is to check the price difference between their prices, which is called the <code>spread</code>. Therefore in the second step, we create a diagram of the spread to monitor the historic spread movement. To better understand the movement of spread, we marked the mean of the spread with the black dotted line, marked the threshold <code>mean + 1.5 * STD</code> and <code>mean - 1.5 * STD</code> to denote the area above and under the threshold are anomalies. As long as the spread breaks through the upper threshold, then we consider this a long signal. Once the movement drops to the mean of the spread, we consider the movement has restored to the normal level, so close the related positions.</p>
+<img data-src="/2021/08/02/2021-08-12-pair-trading/step2.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+  <i>The price spread between `KEY` and `RF`, and the green triangle denotes the long signal.</i>
+</p>
+
+<p>The last rule we need to follow is, we long the cheaper asset and short the more expensive asset in the pair. Again taking the <code>KEY-RF</code> pair for example, if we follow the trigger generated in the above diagram, we gain $\$19 - \$9 = \$10.0$ from the <code>KEY</code> we short, and we lost $\$15.8 - \$8 = \$7.8$ from the <code>RF</code> we long. Combining the P&amp;L of these paired assets, we actually earned $\$10.0 - \$7.8 = \$2.2$ in this trade. In short, the profit earned from the pair trading strategy is not from the movement of the stock’s intrinsic value, but from the anticipation of the shrinkage of the price spread.</p>
+<img data-src="/2021/08/02/2021-08-12-pair-trading/step3.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+  <i>KEY has recovered more return than what RF lost</i>
+</p>
+
+<p>To summarize everything in very simple words, there are only three steps to implement and execute the pair trading strategy:</p>
+<ol>
+<li>Find the target paired assets and how they are correlated</li>
+<li>Monitor the movement to see when to generate the trading signals</li>
+<li>Long the cheaper and short the more expensive when we see the trading signals.</li>
+</ol>
+<h1 id="How-to-find-the-pair-that-works"><a href="#How-to-find-the-pair-that-works" class="headerlink" title="How to find the pair that works?"></a>How to find the pair that works?</h1><p>So it all comes down to the question of how to find the right pair to trade. If two assets in your selected pair are not correlated or if they are correlated but the spread will not converge, then they are not the right pair to trade. Here are three methods you can use to try finding the right pair.</p>
+<h2 id="According-to-business-models"><a href="#According-to-business-models" class="headerlink" title="According to business models"></a>According to business models</h2><p>We can choose two assets that are similar in their business model because they are suffering the same environmental risk, business risk, infrastructure risk, …, as well as external opportunities. As a result, their price movement has the inclination to move in the same direction with the same magnitude. A potentially good pair could be <code>UBER</code> v.s. <code>LYFT</code>, or <code>CCL</code> v.s. <code>RCL</code>.</p>
+<img data-src="/2021/08/02/2021-08-12-pair-trading/cclvsrcl.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+  <i>CCL vs RCL in normalized price movement</i>
+</p>
+
+<h2 id="According-to-the-professional-knowledge"><a href="#According-to-the-professional-knowledge" class="headerlink" title="According to the professional knowledge"></a>According to the professional knowledge</h2><p>As the business models are the public information that is accessed by you and tens of thousands of people/institutions, the profit generated from this type of trading pair can fade away very quickly as so many parties are exploiting the same opportunity. To gain an edge competing with others, you need to study and work harder to keep yourself from competing with others in the red ocean.</p>
+<p>If you understand the business models in a bigger picture, you can put all the small pieces of information together to solve the puzzles. For example, you get to learn that company B is the sole supplier of company A. So if company A makes a good profit in the fiscal year, then you can expect company B will make a good profits as well. If not, there might be a chance for arbitrages. Or, if you find out that an ETF was tracking with a stock index like S&amp;P 500, you can trade when the spread between the ETF and the index expends and close this trade when the spread converges. You can spot more and more opportunities like this when you understand the assets or the market more,</p>
+<h2 id="According-to-the-pair-correlation-and-cointegration"><a href="#According-to-the-pair-correlation-and-cointegration" class="headerlink" title="According to the pair correlation and cointegration"></a>According to the pair correlation and cointegration</h2><p>This method is more of a mathematical way to find the right pair of assets. This post is already long enough, so you can check out this <a target="_blank" rel="noopener" href="https://www.quora.com/What-is-the-difference-between-correlation-and-cointegration-Is-cointegration-a-good-measure-of-risk">Quora thread</a> before we get to this topic in the following post.</p>
+<h1 id="Pair-trading-methods"><a href="#Pair-trading-methods" class="headerlink" title="Pair trading methods"></a>Pair trading methods</h1><p>Christopher Krauss has summarized various pair trading methods in his dissertation on <a target="_blank" rel="noopener" href="https://www.econstor.eu/bitstream/10419/116783/1/833997289.pdf">Statistical arbitrage pairs trading strategies</a>. The methods are:</p>
+<img data-src="/2021/08/02/2021-08-12-pair-trading/methods.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Extracted from <a target="_blank" rel="noopener" href='https://www.youtube.com/watch?v=gd009r7QUuM&list=PLfv9eTYgatm3oz8uq8G17-50ed_s-n5ds&index=2&t=238s'>Pairs Trading: The Distance Approach</a> by <a target="_blank" rel="noopener" href='https://www.youtube.com/channel/UC8hI87gt0dmTAIEupEcsckA'>Hudson & Thames</a></i>
+</p>
+
+<p>We will cover these methods one by one in the following series.</p>
+<h1 id="Pair-trading-resources"><a href="#Pair-trading-resources" class="headerlink" title="Pair trading resources"></a>Pair trading resources</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://hudsonthames.org/">Hudson &amp; Thames</a><ul>
+<li>It’s a research institution that puts a lot of effort into working on pair trading strategies. It also has a dedicated python library for people who are interested in working with pair trading strategies. Check out <a target="_blank" rel="noopener" href="https://hudsonthames.org/research/">their blog here</a> for more articles related to what they are doing.</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://blog.pairtradefinder.com/">Pair Trading Finder</a> is a blog that publishes its research regularly. Other than telling you their latest research results, they even share the best pair of stocks of the month to be traded.</li>
+</ul>
+<p>In the next post, we’ll start looking at how to build our first pair trading strategy using the distance approach.</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.newtraderu.com/2017/06/05/nature-pair-stock-trading-history/">The Nature of Pair Stock Trading History</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Pairs_trade">Pairs trade from Wikipedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/p/pairstrade.asp">Pairs trade from investopedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.pairtradefinder.com/best-trading-strategy-ever/">The Best Trading Strategy Ever? The Results Speak for Themselves…</a></li>
+<li><a target="_blank" rel="noopener" href="https://algotrading101.com/learn/pairs-trading-guide/">Pairs Trading – A Real-World Guide</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
+              <a href="/tags/Research/" rel="tag"># Research</a>
+              <a href="/tags/Pair-Trading/" rel="tag"># Pair Trading</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/19/2021-07-20-advanced-macd-strategy/" rel="prev" title="Optimize your MACD strategies with advanced indicators">
+      <i class="fa fa-chevron-left"></i> Optimize your MACD strategies with advanced indicators
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-the-pair-strategy"><span class="nav-number">1.</span> <span class="nav-text">What is the pair strategy?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#History-of-pair-strategy"><span class="nav-number">2.</span> <span class="nav-text">History of pair strategy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-principle-of-pair-trading"><span class="nav-number">3.</span> <span class="nav-text">The principle of pair trading</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-to-find-the-pair-that-works"><span class="nav-number">4.</span> <span class="nav-text">How to find the pair that works?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#According-to-business-models"><span class="nav-number">4.1.</span> <span class="nav-text">According to business models</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#According-to-the-professional-knowledge"><span class="nav-number">4.2.</span> <span class="nav-text">According to the professional knowledge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#According-to-the-pair-correlation-and-cointegration"><span class="nav-number">4.3.</span> <span class="nav-text">According to the pair correlation and cointegration</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pair-trading-methods"><span class="nav-number">5.</span> <span class="nav-text">Pair trading methods</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pair-trading-resources"><span class="nav-number">6.</span> <span class="nav-text">Pair trading resources</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
