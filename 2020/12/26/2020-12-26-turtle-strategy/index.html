@@ -31,10 +31,11 @@
 <meta property="og:image" content="http://mikelhsia.github.io/2020/12/26/2020-12-26-turtle-strategy/cover.jpg">
 <meta property="og:image" content="http://mikelhsia.github.io/2020/12/26/2020-12-26-turtle-strategy/daily.png">
 <meta property="og:image" content="http://mikelhsia.github.io/2020/12/26/2020-12-26-turtle-strategy/15m+40MA&200MA(daily).png">
+<meta property="og:image" content="http://mikelhsia.github.io/2020/12/26/2020-12-26-turtle-strategy/15m+40MA&200MA(15minutes).png">
 <meta property="og:image" content="http://mikelhsia.github.io/2020/12/26/2020-12-26-turtle-strategy/day_and_min_compare.png">
 <meta property="og:image" content="http://mikelhsia.github.io/2020/12/26/2020-12-26-turtle-strategy/15m+40MA&200MA(daily)+stockpicking.png">
 <meta property="article:published_time" content="2020-12-26T05:11:59.000Z">
-<meta property="article:modified_time" content="2021-02-02T09:14:17.254Z">
+<meta property="article:modified_time" content="2021-08-27T17:23:33.509Z">
 <meta property="article:author" content="Michael Hsia">
 <meta property="article:tag" content="Momentum">
 <meta property="article:tag" content="Strategy">
@@ -216,7 +217,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-02-02 17:14:17" itemprop="dateModified" datetime="2021-02-02T17:14:17+08:00">2021-02-02</time>
+                <time title="Modified: 2021-08-28 01:23:33" itemprop="dateModified" datetime="2021-08-28T01:23:33+08:00">2021-08-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -316,7 +317,7 @@
 <p><strong>Result:</strong><br><img data-src="/2020/12/26/2020-12-26-turtle-strategy/15m+40MA&200MA(daily).png" class="" width="600"></p>
 <p><strong>Comment:</strong><br>The risk control is stronger when you monitor the stock movements every 15 minutes, and you’ll be able to control the daily loss within <code>2N</code> as instructed in the turtle experiment. As for the upward trend, the 15-minute interval also helps the program more accurately capture the entry signal to gain profit. However, the log messages also reveal that there are several times that you won’t be able to close your positions on the day. This represents that your position is exposed outside the risk control management system, causing a tremendous loss when the stock price dropping.</p>
 <h2 id="Backtest-3"><a href="#Backtest-3" class="headerlink" title="Backtest 3"></a>Backtest 3</h2><p><strong>Setup:</strong><br>Run every 15 minutes, no specific sorting rules in the stock pool, and use <code>15-minute</code> close price to build the 40-day and 200-day moving average.</p>
-<p><strong>Result:</strong><br></p>
+<p><strong>Result:</strong><br><img data-src="/2020/12/26/2020-12-26-turtle-strategy/15m+40MA&200MA(15minutes).png" class="" width="600"></p>
 <p><strong>Comment:</strong><br>Urgh….. I thought if I increase the granularity of the secondary indicator (40MA &gt; 200MA) from 1 day to 15 minutes, the more accurate entry signals and more profit would be generated. By looking at the diagrams below, more signals do generate as the available cash is lower in the 15-minute scenario.<br><img data-src="/2020/12/26/2020-12-26-turtle-strategy/day_and_min_compare.png" class="" width="600"><br>However, from the log messages you’ll notice that due to the limitation of the China stock market mentioned above, that there are risks that you buy the stock in the morning but things turned sour in the afternoon. Then all you can do is to look at the price go south and sweating all over your face. So we can kind of concluding that using <code>daily</code> close price would be a mean of <strong>smoothing</strong> the data to avoid the zig-zag on price movement.</p>
 <h2 id="Backtest-4"><a href="#Backtest-4" class="headerlink" title="Backtest 4"></a>Backtest 4</h2><p><strong>Setup:</strong><br>Run every 15 minutes, sort and rank the stock pool monthly, and use <code>daily</code> close price to build the 40-day and 200-day moving average.</p>
 <p><strong>Result:</strong><br><img data-src="/2020/12/26/2020-12-26-turtle-strategy/15m+40MA&200MA(daily)+stockpicking.png" class="" width="600"></p>
@@ -362,7 +363,7 @@
       
         <div>
     <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
-        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard earned money.
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
     </i></p>
 </div>
 
@@ -469,7 +470,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
