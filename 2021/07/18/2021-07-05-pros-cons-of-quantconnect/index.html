@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://mikelhsia.github.io/2021/07/18/2021-07-05-pros-cons-of-quantconnect/live.png">
 <meta property="og:image" content="http://mikelhsia.github.io/2021/07/18/2021-07-05-pros-cons-of-quantconnect/datain.png">
 <meta property="article:published_time" content="2021-07-18T08:49:16.000Z">
-<meta property="article:modified_time" content="2021-08-30T15:34:19.757Z">
+<meta property="article:modified_time" content="2021-09-15T06:26:10.946Z">
 <meta property="article:author" content="Michael Hsia">
 <meta property="article:tag" content="Backtesting">
 <meta name="twitter:card" content="summary">
@@ -214,7 +214,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-08-30 23:34:19" itemprop="dateModified" datetime="2021-08-30T23:34:19+08:00">2021-08-30</time>
+                <time title="Modified: 2021-09-15 14:26:10" itemprop="dateModified" datetime="2021-09-15T14:26:10+08:00">2021-09-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -357,9 +357,10 @@
 <p><strong><em>Comment</em></strong>:<br>The way that Quantopian deals with the data subscription is quite straightforward. You simply need to use your code to describe how you want the data to be like, and then you’ll get a big sheet for you to play with. Yet, data from QuantConnect requires more works from you in order to stitch the data into the form you would like them to be.</p>
 <blockquote>
 <ol>
-<li>QuantConnect introduced the concept of <code>Symbol</code>, Quantopian identify securities by <code>ticker</code><br><strong>Quantopian</strong>: You need to specify security using string. However, it’s not quite clear to me how Quantopian deals with the events of changing ticker or delist.<br><strong>QuantConnect</strong>: QuantConnect uses<code>self.AddEquity(symbol)</code> to transform a string-like ticker into an object that QuantConnect understands. Therefore, it doesn’t matter whether the ticker of security has been changed or delisted.</li>
+<li>QuantConnect introduced the concept of <code>Symbol</code>, Quantopian identify securities by <code>ticker</code></li>
 </ol>
 </blockquote>
+<p><strong>Quantopian</strong>: You need to specify security using string. However, it’s not quite clear to me how Quantopian deals with the events of changing ticker or delist.<br><strong>QuantConnect</strong>: QuantConnect uses<code>self.AddEquity(symbol)</code> to transform a string-like ticker into an object that QuantConnect understands. Therefore, it doesn’t matter whether the ticker of security has been changed or delisted.</p>
 <p><strong><em>Comment</em></strong>:<br>It is a very good concept that waives the users’ concerns of dealing with these events. However, by looking at the API documentation of QuantConnect, the APIs were not consistent regarding using either a symbol object or a ticker string. Therefore this increases further difficulties for users to learn how to use their APIs.</p>
 
     </div>
