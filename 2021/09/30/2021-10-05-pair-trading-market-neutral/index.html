@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Previous reading:  【Pair Trading】Introduction to pair trading strategy 【Pair Trading】In-depth analysis of 5 distance approach strategies in pair trading   In the previous post 【Pair Trading】In-depth">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Pair Trading】Part 3. The strategy that helps minimize your portfolio risk">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Previous reading:  【Pair Trading】Introduction to pair trading strategy 【Pair Trading】In-depth analysis of 5 distance approach strategies in pair trading   In the previous post 【Pair Trading】In-depth">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/long-short.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/threshold.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-LO-BD-2y.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-MN-BD-2y.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-LO-ZC-2y.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-MN-ZC-2y.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-LO-HV-2y.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-MN-HV-2y.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-LO-PC-2y.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-MN-PC-2y.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/long-short-strategy.png">
+<meta property="article:published_time" content="2021-09-30T07:45:52.000Z">
+<meta property="article:modified_time" content="2021-10-12T12:21:24.471Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Strategy">
+<meta property="article:tag" content="Research">
+<meta property="article:tag" content="Pair Trading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Pair Trading】Part 3. The strategy that helps minimize your portfolio risk | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Pair Trading】Part 3. The strategy that helps minimize your portfolio risk
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-30 15:45:52" itemprop="dateCreated datePublished" datetime="2021-09-30T15:45:52+08:00">2021-09-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-12 20:21:24" itemprop="dateModified" datetime="2021-10-12T20:21:24+08:00">2021-10-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/09/30/2021-10-05-pair-trading-market-neutral/" class="post-meta-item leancloud_visitors" data-flag-title="【Pair Trading】Part 3. The strategy that helps minimize your portfolio risk" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/09/30/2021-10-05-pair-trading-market-neutral/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/09/30/2021-10-05-pair-trading-market-neutral/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/cover.png" class="" width="800">
+<blockquote>
+<p>Previous reading:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@mikelhsia/pair-trading-introduction-to-pair-trading-strategy-c97a1d0897ff">【Pair Trading】Introduction to pair trading strategy</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@mikelhsia/after-knowing-what-the-pair-trading-strategy-is-about-from-the-previous-post-were-going-to-use-98e41ef3ea5">【Pair Trading】In-depth analysis of 5 distance approach strategies in pair trading</a></li>
+</ul>
+</blockquote>
+<p>In the previous post <a target="_blank" rel="noopener" href="https://medium.com/@mikelhsia/after-knowing-what-the-pair-trading-strategy-is-about-from-the-previous-post-were-going-to-use-98e41ef3ea5">【Pair Trading】In-depth analysis of 5 distance approach strategies in pair trading</a>, we have conducted various research against each variation of distance approaches in pair trading strategy. Despite the research has given us probable insights whether there is an <strong>$\alpha$</strong> exists in the strategy we constructed, we still haven’t established our portfolio construction strategy. Here we introduce a concept called the “long-short equity (LSE)” strategy.</p>
+<p>Therefore, the objectives of this post are consists of three:</p>
+<ol>
+<li>What is the long-short equity (LSE) strategy</li>
+<li>Review our backtest results to see the impact of adopting the long-short strategy</li>
+<li>What are the advanced strategies that we can explore</li>
+</ol>
+<a id="more"></a>
+<h1 id="The-Long-short-equity-LSE-strategy"><a href="#The-Long-short-equity-LSE-strategy" class="headerlink" title="The Long-short equity (LSE) strategy"></a>The Long-short equity (LSE) strategy</h1><p>The long-short equity (LSE) strategy is an extension of the pair strategy which takes long positions in stocks that are expected to appreciate and takes short positions in stocks that are expected to depreciate. It’s a classic hedge fund investment strategy that is able to generate relatively higher risk-adjusted returns with lower volatility and smaller market-specific exposure compared to the traditional long-only portfolio.</p>
+<img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/long-short.jpg" class="" width="400">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Long-short strategy</i>
+</p>
+
+<h1 id="Backtest-against-the-distance-approaches-selected"><a href="#Backtest-against-the-distance-approaches-selected" class="headerlink" title="Backtest against the distance approaches selected"></a>Backtest against the distance approaches selected</h1><p>Here we’re going to run backtests against the approaches we have spoken about in the previous post:</p>
+<ul>
+<li>Basic distance</li>
+<li>High variance</li>
+<li>Zero crossing</li>
+<li>Pearson correlation</li>
+</ul>
+<p>In this series of backtests, we will adopt the <strong>long-only strategy</strong> (<em>buy the stocks that are most likely to rise</em>) against each of the four pair-trading approaches. In the meantime, we’re going to adopt the <strong>long-short strategy</strong> (<em>long the stocks that are expected to appreciate, and short other stocks that are expected to depreciate</em>) to backtest each pair-trading approach under the same conditions. By doing these, we can compare and see the impact of applying the long-short strategy.</p>
+<h2 id="Strategy"><a href="#Strategy" class="headerlink" title="Strategy"></a>Strategy</h2><p>There are other setups including:</p>
+<h3 id="1-Platform"><a href="#1-Platform" class="headerlink" title="1. Platform"></a>1. Platform</h3><p><a target="_blank" rel="noopener" href="https://www.quantconnect.com/">QuantConnect</a></p>
+<h3 id="2-Universe-selection"><a href="#2-Universe-selection" class="headerlink" title="2. Universe selection"></a>2. Universe selection</h3><ol>
+<li>Rank all the stocks by <code>DollarVolume</code></li>
+<li>Choose stocks that are in NASDAQ and NYSE</li>
+<li>Filter out the stocks that are listed less than 180 days (3 months)</li>
+<li>Filter out the companies whose market capitalization are less than 500 million dollars</li>
+</ol>
+<h3 id="3-Rebalancing-strategy"><a href="#3-Rebalancing-strategy" class="headerlink" title="3. Rebalancing strategy"></a>3. Rebalancing strategy</h3><ol>
+<li>For the long-only strategy scenario, we buy 20 stocks that are most likely to rise.</li>
+<li>For the long-short strategy scenario, we long 20 stocks that are most likely to rise and short 20 stocks that are most likely to drop.</li>
+<li>We assign even weight to each position.</li>
+<li>We don’t adjust the weight of the portfolio while we hold our positions.</li>
+</ol>
+<h3 id="4-Long-Short-signal-generation"><a href="#4-Long-Short-signal-generation" class="headerlink" title="4. Long/Short signal generation"></a>4. Long/Short signal generation</h3><p>We have all the details regarding how to trigger the long or short signals in <a target="_blank" rel="noopener" href="https://medium.com/@mikelhsia/after-knowing-what-the-pair-trading-strategy-is-about-from-the-previous-post-were-going-to-use-98e41ef3ea5">this post here</a>. For those who haven’t read this post, the critical details have been summarized below:</p>
+<ol>
+<li>For basic distance, high variance, and zero-crossing methods, we use $\pm 1.5 \times std\ of\ spread$ as the upper bound and lower bound to trigger the buy/sell signals. Then we close the positions when the spread reverts back to the zero-line.</li>
+</ol>
+<img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/threshold.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Open when above the upper bound and below the lower bound, and close when reverting back to the zero-line.</i>
+</p>
+
+<ol>
+<li>For the Pearson Correlation method, we construct a benchmark portfolio for each stock by picking the 50 most correlated stocks. We long the stocks that its stock price movement deviated from its benchmark portfolio movement, and spread of the stock movement is negative. Vice versa, we short the stocks that the spread of the stock movement is positive against the benchmark portfolio movement.</li>
+</ol>
+<h2 id="Backtest-results"><a href="#Backtest-results" class="headerlink" title="Backtest results"></a>Backtest results</h2><h3 id="Backtest-of-basic-distance"><a href="#Backtest-of-basic-distance" class="headerlink" title="Backtest of basic distance"></a>Backtest of basic distance</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>LO-BD</th>
+<th>LS-BD</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diagram</td>
+<td><img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-LO-BD-2y.png" class="" width="600"></td>
+<td><img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-MN-BD-2y.png" class="" width="600"></td>
+<td></td>
+</tr>
+<tr>
+<td>No. of trade</td>
+<td>172</td>
+<td>428</td>
+<td><font color="red">+256</font></td>
+</tr>
+<tr>
+<td>Return</td>
+<td>67.45%</td>
+<td>18.98%</td>
+<td><font color="red">-48.47%</font></td>
+</tr>
+<tr>
+<td>Annual Return</td>
+<td>35.393%</td>
+<td>10.754%</td>
+<td><font color="red">-24.639%</font></td>
+</tr>
+<tr>
+<td>Annual Standard Deviation</td>
+<td>0.304</td>
+<td>0.134</td>
+<td><font color="green">-0.17</font></td>
+</tr>
+<tr>
+<td>Max D.D.</td>
+<td>38.4%</td>
+<td>13.9%</td>
+<td><font color="green">-24.5%</font></td>
+</tr>
+<tr>
+<td>Beta</td>
+<td>-0.161</td>
+<td><font color="green">0.036</font></td>
+<td></td>
+</tr>
+<tr>
+<td>Alpha</td>
+<td>0.381</td>
+<td>0.09</td>
+<td><font color="red">-0.372</font></td>
+</tr>
+<tr>
+<td>Sharpe Ratio</td>
+<td>1.136</td>
+<td>0.731</td>
+<td><font color="red">-0.405</font></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>LO: Long-Only strategy, LS: Long-Short strategy, BD: Basic Distance</i>
+</p>
+
+<h3 id="Backtest-of-zero-crossing"><a href="#Backtest-of-zero-crossing" class="headerlink" title="Backtest of zero crossing"></a>Backtest of zero crossing</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>LO-ZC</th>
+<th>LS-ZC</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diagram</td>
+<td><img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-LO-ZC-2y.png" class="" width="600"></td>
+<td><img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-MN-ZC-2y.png" class="" width="600"></td>
+<td></td>
+</tr>
+<tr>
+<td>No. of trade</td>
+<td>102</td>
+<td>216</td>
+<td><font color="red">+114</font></td>
+</tr>
+<tr>
+<td>Return</td>
+<td>35.98%</td>
+<td>8.27%</td>
+<td><font color="red">-27.71%</font></td>
+</tr>
+<tr>
+<td>Annual Return</td>
+<td>19.8%</td>
+<td>4.779%</td>
+<td><font color="red">-15.021%</font></td>
+</tr>
+<tr>
+<td>Annual Standard Deviation</td>
+<td>0.303</td>
+<td>0.093</td>
+<td><font color="green">-0.21</font></td>
+</tr>
+<tr>
+<td>Max D.D.</td>
+<td>45.0%</td>
+<td>8.3%</td>
+<td><font color="green">-36.7%</font></td>
+</tr>
+<tr>
+<td>Beta</td>
+<td>-0.204</td>
+<td><font color="green">0.014</font></td>
+<td></td>
+</tr>
+<tr>
+<td>Alpha</td>
+<td>0.262</td>
+<td>0.041</td>
+<td><font color="red">-0.221</font></td>
+</tr>
+<tr>
+<td>Sharpe Ratio</td>
+<td>0.714</td>
+<td>0.47</td>
+<td><font color="red">-0.244</font></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>LO: Long-Only strategy, LS: Long-Short strategy strategy, ZC: Zero Crossing</i>
+</p>
+
+<h3 id="Backtest-of-high-variance"><a href="#Backtest-of-high-variance" class="headerlink" title="Backtest of high variance"></a>Backtest of high variance</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>LO-HV</th>
+<th>LS-HV</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diagram</td>
+<td><img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-LO-HV-2y.png" class="" width="600"></td>
+<td><img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-MN-HV-2y.png" class="" width="600"></td>
+<td></td>
+</tr>
+<tr>
+<td>No. of trade</td>
+<td>75</td>
+<td>186</td>
+<td><font color="red">+111</font></td>
+</tr>
+<tr>
+<td>Return</td>
+<td>39.1%</td>
+<td>10.66%</td>
+<td><font color="red">-28.44%</font></td>
+</tr>
+<tr>
+<td>Annual Return</td>
+<td>21.446%</td>
+<td>6.136%</td>
+<td><font color="red">-15.31%</font></td>
+</tr>
+<tr>
+<td>Annual Standard Deviation</td>
+<td>0.27</td>
+<td>0.079</td>
+<td><font color="green">-0.191</font></td>
+</tr>
+<tr>
+<td>Max D.D.</td>
+<td>41.00%</td>
+<td>6.200%</td>
+<td><font color="green">-34.80%</font></td>
+</tr>
+<tr>
+<td>Beta</td>
+<td>-0.143</td>
+<td><font color="green">0.037</font></td>
+<td></td>
+</tr>
+<tr>
+<td>Alpha</td>
+<td>0.25</td>
+<td>0.046</td>
+<td><font color="red">-0.204</font></td>
+</tr>
+<tr>
+<td>Sharpe Ratio</td>
+<td>0.806</td>
+<td>0.677</td>
+<td><font color="red">-0.129</font></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>LO: Long-Only strategy, LS: Long-Short strategy, HV: High Variance</i>
+</p>
+
+<h3 id="Backtest-of-Pearson-Correlation"><a href="#Backtest-of-Pearson-Correlation" class="headerlink" title="Backtest of Pearson Correlation"></a>Backtest of Pearson Correlation</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>LO-PC</th>
+<th>LS-PC</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diagram</td>
+<td><img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-LO-PC-2y.png" class="" width="600"></td>
+<td><img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-MN-PC-2y.png" class="" width="600"></td>
+<td></td>
+</tr>
+<tr>
+<td>No. of trade</td>
+<td>72</td>
+<td>1438</td>
+<td><font color="red">+1366</font></td>
+</tr>
+<tr>
+<td>Return</td>
+<td>67.72%</td>
+<td>3.9%</td>
+<td><font color="red">-63.82%</font></td>
+</tr>
+<tr>
+<td>Annual Return</td>
+<td>35.522%</td>
+<td>2.272%</td>
+<td><font color="red">-33.25%</font></td>
+</tr>
+<tr>
+<td>Annual Standard Deviation</td>
+<td>0.406</td>
+<td>0.197</td>
+<td><font color="green">-0.209</font></td>
+</tr>
+<tr>
+<td>Max D.D.</td>
+<td>52.200%</td>
+<td>33.90%</td>
+<td><font color="green">-18.30%</font></td>
+</tr>
+<tr>
+<td>Beta</td>
+<td>-0.174</td>
+<td><font color="green">-0.015</font></td>
+<td>+0.159</td>
+</tr>
+<tr>
+<td>Alpha</td>
+<td>0.435</td>
+<td>0.042</td>
+<td><font color="red">-0.393</font></td>
+</tr>
+<tr>
+<td>Sharpe Ratio</td>
+<td>0.975</td>
+<td>0.196</td>
+<td><font color="red">-0.779</font></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>LO: Long-Only strategy, LS: Long-Short strategy, PC: Pearson Correlation</i>
+</p>
+
+<h3 id="Summaries"><a href="#Summaries" class="headerlink" title="Summaries"></a>Summaries</h3><p>It’s quite clear to notice the impact after applying the long-short strategy. There are a few insights that we can extract from this series of backtests:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Summarized details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pros</td>
+<td>1. As you short stocks while applying this strategy, you’re actually gaining and preserving more cash for your available cash pool. <br> 2. The volatility KPIs, such as annual standard deviation and max dropdown, are drastically decreased by a certain degree, making your portfolio less volatile.<br> 3. <strong><em>Beta</em></strong> is the indicator of whether your portfolio is highly related to the entire market. Your portfolio will be influenced less by the market fluctuation when the beta is close to 0. After applying the long-short strategy, you can tell that the beta has reduced to one-tenth in every scenario. Compare to the traditional long-only strategy, the long-short strategy suffers less influence during the recession, therefore your portfolio could rebound faster than the long-only strategy. <br><img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/long-short-strategy.png" class="" width="400"> <p style="font-size: 0.8em; text-align:center; color: grey;"> <i>The opposite position would help hedge your losing positions, just like the dropdown happened in Apr. 2020 </i> </p></td>
+</tr>
+<tr>
+<td>Cons</td>
+<td>1. Despite it has the benefit of reducing the volatility of your portfolio, the long-short strategy would also hurt the return of your portfolio.<br> 2. How do we evaluate whether applying the long-short strategy brings us more goods than harms or vice versa? We can take a look at the KPI <strong><em>Sharpe ratio</em></strong>. Sharpe ratio indicates the ratio between the risk-free return and the volatility. The decrease in Sharpe ratios in all scenarios does tell us that the long-short strategy takes away more return that can’t be compensated by the ability to withstand the volatility it adds.<br> 3. As you can see in the previous backtest, that the number of transactions increased substantially afterwards in any scenario. The transactional cost of applying this strategy would increase compared to the traditional long-only strategy.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="What-are-the-advanced-strategies-that-we-can-explore"><a href="#What-are-the-advanced-strategies-that-we-can-explore" class="headerlink" title="What are the advanced strategies that we can explore?"></a>What are the advanced strategies that we can explore?</h1><p>Ummmm…. It seems like the results we have above don’t really gonna make us enough money to pay our rent. Even though the pair trading strategy that we developed above will help us reduce the volatility of our portfolio return, but the reduced return would really annoy us as this strategy makes us less money. So what are the things we can do in order to optimize this strategy and make it a money-making strategy? Here are a few other variations that we can explore:</p>
+<h2 id="Long-bias-strategy"><a href="#Long-bias-strategy" class="headerlink" title="Long-bias strategy"></a>Long-bias strategy</h2><p>The long-bias strategy would require holding 130% long positions of invested capital and 30% short positions, achieving 100% net in long positions. The benefit of this strategy is that you could obtain more capital (<em>30% more cash from the short position, plus the original 100% capital</em>) to leverage compared to the traditional long-only strategy, which can only leverage 100% of their capital.</p>
+<h2 id="Market-neutral-strategy"><a href="#Market-neutral-strategy" class="headerlink" title="Market neutral strategy"></a>Market neutral strategy</h2><p>Market neutral strategy refers to a type of investment strategy where the investor aims to profit from both an increase and a decrease in paired stock prices. This strategy features zero $\beta$, which makes the portfolio return won’t be impacted by the market fluctuation by hedging the systematic risk.</p>
+<p>The benefits of adopting this strategy are pretty similar to the observation we have above, that applying market neutral strategy will make our portfolio more resilient in combating the economic storm.</p>
+<h2 id="Dollar-neutral-strategy"><a href="#Dollar-neutral-strategy" class="headerlink" title="Dollar neutral strategy"></a>Dollar neutral strategy</h2><p>Similar to market neutral strategy, dollar neutral strategy targets to long the same dollar amount in positions and to short the same dollar amount in positions, rendering leveraging a very little portion of your available cash. The benefit being, you can leverage your positive and negative insights to maximize your portfolio value with very little money needed to be invested.</p>
+<h1 id="Final-words"><a href="#Final-words" class="headerlink" title="Final words"></a>Final words</h1><p>From the performed backtest, we get to know the outcomes of applying long-short strategies and how it impacts your portfolio performance. Long-short strategies and pair trading strategies are never a strategy that can bring you outstanding returns to brag about. However, it is a strategy that can become a gold mine that brings you money slowly and steadily over the long run.</p>
+<hr>
+<h1 id="Appendix"><a href="#Appendix" class="headerlink" title="Appendix"></a>Appendix</h1><h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://corporatefinanceinstitute.com/resources/knowledge/strategy/market-neutral/">What is Market Neutral?</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/l/long-shortequity.asp">Long-Short Equity by Investopedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/articles/investing/111313/multiple-strategies-hedge-funds.asp">Multiple hedge fund strategies</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/m/marketneutral.asp">Market Neutral</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.alliancebernstein.com/CmsObjectABD/PDF/Research_WhitePaper/MarketNeutralWhitepaper06.08.12.pdf">Market-Neutral Strategies: An All-Weather Investment Option</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.eurekahedge.com/Research/News/785/13030-Funds-What-is-Behind-the-Commercial-Offensive">130/30 Funds: What is Behind the Commercial Offensive?</a></li>
+</ul>
+<h2 id="Attached-backtest-summarized-report"><a href="#Attached-backtest-summarized-report" class="headerlink" title="Attached backtest summarized report"></a>Attached backtest summarized report</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>Scenario</strong></th>
+<th><strong>No. of trade</strong></th>
+<th><strong>Return</strong></th>
+<th><strong>Annual Return</strong></th>
+<th><strong>Annual Standard Deviation</strong></th>
+<th><strong>Max DD</strong></th>
+<th><strong>Beta</strong></th>
+<th><strong>Alpha</strong></th>
+<th><strong>Sharpe Ratio</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LO-BD</td>
+<td>172</td>
+<td>67.45%</td>
+<td>35.393%</td>
+<td>0.304</td>
+<td>38.4%</td>
+<td>-0.161</td>
+<td>0.381</td>
+<td>1.136</td>
+</tr>
+<tr>
+<td>MN-BD</td>
+<td>428</td>
+<td>18.98%</td>
+<td>10.754%</td>
+<td>0.134</td>
+<td>13.900%</td>
+<td>0.036</td>
+<td>0.09</td>
+<td>0.731</td>
+</tr>
+<tr>
+<td>LO-ZC</td>
+<td>102</td>
+<td>35.98%</td>
+<td>19.8%</td>
+<td>0.303</td>
+<td>45.00%</td>
+<td>-0.204</td>
+<td>0.262</td>
+<td>0.714</td>
+</tr>
+<tr>
+<td>MN-ZC</td>
+<td>216</td>
+<td>8.27%</td>
+<td>4.779%</td>
+<td>0.093</td>
+<td>8.3%</td>
+<td>0.014</td>
+<td>0.041</td>
+<td>0.47</td>
+</tr>
+<tr>
+<td>LO-HV</td>
+<td>75</td>
+<td>39.17%</td>
+<td>21.446</td>
+<td>0.27</td>
+<td>41.00%</td>
+<td>-0.143</td>
+<td>0.25</td>
+<td>0.806</td>
+</tr>
+<tr>
+<td>MN-HV</td>
+<td>186</td>
+<td>10.66%</td>
+<td>6.136%</td>
+<td>0.079</td>
+<td>6.200%</td>
+<td>0.037</td>
+<td>0.046</td>
+<td>0.677</td>
+</tr>
+<tr>
+<td>LO-PC</td>
+<td>752</td>
+<td>67.72%</td>
+<td>35.522%</td>
+<td>0.406</td>
+<td>52.200%</td>
+<td>-0.174</td>
+<td>0.435</td>
+<td>0.975</td>
+</tr>
+<tr>
+<td>MN-PC</td>
+<td>1438</td>
+<td>3.9%</td>
+<td>2.272%</td>
+<td>0.197</td>
+<td>33.900%</td>
+<td>-0.015</td>
+<td>0.042</td>
+<td>0.196</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong><em>Do tell me if you feel like this post helped you to some extent or not</em></strong></p>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
+              <a href="/tags/Research/" rel="tag"># Research</a>
+              <a href="/tags/Pair-Trading/" rel="tag"># Pair Trading</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/30/2021-08-30-pair-trading-distance-approach/" rel="prev" title="【Pair Trading】Part 2. 5 in-depth analysis of distance approach in pair trading">
+      <i class="fa fa-chevron-left"></i> 【Pair Trading】Part 2. 5 in-depth analysis of distance approach in pair trading
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#The-Long-short-equity-LSE-strategy"><span class="nav-number">1.</span> <span class="nav-text">The Long-short equity (LSE) strategy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Backtest-against-the-distance-approaches-selected"><span class="nav-number">2.</span> <span class="nav-text">Backtest against the distance approaches selected</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Strategy"><span class="nav-number">2.1.</span> <span class="nav-text">Strategy</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Platform"><span class="nav-number">2.1.1.</span> <span class="nav-text">1. Platform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Universe-selection"><span class="nav-number">2.1.2.</span> <span class="nav-text">2. Universe selection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Rebalancing-strategy"><span class="nav-number">2.1.3.</span> <span class="nav-text">3. Rebalancing strategy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Long-Short-signal-generation"><span class="nav-number">2.1.4.</span> <span class="nav-text">4. Long&#x2F;Short signal generation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-results"><span class="nav-number">2.2.</span> <span class="nav-text">Backtest results</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtest-of-basic-distance"><span class="nav-number">2.2.1.</span> <span class="nav-text">Backtest of basic distance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtest-of-zero-crossing"><span class="nav-number">2.2.2.</span> <span class="nav-text">Backtest of zero crossing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtest-of-high-variance"><span class="nav-number">2.2.3.</span> <span class="nav-text">Backtest of high variance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtest-of-Pearson-Correlation"><span class="nav-number">2.2.4.</span> <span class="nav-text">Backtest of Pearson Correlation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Summaries"><span class="nav-number">2.2.5.</span> <span class="nav-text">Summaries</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-are-the-advanced-strategies-that-we-can-explore"><span class="nav-number">3.</span> <span class="nav-text">What are the advanced strategies that we can explore?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Long-bias-strategy"><span class="nav-number">3.1.</span> <span class="nav-text">Long-bias strategy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Market-neutral-strategy"><span class="nav-number">3.2.</span> <span class="nav-text">Market neutral strategy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dollar-neutral-strategy"><span class="nav-number">3.3.</span> <span class="nav-text">Dollar neutral strategy</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Final-words"><span class="nav-number">4.</span> <span class="nav-text">Final words</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Appendix"><span class="nav-number">5.</span> <span class="nav-text">Appendix</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">5.1.</span> <span class="nav-text">Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Attached-backtest-summarized-report"><span class="nav-number">5.2.</span> <span class="nav-text">Attached backtest summarized report</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
