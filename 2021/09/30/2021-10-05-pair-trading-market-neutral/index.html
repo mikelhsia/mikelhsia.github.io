@@ -41,7 +41,7 @@
 <meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/PT-C2-MN-PC-2y.png">
 <meta property="og:image" content="http://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/long-short-strategy.png">
 <meta property="article:published_time" content="2021-09-30T07:45:52.000Z">
-<meta property="article:modified_time" content="2021-10-12T12:30:22.633Z">
+<meta property="article:modified_time" content="2021-10-12T12:53:50.338Z">
 <meta property="article:author" content="Michael Hsia">
 <meta property="article:tag" content="Strategy">
 <meta property="article:tag" content="Research">
@@ -223,7 +223,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-12 20:30:22" itemprop="dateModified" datetime="2021-10-12T20:30:22+08:00">2021-10-12</time>
+                <time title="Modified: 2021-10-12 20:53:50" itemprop="dateModified" datetime="2021-10-12T20:53:50+08:00">2021-10-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -313,15 +313,14 @@
 </ol>
 <h3 id="4-Long-Short-signal-generation"><a href="#4-Long-Short-signal-generation" class="headerlink" title="4. Long/Short signal generation"></a>4. Long/Short signal generation</h3><p>We have all the details regarding how to trigger the long or short signals in <a target="_blank" rel="noopener" href="https://medium.com/@mikelhsia/after-knowing-what-the-pair-trading-strategy-is-about-from-the-previous-post-were-going-to-use-98e41ef3ea5">this post here</a>. For those who haven’t read this post, the critical details have been summarized below:</p>
 <ol>
-<li>For basic distance, high variance, and zero-crossing methods, we use $\pm 1.5 \times std\ of\ spread$ as the upper bound and lower bound to trigger the buy/sell signals. Then we close the positions when the spread reverts back to the zero-line.</li>
-</ol>
+<li><p>For basic distance, high variance, and zero-crossing methods, we use $\pm 1.5 \times std\ of\ spread$ as the upper bound and lower bound to trigger the buy/sell signals. Then we close the positions when the spread reverts back to the zero-line.</p>
 <img data-src="/2021/09/30/2021-10-05-pair-trading-market-neutral/threshold.png" class="" width="600">
 <p style="font-size: 0.8em; text-align:center; color: grey;">
-    <i>Open when above the upper bound and below the lower bound, and close when reverting back to the zero-line.</i>
+ <i>Open when above the upper bound and below the lower bound, and close when reverting back to the zero-line.</i>
 </p>
-
-<ol>
-<li>For the Pearson Correlation method, we construct a benchmark portfolio for each stock by picking the 50 most correlated stocks. We long the stocks that its stock price movement deviated from its benchmark portfolio movement, and spread of the stock movement is negative. Vice versa, we short the stocks that the spread of the stock movement is positive against the benchmark portfolio movement.</li>
+</li>
+<li><p>For the Pearson Correlation method, we construct a benchmark portfolio for each stock by picking the 50 most correlated stocks. We long the stocks that its stock price movement deviated from its benchmark portfolio movement, and spread of the stock movement is negative. Vice versa, we short the stocks that the spread of the stock movement is positive against the benchmark portfolio movement.</p>
+</li>
 </ol>
 <h2 id="Backtest-results"><a href="#Backtest-results" class="headerlink" title="Backtest results"></a>Backtest results</h2><h3 id="Backtest-of-basic-distance"><a href="#Backtest-of-basic-distance" class="headerlink" title="Backtest of basic distance"></a>Backtest of basic distance</h3><div class="table-container">
 <table>
