@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="We talked about how to use MACD indicator and other secondary indicators to tell when to long certain stocks in the previous articles. If you haven’t read them yet, below are the links to catch up on">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Four strategies of using RSI indicator to better time your market entry">
+<meta property="og:url" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="We talked about how to use MACD indicator and other secondary indicators to tell when to long certain stocks in the previous articles. If you haven’t read them yet, below are the links to catch up on">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/cover.jpeg">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/train_of_thought.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/amzn.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/tsla.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/sma.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/backtest_result.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/sma_sim.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/sma_ema.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/stack_sim.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/stack_ema.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/square_sim.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/square_ema.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/stoch_sim.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/stoch_ema.png">
+<meta property="article:published_time" content="2021-11-03T04:09:19.000Z">
+<meta property="article:modified_time" content="2021-11-09T04:14:24.294Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Momentum">
+<meta property="article:tag" content="Backtesting">
+<meta property="article:tag" content="Technical Analysis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/cover.jpeg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Four strategies of using RSI indicator to better time your market entry | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Four strategies of using RSI indicator to better time your market entry
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-03 12:09:19" itemprop="dateCreated datePublished" datetime="2021-11-03T12:09:19+08:00">2021-11-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-09 12:14:24" itemprop="dateModified" datetime="2021-11-09T12:14:24+08:00">2021-11-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/11/03/2021-11-06-rsi-indicator/" class="post-meta-item leancloud_visitors" data-flag-title="Four strategies of using RSI indicator to better time your market entry" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2021/11/03/2021-11-06-rsi-indicator/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/11/03/2021-11-06-rsi-indicator/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2021/11/03/2021-11-06-rsi-indicator/cover.jpeg" class="" width="600">
+<p>We talked about how to use MACD indicator and other secondary indicators to tell when to long certain stocks in the previous articles. If you haven’t read them yet, below are the links to catch up on where we left. But, is this the end of the optimization of our trading strategy? In this article, we’re going to demonstrate the power of RSI indicators and see how this indicator can be a help to our current trading strategy.</p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/">How to save your silver bullets with MACD strategy?</a></li>
+<li><a href="https://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/">Optimize your MACD strategies with advanced indicators</a></li>
+</ul>
+<a id="more"></a>
+<h1 id="Train-of-thought-How-to-optimize-our-trading-strategy"><a href="#Train-of-thought-How-to-optimize-our-trading-strategy" class="headerlink" title="Train of thought - How to optimize our trading strategy"></a>Train of thought - How to optimize our trading strategy</h1><img data-src="/2021/11/03/2021-11-06-rsi-indicator/train_of_thought.png" class="" width="300">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Train of thought</i>
+</p>
+
+<h3 id="1-Where-to-start"><a href="#1-Where-to-start" class="headerlink" title="1. Where to start?"></a>1. Where to start?</h3><p>The definition of optimizing the trading strategy can be simplified as increasing the money you make in this very trading strategy. It always comes down to two directions: either profit more, or you lose less compared to our benchmark strategy. Instead of spending more time studying the topic of stopping loss, I decided to give it one more shot to add another momentum indicator to see whether that can better time the entry.</p>
+<h3 id="2-What-I-have-in-the-trading-strategy"><a href="#2-What-I-have-in-the-trading-strategy" class="headerlink" title="2. What I have in the trading strategy"></a>2. What I have in the trading strategy</h3><p>The <a target="_blank" rel="noopener" href="https://www.tradingview.com/support/solutions/43000502344-macd-moving-average-convergence-divergence/">MACD</a> indicator I have adopted in our strategy is a momentum indicator, indicating the stock price trend by using 9-day EMA and 26-day EMA. When the fast EMA(9-day EMA) crosses above the slow EMA(26-day EMA), it gives us the idea that the stock price seems to have the tendency to go upward.</p>
+<h3 id="3-What-we-can-add-to-the-trading-strategy"><a href="#3-What-we-can-add-to-the-trading-strategy" class="headerlink" title="3. What we can add to the trading strategy"></a>3. What we can add to the trading strategy</h3><p>Since we have the future tendency indicator, I believe we also need to indicator to point us where the stock price is at compared to the stock price these days. There are many options, such as SMA (Simple Moving Average), oscillators, <a target="_blank" rel="noopener" href="https://www.tradingview.com/support/solutions/43000501840-bollinger-bands-bb/">Bollinger Bands</a>, we can choose from. Here, we pick the RSI indicator to apply to our strategy.</p>
+<h3 id="4-What-is-RSI"><a href="#4-What-is-RSI" class="headerlink" title="4. What is RSI?"></a>4. What is RSI?</h3><p>The <strong>Relative Strength Index (RSI)</strong> is a momentum indicator used in technical analysis that measures the magnitude of recent price movement and evaluates overbought or oversold conditions in the price of a stock or other asset. The MACD, on the other hand, measures the momentum of those price moves. This means that an asset could be overbought or oversold but is still able to show positive momentum in that direction. When both indicators concur, we get a better idea of what is the state of the current stock price, enhance the confidence of our bet side, and hopefully increase our win rate and total profit. In short, the indicator constructed in our trading strategy would consist of:</p>
+<ul>
+<li>MACD: Prediction of the future trend</li>
+<li>Awesome Oscillator: Confirmation of the future trend</li>
+<li>RSI: Past price history and movement</li>
+</ul>
+<h3 id="5-Formula-of-RSI-Calculation-of-RS-and-RSI"><a href="#5-Formula-of-RSI-Calculation-of-RS-and-RSI" class="headerlink" title="5. Formula of RSI / Calculation of RS and RSI"></a>5. Formula of RSI / Calculation of RS and RSI</h3><p>Let’s quickly go through the calculation of RSI:</p>
+<script type="math/tex; mode=display">RS = \frac{\text{Average of Upward Price Change}}{\text{Average of Downward Price Change}}</script><script type="math/tex; mode=display">RSI = 100 - \frac{100}{1 + RS}</script><p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>The formula of RSI / Calculation of RS and RSI</i>
+</p>
+
+<p>Let’s see how to calculate a 14-day period. We say there is a stock that has \$2 growth for eight days in this 14-day period, and -\$2 decrease for six days. So we will get our RS value by doing:</p>
+<blockquote>
+<p>$RS = \frac{2 \times 8}{14} \div \frac{2 \times 6}{14} = 1.333$</p>
+</blockquote>
+<p>Our RSI will be:</p>
+<blockquote>
+<p>$RSI = 1 - \frac{100}{1+1.333} = 57.13$</p>
+</blockquote>
+<p>As the RSI indicator is in a form of the oscillator, it ranges from 0~100. A stock would usually be considered as oversold when if the RSI is lower than 30, indicating a bullish price momentum in order to revert the RSI back to the average range. On the other hand, a stock would be deemed as overbought when the RSI is higher than 70. Just like the below stock price of Amazon (<em>AMZN</em>)</p>
+<img data-src="/2021/11/03/2021-11-06-rsi-indicator/amzn.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>AMZN stock price</i>
+</p>
+
+<h3 id="6-Limitations-of-RSI"><a href="#6-Limitations-of-RSI" class="headerlink" title="6. Limitations of RSI"></a>6. Limitations of RSI</h3><p>RSI is one of the most popular day trading strategy indicators since it was developed in 1978. You can find tons of articles on the internet about what RSI can achieve. However, when a market is in a strong trend, RSI loses its usefulness. Why? Because RSI can remain overbought or oversold for long periods providing the trader misleading signals.</p>
+<p>Below is the stock price of Tesla (<em>TSLA</em>) since September, 2021. The RSI in the red rectangle stays above 70-line for over a month and has no signs of reverting. This is the exact example illustrating that the strong bullish momentum would generate wrong signals.</p>
+<img data-src="/2021/11/03/2021-11-06-rsi-indicator/tsla.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>TSLA stock price since September, 2021</i>
+</p>
+
+<p>In other words, blindly executing a trade based on overbought or oversold signals is definitely not a good idea. Indicators are tools to help you quickly have a big picture of the specific stock, but they won’t help you enough if you don’t understand the market context or company-specific risk.</p>
+<hr>
+<h1 id="Strategy-setups-for-our-backtests"><a href="#Strategy-setups-for-our-backtests" class="headerlink" title="Strategy setups for our backtests"></a>Strategy setups for our backtests</h1><p>After introducing what RSI is and what are we going to use it for, let’s get back to the business: constructing our trading and preparing for the backtest. This strategy is going to use the strategy we built before in <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/">here</a> and <a href="https://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/">here</a></p>
+<h2 id="Platform"><a href="#Platform" class="headerlink" title="Platform"></a>Platform</h2><p><a target="_blank" rel="noopener" href="https://www.quantconnect.com/">QuantConnect</a></p>
+<h2 id="Universe"><a href="#Universe" class="headerlink" title="Universe"></a>Universe</h2><ol>
+<li>Sort stocks by <code>PERatio</code>, <code>EPS</code>, <code>ROE</code>, <code>NetIncome</code> and take top 60%</li>
+<li>Sort stocks by <code>PBRatio</code>, from high to low</li>
+</ol>
+<h2 id="Rebalancing-strategy"><a href="#Rebalancing-strategy" class="headerlink" title="Rebalancing strategy"></a>Rebalancing strategy</h2><ol>
+<li>Recalculate our universe and indicators every day.</li>
+<li>We keep 10 stocks that have buy-in signals and with the highest <code>PBRatio</code>.</li>
+<li>We assign weight to each position evenly.</li>
+<li>We don’t adjust the weight of each stock until we close these positions.</li>
+</ol>
+<h2 id="Signal-generation"><a href="#Signal-generation" class="headerlink" title="Signal generation"></a>Signal generation</h2><p>As written in the title of this article, we’re going to introduce four different RSI strategies and see how our trading strategy can benefit by adding any one of them. Now, we quickly talk about how each type of RSI indicator strategy:</p>
+<h3 id="1-The-Moving-Average-of-RSI"><a href="#1-The-Moving-Average-of-RSI" class="headerlink" title="1. The Moving Average of RSI"></a>1. The Moving Average of RSI</h3><p>The very first strategy is that we use SMA (<em>Simple Moving Average</em>) to smooth the RSI.</p>
+<script type="math/tex; mode=display">RSI_{SMA}= \frac{RSI_n + RSI_{n-1} + ... + RSI_1}{n}</script><p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Formula of SMA</i>
+</p>
+
+<p>The benefit of applying SMA on the RSI we have acquired is that we can reduce the frequency of our threshold to be triggered. A lot of times that the threshold was reached because the anomaly/abnormal price movements were generated due to a certain of market events. You can tell from the below chart, that the smoothed RSI line triggered twice only compared to the original RSI line that triggered five times.</p>
+<img data-src="/2021/11/03/2021-11-06-rsi-indicator/sma.png" class="" width="700">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>RSI V.S. smoothed RSI</i>
+</p>
+
+<ul>
+<li>Buy signal: Original buy signal + SMA of RSI &lt; 30 (which tells us that this stock is potentially oversold at the moment)</li>
+<li>Sell signal: Original sell signal</li>
+</ul>
+<blockquote>
+<p>Note: We’re not going to add the RSI signal in our selling signal generation rule. Our intention is to buy when all signals confirmed the same direction, but sell when the future prediction indicator MACD tells us that the upward trending is over.</p>
+<p>Note 2: You can check the previous articles <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/">here</a> and <a href="https://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/">here</a></p>
+</blockquote>
+<h3 id="2-RSI-stack"><a href="#2-RSI-stack" class="headerlink" title="2. RSI stack"></a>2. RSI stack</h3><p>The concept of the RSI stack is to use multiple consecutive time frames to further confirm the relative strength. Taking the example from the post <a target="_blank" rel="noopener" href="https://alpaca.markets/learn/backtrader-01/">Alpaca &amp; Backtrader: Tools of the Trade (Part 1)</a>, you can see that the author uses <code>15m, 30m, 1h</code> three different time frames to confirm the relative strength is strong enough to start bidding on the reverting direction. Since here we are constructing our strategy to run on a daily basis, we use <code>1d, 2d</code> as the time frame to confirm the strength of the current trend.</p>
+<ul>
+<li>Buy signal: Original buy signal + $RSI_{n} &lt; 30$ + $RSI_{n-1} &lt; 30$</li>
+<li>Sell signal: Original sell signal</li>
+</ul>
+<h3 id="3-The-RSI²-Leading-Indicator"><a href="#3-The-RSI²-Leading-Indicator" class="headerlink" title="3. The RSI² Leading Indicator"></a>3. The RSI² Leading Indicator</h3><p>As the RSI is derived directly from the stock price movements, so the RSI indicator value will highly depend on the market condition overall. Therefore <a target="_blank" rel="noopener" href="https://python.plainenglish.io/the-rsi%C2%B2-leading-indicator-detecting-trend-exhaustion-early-in-trading-284a59dc1ea3">in this post</a> suggests that we can perform another RSI function over the original RSI, called $RSI^2$. This will tell us when will the original RSI meets the extreme conditions and start to revert to the opposite direction.</p>
+<ul>
+<li>Buy signal: Original buy signal + $RSI^2 &lt; 30$</li>
+<li>Sell signal: Original sell signal</li>
+</ul>
+<h3 id="4-The-Stochastic-RSI-Indicator"><a href="#4-The-Stochastic-RSI-Indicator" class="headerlink" title="4. The Stochastic-RSI Indicator"></a>4. The Stochastic-RSI Indicator</h3><p>Stochastic Oscillator is a technique that normalizes our value into a range from 0 ~ 1. We usually time 100 to the result so that the number is more approachable, ranging from 0 ~ 100. The outcome tells us that we either stand at the top (&gt; 70) or at the bottom (&lt;30) in the range of historical RSI.</p>
+<script type="math/tex; mode=display">\text{Stochastic RSI} = \frac{\text{Current RSI} - \text{Highest RSI since n periods}}{\text{Highest RSI since n periods} - \text{Lowest RSI since n periods}}</script><ul>
+<li>Buy signal: Original buy signal + $\text{Stochastic RSI} &lt; 30$</li>
+<li>Sell signal: Original sell signal</li>
+</ul>
+<h2 id="Other-parameters"><a href="#Other-parameters" class="headerlink" title="Other parameters"></a>Other parameters</h2><p><strong>Backtest Date:</strong> <code>2019, 1 ,10</code> ~ <code>2021, 10, 25</code></p>
+<hr>
+<h1 id="Backtest-results"><a href="#Backtest-results" class="headerlink" title="Backtest results"></a>Backtest results</h1><p>Below are the backtests that were performed according to our constructed strategies. In addition to those strategies we mentioned above, I have conducted another set of backtests using <strong>EMA</strong> (<em>Exponential Moving Average</em>) to calculate our RSI just for reference. The results are quite aligned between these two types of RSI calculations.</p>
+<img data-src="/2021/11/03/2021-11-06-rsi-indicator/backtest_result.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Backtest results summary</i>
+</p>
+
+<h2 id="Backtest-diagrams"><a href="#Backtest-diagrams" class="headerlink" title="Backtest diagrams"></a>Backtest diagrams</h2><h3 id="1-The-Moving-Average-of-RSI-1"><a href="#1-The-Moving-Average-of-RSI-1" class="headerlink" title="1. The Moving Average of RSI"></a>1. The Moving Average of RSI</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>SMA of RSI (Simple)</th>
+<th>SMA of RSI (Exponential)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img data-src="/2021/11/03/2021-11-06-rsi-indicator/sma_sim.png" class="" width="600"> <p style="font-size: 0.8em; text-align:center; color: grey;"> <i>Results of using SMA to construct RSI</i> </p></td>
+<td><img data-src="/2021/11/03/2021-11-06-rsi-indicator/sma_ema.png" class="" width="600"> <p style="font-size: 0.8em; text-align:center; color: grey;"> <i>Results of using EMA to construct RSI</i> </p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>With the help from the RSI, Our net profit doesn’t seem to increase. Referring to both the backtest results and the diagram, there are fewer trading signals generated and the higher win rate compared to the benchmark strategy. However, the net profit slides drastically from 199.348% to around 100%. This could be a sign that there are too few valid trading signals were generated. Also, let’s look at the period after the outburst of COVID. There are no trades made for at least 5 months, meaning this strategy wasn’t able to capture the opportunities during the recovery of the economy. As survivors of post-market after the COVID outburst, we all know by now that the best opportunity is actually lying behind the downturn of the market.</p>
+<h3 id="2-RSI-stack-1"><a href="#2-RSI-stack-1" class="headerlink" title="2. RSI stack"></a>2. RSI stack</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>RSI Stack (Simple)</th>
+<th>RSI Stack (Exponential)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img data-src="/2021/11/03/2021-11-06-rsi-indicator/stack_sim.png" class="" width="600"> <p style="font-size: 0.8em; text-align:center; color: grey;"> <i>Results of using SMA to construct RSI</i> </p></td>
+<td><img data-src="/2021/11/03/2021-11-06-rsi-indicator/stack_ema.png" class="" width="600"> <p style="font-size: 0.8em; text-align:center; color: grey;"> <i>Results of using EMA to construct RSI</i> </p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The RSI stack doesn’t seem to really help confirm the direction and relative strength. Same as the SMA of RSI strategy, even though the win rate did rise to <code>80%</code> of total trades, the profitability of this strategy still doesn’t seem promising.</p>
+<h3 id="3-The-RSI²-Leading-Indicator-1"><a href="#3-The-RSI²-Leading-Indicator-1" class="headerlink" title="3. The RSI² Leading Indicator"></a>3. The RSI² Leading Indicator</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>SMA of RSI (Simple)</th>
+<th>SMA of RSI (Exponential)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img data-src="/2021/11/03/2021-11-06-rsi-indicator/square_sim.png" class="" width="600"> <p style="font-size: 0.8em; text-align:center; color: grey;"> <i>Results of using SMA to construct RSI</i> </p></td>
+<td><img data-src="/2021/11/03/2021-11-06-rsi-indicator/square_ema.png" class="" width="600"> <p style="font-size: 0.8em; text-align:center; color: grey;"> <i>Results of using EMA to construct RSI</i> </p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>By looking at the stat <code>number of trades</code> and the diagram <code>HeldPositions</code>, we can confirm that now this strategy does generate enough signals to perform effective trading. The profitability has increased but the annual standard deviation has worsened. Even though the net profit looks attractive, all the stats and diagrams don’t profit enough confidence for us to go all-in.</p>
+<h3 id="4-The-Stochastic-RSI-Indicator-1"><a href="#4-The-Stochastic-RSI-Indicator-1" class="headerlink" title="4. The Stochastic-RSI Indicator"></a>4. The Stochastic-RSI Indicator</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>SMA of RSI (Simple)</th>
+<th>SMA of RSI (Exponential)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img data-src="/2021/11/03/2021-11-06-rsi-indicator/stoch_sim.png" class="" width="600"> <p style="font-size: 0.8em; text-align:center; color: grey;"> <i>Results of using SMA to construct RSI</i> </p></td>
+<td><img data-src="/2021/11/03/2021-11-06-rsi-indicator/stoch_ema.png" class="" width="600"> <p style="font-size: 0.8em; text-align:center; color: grey;"> <i>Results of using EMA to construct RSI</i> </p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This RSI strategy looks relatively promising as both the stats and the diagrams outperform the benchmark and the other RSI strategies. Also, if you look at the diagram, we’re able to outperform the benchmark performance after the COVID outburst. This could potentially indicate that this strategy is capable of capturing the opportunities during the market growth, but is unable to profit from the bumpy market condition.</p>
+<h1 id="Delivery"><a href="#Delivery" class="headerlink" title="Delivery"></a>Delivery</h1><p>One thing worth mentioning is that even though we have one successful backtest, it doesn’t 100% ensure that we’re going to get the same profit if we put this strategy to life.</p>
+<p>Seems all our backtests don’t give us enough confidence to say whether it’s a good enough strategy to launch it. However, there are still a lot of possibilities of the RSI that can be explored. For example, so far we have used <code>cross above/under the threshold</code> as the trigger of the RSI signals. Yet, we can try staying put when we cross above/under the threshold and trigger our signals when the RSI <code>reverts back from the threshold</code> to confirm the trend is indeed happening. This exploration could take a serious amount of time. But like what <em>Larry Swedroe</em>, the Director of research for Buckingham Strategic Wealth once said, “<strong>when you are trying to time the markets, you have to be right twice: going in, and going out</strong>“. You need to double in the efforts so that you’ll get the comparable rewarding.</p>
+<p><br><div style="border: 2pt solid lightgrey;border-radius: 4pt;box-shadow: 7px 7px lightgrey;padding: 1.3em;width:80%;margin:auto;"> <i><b style="font-size:1.3em;padding: 1.3em;color:grey;">"When you are trying to time the markets, you have to be right twice: going in, and going out"</b></i> <p style="font-size: 0.9em; text-align:right; color: grey;">
+    <i><b>Larry Swedroe</b><br> Director of research for Buckingham Strategic Wealth</i>
+</p> </div><br></p>
+<hr>
+<h1 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h1><h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://tradingsim.com/blog/stochastic-rsi/">https://tradingsim.com/blog/stochastic-rsi/</a></li>
+<li><a target="_blank" rel="noopener" href="https://tradingsim.com/blog/relative-strength-index-rsi/">RSI Trade Settings Explained + 4 Unique Trading Strategies</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/the-investors-handbook/trading-techniques-the-moving-average-of-rsi-f489fca3b572">Trading Techniques — The Moving Average of RSI</a></li>
+<li><a target="_blank" rel="noopener" href="https://alpaca.markets/learn/backtrader-01/">RSI stack part I</a> &amp; <a target="_blank" rel="noopener" href="https://alpaca.markets/learn/backtrader-02/">part II</a></li>
+<li><a target="_blank" rel="noopener" href="https://python.plainenglish.io/the-rsi%C2%B2-leading-indicator-detecting-trend-exhaustion-early-in-trading-284a59dc1ea3">The RSI² Leading Indicator. Detecting Trend Exhaustion Early in Trading.</a></li>
+<li><a target="_blank" rel="noopener" href="https://kaabar-sofien.medium.com/the-stochastic-rsi-indicator-the-full-guide-in-python-fb495e8820b7">The Stochastic-RSI Indicator</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/raposa-technologies/4-simple-rsi-trading-strategies-db7b9790c690">4 Simple RSI Trading Strategies</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.datadriveninvestor.com/trend-confirmation-strategy-using-the-rsi-in-python-96079b74e712">Trend Confirmation Strategy Using the RSI in Python.</a></li>
+<li><a target="_blank" rel="noopener" href="https://wire.insiderfinance.io/the-more-signals-the-better-stochastic-rsi-vs-rsi-b0740a17c584">The more signals the better? Stochastic RSI vs. RSI</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Momentum/" rel="tag"># Momentum</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+              <a href="/tags/Technical-Analysis/" rel="tag"># Technical Analysis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/22/2021-10-23-rebalancing-strategy/" rel="prev" title="Is my trading strategy one step away from making a fortune? - From research to backtest">
+      <i class="fa fa-chevron-left"></i> Is my trading strategy one step away from making a fortune? - From research to backtest
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Train-of-thought-How-to-optimize-our-trading-strategy"><span class="nav-number">1.</span> <span class="nav-text">Train of thought - How to optimize our trading strategy</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Where-to-start"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. Where to start?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-What-I-have-in-the-trading-strategy"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. What I have in the trading strategy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-What-we-can-add-to-the-trading-strategy"><span class="nav-number">1.0.3.</span> <span class="nav-text">3. What we can add to the trading strategy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-What-is-RSI"><span class="nav-number">1.0.4.</span> <span class="nav-text">4. What is RSI?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Formula-of-RSI-Calculation-of-RS-and-RSI"><span class="nav-number">1.0.5.</span> <span class="nav-text">5. Formula of RSI &#x2F; Calculation of RS and RSI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Limitations-of-RSI"><span class="nav-number">1.0.6.</span> <span class="nav-text">6. Limitations of RSI</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Strategy-setups-for-our-backtests"><span class="nav-number">2.</span> <span class="nav-text">Strategy setups for our backtests</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Platform"><span class="nav-number">2.1.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Universe"><span class="nav-number">2.2.</span> <span class="nav-text">Universe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rebalancing-strategy"><span class="nav-number">2.3.</span> <span class="nav-text">Rebalancing strategy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Signal-generation"><span class="nav-number">2.4.</span> <span class="nav-text">Signal generation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-The-Moving-Average-of-RSI"><span class="nav-number">2.4.1.</span> <span class="nav-text">1. The Moving Average of RSI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-RSI-stack"><span class="nav-number">2.4.2.</span> <span class="nav-text">2. RSI stack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-The-RSI%C2%B2-Leading-Indicator"><span class="nav-number">2.4.3.</span> <span class="nav-text">3. The RSI² Leading Indicator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-The-Stochastic-RSI-Indicator"><span class="nav-number">2.4.4.</span> <span class="nav-text">4. The Stochastic-RSI Indicator</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Other-parameters"><span class="nav-number">2.5.</span> <span class="nav-text">Other parameters</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Backtest-results"><span class="nav-number">3.</span> <span class="nav-text">Backtest results</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-diagrams"><span class="nav-number">3.1.</span> <span class="nav-text">Backtest diagrams</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-The-Moving-Average-of-RSI-1"><span class="nav-number">3.1.1.</span> <span class="nav-text">1. The Moving Average of RSI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-RSI-stack-1"><span class="nav-number">3.1.2.</span> <span class="nav-text">2. RSI stack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-The-RSI%C2%B2-Leading-Indicator-1"><span class="nav-number">3.1.3.</span> <span class="nav-text">3. The RSI² Leading Indicator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-The-Stochastic-RSI-Indicator-1"><span class="nav-number">3.1.4.</span> <span class="nav-text">4. The Stochastic-RSI Indicator</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Delivery"><span class="nav-number">4.</span> <span class="nav-text">Delivery</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Misc"><span class="nav-number">5.</span> <span class="nav-text">Misc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">5.1.</span> <span class="nav-text">Reference</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
