@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Value investing is an investing strategy that has been popular for decades. The main idea involves picking quality stocks among distressed companies, buying and holding them for the long-term (over s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Quants! Learn from your foe - &quot;Value Investing&quot;">
+<meta property="og:url" content="http://mikelhsia.github.io/2022/01/05/2022-01-10-value-investing-part1/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Value investing is an investing strategy that has been popular for decades. The main idea involves picking quality stocks among distressed companies, buying and holding them for the long-term (over s">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/01/05/2022-01-10-value-investing-part1/cover.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/01/05/2022-01-10-value-investing-part1/coca.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/01/05/2022-01-10-value-investing-part1/value_vs_growth.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/01/05/2022-01-10-value-investing-part1/value.png">
+<meta property="article:published_time" content="2022-01-05T06:57:10.000Z">
+<meta property="article:modified_time" content="2022-01-03T18:18:49.337Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Strategy">
+<meta property="article:tag" content="Fundamental Analysis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2022/01/05/2022-01-10-value-investing-part1/cover.jpg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2022/01/05/2022-01-10-value-investing-part1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Quants! Learn from your foe - "Value Investing" | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2022/01/05/2022-01-10-value-investing-part1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Quants! Learn from your foe - "Value Investing"
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-05 14:57:10" itemprop="dateCreated datePublished" datetime="2022-01-05T14:57:10+08:00">2022-01-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-01-04 02:18:49" itemprop="dateModified" datetime="2022-01-04T02:18:49+08:00">2022-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Value-Investing/" itemprop="url" rel="index"><span itemprop="name">Value Investing</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/01/05/2022-01-10-value-investing-part1/" class="post-meta-item leancloud_visitors" data-flag-title="Quants! Learn from your foe - "Value Investing"" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/01/05/2022-01-10-value-investing-part1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/01/05/2022-01-10-value-investing-part1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2022/01/05/2022-01-10-value-investing-part1/cover.jpg" class="" width="600">
+<p>Value investing is an investing strategy that has been popular for decades. The main idea involves picking quality stocks among distressed companies, buying and holding them for the long-term (over several years), and expecting the good quality stocks to remain good and rebound from the valley. In short, value investing is to <b><i>buy good companies at a good price</i></b>. In this post, we’re going to go through the framework that some of the value investors use to evaluate the company value.</p>
+<a id="more"></a>
+<h1 id="What-exactly-is-Value-Investing"><a href="#What-exactly-is-Value-Investing" class="headerlink" title="What exactly is Value Investing?"></a>What exactly is Value Investing?</h1><p>Warren Buffett is probably the most well-known value investor today, but there are also many other value investors in the field, such as Benjamin Graham (Buffett’s mentor), Charlie Munger (Buffett’s business partner), and Joel Greenblatt. Among them, Benjamin Graham is highly praised as the “<em>Father of Value Investing</em>“ and has a significant place in the field. There are also famous case studies such as Buffett’s bet on Coca-Cola in 1988 and Geico in 1951, which both generate a massive return. In addition, the previous post of <a href="https://mikelhsia.github.io/2020/08/21/2020-08-21-magic-formula-vs-Acquirer-Multiples/">An investment strategy that takes you three days a year</a> was also derived from the <a target="_blank" rel="noopener" href="https://www.thebalance.com/what-is-magic-formula-investing-4150688">magic formula</a> that was created by <em>Joel Greenblatt</em>.</p>
+<img data-src="/2022/01/05/2022-01-10-value-investing-part1/coca.png" class="" width="400">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>The stock price of Coca-Cola since 1988</i>
+</p>
+
+<p>Value investors advocate the idea of finding the stocks whose market value (stock price) are traded way lower than their company intrinsic value. By using the data from fundamental analysis and company annual reports every year, value investors would use their framework to calculate the company intrinsic value with assuming growth rate for the upcoming years. If the gap (which was so called “<em>safety margin</em>“) between the market value and the calculated intrinsic value is larger enough, it is believed that the discounted market value is simply due to public opinions and emotions. The company itself is still healthy enough to generate positive net income to grow continuously, pumping its stock price back to where it should be or even higher.</p>
+<p>In recent years, analysts and investors are saying that the value stocks are no longer attractive and throwing themselves into growth stocks’ arms such as FAANG, Tesla, Roku, and so on. However, there are still others who believe that the value investing was still profitable because:</p>
+<ol>
+<li>The economic cycle is extended. So the stocks you invested simply need more time to rebound. See <a target="_blank" rel="noopener" href="https://www.schroders.com/en/uk/the-value-perspective/blog/all-blogs/why-we-still-believe-in-value-investing/">here</a></li>
+<li>The profit was diluted because the value investing strategy is too well-known and was adopted by too many investors and investing institutions. See <a target="_blank" rel="noopener" href="https://www.forbes.com/sites/simonmoore/2021/01/03/is-value-investing-dead-not-so-fast-says-a-recent-study/?sh=38edf83e1cd4">here</a></li>
+</ol>
+<img data-src="/2022/01/05/2022-01-10-value-investing-part1/value_vs_growth.png" class="" width="500">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Value stocks v.s. growth stocks in recent years</i>
+</p>
+
+<p>Either way, I believe that there are some ideas inheres within the value investing strategy itself which are still valuable and beneficial in adopting them into the quantitative strategies. So now, let’s have a look.</p>
+<h1 id="The-evaluation-framework-of-Value-Investing"><a href="#The-evaluation-framework-of-Value-Investing" class="headerlink" title="The evaluation framework of Value Investing"></a>The evaluation framework of Value Investing</h1><p>There are a lot of methodologies and frameworks that were developed within Value Investing. The book “<strong><em>Value Investing: From Graham to Buffett and Beyond</em></strong>“ by <em>Bruce C.N. Greenwald</em>, <em>Judd Kahn</em>, <em>Paul D. Sonkin</em>, and <em>Michael van Biema</em> promotes a framework that separates the whole evaluation process into several stages: 1. calculate the Asset Value (AV) of the company, 2. calculate the Earnings Power Value (EPV) of the company, 3. compare to the market value and see whether we’ll be able to make the decision to invest in this company or not.</p>
+<h2 id="Asset-Value-AV"><a href="#Asset-Value-AV" class="headerlink" title="Asset Value (AV)"></a>Asset Value (AV)</h2><p>The Asset Value is calculated to evaluate the actual value of the company, including tangible assets and intangible assets. Tangible assets include <em>PPE</em>, <em>marketable securities</em>, <em>inventory</em>, and so on. They can be found in the balance sheet in the annual/quarter report. However, the one-the-book asset value doesn’t reflect its value right now, so we need to make adjustments on these items in order to find out the current value of the company asset.</p>
+<p>Intangible assets include <em>goodwill</em>, <em>brand value</em>, <em>workforce</em>, <em>product portfolio</em>, <em>clients/contracts</em>, and everything. As most of these assets are not documented in the balance sheet, we need to figure out a way to estimate the ballpark amount of these items. For example, the workforce cost is already included in the SG&amp;A in the balance sheet but not the HR cost on recruiting this workforce. Therefore, if there is a company A that has 1,000 blue-collar workers, we can take the US average wages of blue-collar workers to calculate the total cost.</p>
+<script type="math/tex; mode=display">1,000 \times \$ 33,762 = \$ 33\ million</script><p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>According to <a target="_blank" rel="noopener" href='https://www.comparably.com/salaries/salaries-for-blue-collar-worker'>www.comparably.com</a></i>
+</p>
+
+<p>We assume the cost to recruit the workforce is 10% of the total cost of the workforce, then we’ll be able to calculate the cost of the recruitment to be:</p>
+<script type="math/tex; mode=display">\$ 33\ million \times 0.1 = \$ 3.3\ million</script><p>This would be one of the adjustments that we made while calculating the company asset value.</p>
+<h2 id="Earnings-Power-Value-EPV"><a href="#Earnings-Power-Value-EPV" class="headerlink" title="Earnings Power Value (EPV)"></a>Earnings Power Value (EPV)</h2><p>Earnings Power Value essentially means the capability of a company to make money, and it’s not just any money that a company makes. We’re looking for <em>Net Operating Profit After Tax (NOPAT)</em>, meaning the income from financial activities and from investing activities. The NOPAT of a company could showcase the ability to earn net income through selling the company’s services or products. After all, selling services and goods to the customers is the major business activity of the company.</p>
+<p>Also, we need to make sure the company can sustainably make this amount of money or more. If a company’s NOPAT fluctuates a lot, this would implicitly indicate that the company business is not stable enough to support sustainable growth.</p>
+<p>A quick way to explain the way to calculate the EPV is:</p>
+<script type="math/tex; mode=display">\begin{align*}
+&\ \ \ \ \ \text{Revenue}\\
+-&\ \ \ \ \ \text{Operating expense}\\
+-&\ \ \ \ \ \text{Depreciation and amortization charges}\\
+-&\ \ \ \ \ \text{Tax}\\
+--&--------------\\
+&\ \ \ \ \ \text{Net operating profit after tax}\\
+\end{align*}</script><p>Lastly, since we have been able to approximately evaluate the NOPAT of the company we can use <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/d/dcf.asp">DCF (Discounted Cash Flow)</a> model to calculate the EPV of the company. We use the <em><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/w/wacc.asp">Weighted Average Cost of Capital (WACC)</a></em> as the discount rate in our calculation so that we take the actual cost of working capital into account. Then, we will get a number that represents the value of an investment that can generate this NOPAT steadily.</p>
+<script type="math/tex; mode=display">EPV = \frac{NOPAT(Net Operating Profit After Tax)}{\text{WACC(Weighted Average Cost of Capital)}}</script><h2 id="The-final-call-on-the-decision"><a href="#The-final-call-on-the-decision" class="headerlink" title="The final call on the decision"></a>The final call on the decision</h2><p>Once we have our AV and EPV ready, we can start making our final call on whether we should long this investment or not. Here’s a general principle to follow:</p>
+<ul>
+<li>If AV is higher than EPV, meaning the industry is declining and this company won’t be able to make enough profit as it’s mismanagement of its assets.</li>
+<li>If AV is equal to EPV, meaning this company is able to efficiently manage its asset to generate enough profit.</li>
+<li>If AV is below the EPV, meaning this company’s management team has a superior ability to manage its asset. Also, this indicates that this company has sufficient power to build the barriers to entry to outcompete the other competitors in this industry.</li>
+</ul>
+<p>Then, we compare the EPV with the market value of the company to see whether this company is currently undervalued or overvalued. If it is undervalued, maybe this is the timing for us to enter this trade.</p>
+<img data-src="/2022/01/05/2022-01-10-value-investing-part1/value.png" class="" width="350">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>AV, EPV, and market value</i>
+</p>
+
+
+<h1 id="Wrap-up"><a href="#Wrap-up" class="headerlink" title="Wrap up"></a>Wrap up</h1><p>What I have demonstrated above is only a part of the value investing methodology. There are more technics, assumptions, and methodologies involved that are too complex to be tuck into one single post. So I’ll stop it right here so that you can discover more by yourself.</p>
+<p>A lot of people say that Value Investing is dying. But I think value investing is a tool and mindset, and also an essence of analysts’ experience. There are a lot of valuable thoughts that can be extracted and be applied to quantitative trading. For example, stock-picking to form your stock pool, evaluating a company to see it is under- or overvalued, and also processing the fundamental data to make it more meaningful to conduct a second analysis. I believe learning how value investors think would definitely benefit your capability to build an even better quantitative trading strategy.</p>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
+              <a href="/tags/Fundamental-Analysis/" rel="tag"># Fundamental Analysis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/03/2021-11-06-rsi-indicator/" rel="prev" title="Four strategies of using RSI indicator to better time your market entry">
+      <i class="fa fa-chevron-left"></i> Four strategies of using RSI indicator to better time your market entry
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-exactly-is-Value-Investing"><span class="nav-number">1.</span> <span class="nav-text">What exactly is Value Investing?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-evaluation-framework-of-Value-Investing"><span class="nav-number">2.</span> <span class="nav-text">The evaluation framework of Value Investing</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Asset-Value-AV"><span class="nav-number">2.1.</span> <span class="nav-text">Asset Value (AV)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Earnings-Power-Value-EPV"><span class="nav-number">2.2.</span> <span class="nav-text">Earnings Power Value (EPV)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-final-call-on-the-decision"><span class="nav-number">2.3.</span> <span class="nav-text">The final call on the decision</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Wrap-up"><span class="nav-number">3.</span> <span class="nav-text">Wrap up</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
