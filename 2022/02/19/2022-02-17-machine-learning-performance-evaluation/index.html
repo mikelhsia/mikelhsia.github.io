@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Phew! With all the hard work of fetching data, processing factors, splitting training and testing datasets, selecting the right model to train, you finally have your machine learning model tr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Machine Learning】 Part IV - How to analyze how good my machine learning strategy is?">
+<meta property="og:url" content="http://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Phew! With all the hard work of fetching data, processing factors, splitting training and testing datasets, selecting the right model to train, you finally have your machine learning model tr">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/cover.jpeg">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/maxdrawdown.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/psr.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/stratified.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/benchmark.png">
+<meta property="article:published_time" content="2022-02-19T06:51:12.000Z">
+<meta property="article:modified_time" content="2022-02-20T17:58:55.758Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Technical Analysis">
+<meta property="article:tag" content="Backtesting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/cover.jpeg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Machine Learning】 Part IV - How to analyze how good my machine learning strategy is? | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Machine Learning】 Part IV - How to analyze how good my machine learning strategy is?
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-19 14:51:12" itemprop="dateCreated datePublished" datetime="2022-02-19T14:51:12+08:00">2022-02-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-21 01:58:55" itemprop="dateModified" datetime="2022-02-21T01:58:55+08:00">2022-02-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/02/19/2022-02-17-machine-learning-performance-evaluation/" class="post-meta-item leancloud_visitors" data-flag-title="【Machine Learning】 Part IV - How to analyze how good my machine learning strategy is?" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/02/19/2022-02-17-machine-learning-performance-evaluation/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/19/2022-02-17-machine-learning-performance-evaluation/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2022/02/19/2022-02-17-machine-learning-performance-evaluation/cover.jpeg" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i></i>
+</p>
+
+<p>Phew! With all the hard work of fetching data, processing factors, splitting training and testing datasets, selecting the right model to train, you finally have your machine learning model trained and be able to test how powerful it is. You’re very excited to feed a bunch of test data and got a 100%+ rate of return. What a success! But be careful, <code>rate of return</code> is not the sole factor to evaluate the quality of your trading strategy. There are other metrics that help you to understand the strengths and weaknesses of your trading strategy, and you can improve your trading behavior based on these metrics.</p>
+<a id="more"></a>
+<p>Here are a group of metrics that I would like to recommend to you as I’ve calculated and adopted them in my own quantitative trading projects. These metrics are objective enough for you to evaluate the quality of your strategy, and they are relatively easy enough to calculate in your own framework. So, bear with me and hear me out.</p>
+<blockquote>
+<p>Previous reading:</p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">【Machine Learning】 Part I - 10 minutes to learn what I know about machine learning in quantitative trading</a></li>
+<li><a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">【Machine Learning】 Part II - How to build a machine learning boilerplate?</a></li>
+<li><a href="https://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/">【Machine Learning】 Part III - 5 myths about practicing quant trading with machine learning</a></li>
+</ul>
+</blockquote>
+<h2 id="General-Characteristics-of-your-strategy"><a href="#General-Characteristics-of-your-strategy" class="headerlink" title="General Characteristics of your strategy"></a>General Characteristics of your strategy</h2><ul>
+<li><strong>Average Capacity</strong> is the maximum number of stocks that you would like to be included in your portfolio. This is actually not a metric to evaluate the quality of your performance, but it’s very likely to influence the performance of your strategy, considering holding more stocks in your portfolio potentially increases the diversity.</li>
+<li><strong>Average AUM</strong> stands for <em>Asset Under Management</em>. This indicates how much money is currently available for trading stocks.</li>
+<li><strong>Average holding period</strong> could range from minutes to years, depending on the nature of your trading strategy and on the observing window length. If your strategy is observing daily MACD cross, the minimum average holding period of your strategy is 1 day.</li>
+</ul>
+<h2 id="Performance-related-metrics"><a href="#Performance-related-metrics" class="headerlink" title="Performance-related metrics"></a>Performance-related metrics</h2><ul>
+<li><strong>Annualized rate of return</strong> is the most common metric to evaluate your strategy. It’s an obvious decision to make to choose between a strategy that produces 30% and a strategy that makes 300% annually. However, how do we prioritize the strategies that one makes 30% and the other one makes 33%? There we need other metrics to come into play to help us differentiate good and bad strategies.<script type="math/tex; mode=display">\text{Annualized rate of return} = \frac{\text{Money made annually}}{\text{Total amount of money invested initially}}</script></li>
+<li><strong>Win rate</strong>. Simple as that. It means how many trades made you profit among all the trades you made.<script type="math/tex; mode=display">\text{Win rate} = \frac{\text{The number of trades that make positive return}}{\text{The number of total trades made}}</script></li>
+</ul>
+<h2 id="Risk-related-metrics"><a href="#Risk-related-metrics" class="headerlink" title="Risk related metrics"></a>Risk related metrics</h2><ul>
+<li><strong>Annualized volatility</strong> is a traditional method to evaluate the risk of your portfolio. This essentially evaluated how volatile your portfolio value was. The higher the volatility, the more likely your portfolio value will be influenced by the market or the macroeconomic. This risk can be mitigated by adding stocks from different industries to diversify your portfolio.</li>
+<li><strong>Max Drawdown</strong> indicates the maximum percentage loss during the observation periods.<script type="math/tex; mode=display">\text{Max Drawdown} = \frac{\text{Through Value} - \text{Peak Value}}{\text{Peak Value}}</script></li>
+</ul>
+<img data-src="/2022/02/19/2022-02-17-machine-learning-performance-evaluation/maxdrawdown.png" class="" width="800">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Code snippet to calculate the Max Drawdown</i>
+</p>
+
+
+<h2 id="Efficiency-related-metrics"><a href="#Efficiency-related-metrics" class="headerlink" title="Efficiency related metrics"></a>Efficiency related metrics</h2><ul>
+<li><strong>Sharpe Ratio</strong>‘s calculation is relatively easy as dividing the portfolio excess return by the standard deviation of the portfolio excess return. However, it is probably the first metric you’re going to look at when evaluating the strategy. It stands for the excess return that you’re going to get by taking each unit of risk, which is volatility.<script type="math/tex; mode=display">\text{Sharpe Ratio} = \frac{\text{Portfolio's excess return}}{\text{Standard deviation of the portfolio's excess return}}</script>$\text{where Portfolio’s excess return} = \text{Portfolio return} - \text{Risk-free rate}$</li>
+<li><strong>Information Ratio</strong> is similar to the Sharpe ratio, but it is used to evaluate the ability to outperform the selected benchmark.<script type="math/tex; mode=display">\text{Information ratio} = \frac{\text{Portfolio return} - \text{Benchmark return}}{\text{Standard deviation of difference between portfolio and benchmark return}}</script></li>
+<li><strong>Sortino Ratio</strong> is a variant of the Sharpe ratio. It evaluates the portfolio’s return given solely the downside risk, as the upside volatility is beneficial and we don’t worry about the upside volatility.<script type="math/tex; mode=display">\text{Sortino Ratio} = \frac{\text{Portfolio's excess return}}{\text{Standard deviation of the downside}}</script></li>
+<li><strong>Calmar Ratio</strong> is a useful way to evaluate the portfolio return against the maximum risk within the given time period. If the maximum drawdown is huge, you will get a relatively small Calmar ratio. This could potentially mean that your portfolio is relatively vulnerable when black swan incidents.<script type="math/tex; mode=display">\text{Calmar Ratio} = \frac{\text{Average Annual Rate of Return}}{\text{Maximum Drawdown}}</script></li>
+<li><strong>Probabilistic Sharpe Ratio (PSR)</strong> is kind of an improvement version of the Sharpe ratio based on the statistical theory. Instead of calculating the Sharpe ratio using the given time series of return, PSR uses the skewness and kurtosis to generate an estimated normal distribution of the rate of return. Therefore, you are able to know the probability of your portfolio getting the estimated rate of return. You can check <a target="_blank" rel="noopener" href="https://quantdare.com/probabilistic-sharpe-ratio/">here</a> for more details.<img data-src="/2022/02/19/2022-02-17-machine-learning-performance-evaluation/psr.png" class="" width="800">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Code snippet to calculate the PSR</i>
+</p>
+
+</li>
+</ul>
+<h2 id="Classification-scores-Machine-learning-strategy-specific"><a href="#Classification-scores-Machine-learning-strategy-specific" class="headerlink" title="Classification scores (Machine learning strategy specific)"></a>Classification scores (Machine learning strategy specific)</h2><ul>
+<li><strong>Accuracy</strong> is the ratio of correctly predicted positive observations to the total positive observations.<script type="math/tex; mode=display">Accuracy = \frac{TP+TN}{TP+TN+FP+FN}</script></li>
+<li><strong>Precision</strong> is the ratio of correctly predicted positive observation and total predicted positive observation. It shows how precise our model is.<script type="math/tex; mode=display">Precision = \frac{TP}{TP+FP}</script></li>
+<li><strong>Recall</strong> is the ratio of the correct predicted positive observation and the total observation in the class.<script type="math/tex; mode=display">Recall = \frac{TP}{TP+FN}</script></li>
+<li><strong>F1-Score</strong> is the weighted average of recall and precision.<script type="math/tex; mode=display">\text{F1-Score} = \frac{2*(Recall * Precision)}{Recall + Precision}</script></li>
+<li><strong>AUC(Area Under roc Curve)</strong> is a metric that represents the classification ability of a machine learning model. An excellent model has AUC near to the 1 which means it has a good measure of separability. A model has an AUC near 0 which means it predicts the positive as the negative and vice versa. But it doesn’t necessary mean this model is poor. It still tells us that this model is able to separate the right and wrong samples. If a model has AUC equal to 0.5, that means this model is useless as it has no ability to predict the outcome. See more details <a target="_blank" rel="noopener" href="https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5">here</a></li>
+<li><strong>Matthews correlation coefficient (MCC)</strong> is a relatively general measure of “accuracy” of a predictive model that can give insights about how much we can rely on the model.<script type="math/tex; mode=display">\text{MCC} = \frac{(TP \times TN) - (FP \times FN)}{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}}</script></li>
+<li><strong>Average return from hits</strong> is the average rate of return from bets that generate profit.</li>
+<li><strong>Average return from misses</strong> is the average rate of return from bets that generate loss.</li>
+</ul>
+<h2 id="Others-metrics"><a href="#Others-metrics" class="headerlink" title="Others metrics"></a>Others metrics</h2><ul>
+<li><strong>Stratified Analysis</strong> to me is avery important steps in my research process. It tells me whether my model is capable of picking the stocks that have the highest return among all stocks.<img data-src="/2022/02/19/2022-02-17-machine-learning-performance-evaluation/stratified.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Stratified analysis diagram</i>
+</p>
+
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">group_number &#x3D; 6</span><br><span class="line">group_label &#x3D; [f&#39;R&#123;x&#125;&#39; for x in range(group_number, 0, -1)]</span><br><span class="line"></span><br><span class="line">data[&#39;rate&#39;] &#x3D; data.groupby(&#39;date&#39;)[&#39;score&#39;].apply(lambda x : pd.cut(x, bins&#x3D;group_number, labels&#x3D;group_label))</span><br><span class="line">data[&#39;log_rtn&#39;] &#x3D; np.log(test[&#39;rtn&#39;] + 1)</span><br><span class="line"></span><br><span class="line">x &#x3D; data.groupby([&#39;date&#39;, &#39;rate&#39;])[&#39;log_rtn&#39;].apply(lambda x: x.sum()&#x2F;len(x)).reset_index().set_index([&#39;rate&#39;, &#39;date&#39;])</span><br><span class="line">z &#x3D; pd.DataFrame(index&#x3D;x.loc[&#39;R1&#39;].index)</span><br><span class="line"></span><br><span class="line">for i in range(1,group_number+1):</span><br><span class="line">    try:</span><br><span class="line">        z[f&#39;R&#123;i&#125;&#39;] &#x3D; x.loc[f&#39;R&#123;i&#125;&#39;,:].cumsum()</span><br><span class="line">    except Exception as e:</span><br><span class="line">        continue</span><br><span class="line"></span><br><span class="line">plt.figure(figsize&#x3D;(15, 10))</span><br><span class="line">plt.xticks(rotation&#x3D;90)</span><br><span class="line">plt.yticks(rotation&#x3D;45)</span><br><span class="line"></span><br><span class="line">sns.lineplot(data&#x3D;z, dashes&#x3D;False)</span><br></pre></td></tr></table></figure>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Code snippet to generate stratified analysis diagram</i>
+</p>
+
+<ul>
+<li><p><strong>Benchmark performance diagram</strong> is simply to put your portfolio return on the chart against your selected benchmark return. In fact, there are a lot of things that can be found in this comparison. It tells whether you’re portfolio still grows when the benchmark return decline, whether your portfolio can grow faster in the bull market period, and many other things.</p>
+<img data-src="/2022/02/19/2022-02-17-machine-learning-performance-evaluation/benchmark.png" class="" width="400">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Portfolio return v.s. benchmark return</i>
+</p>
+</li>
+<li><p><strong>PnL</strong> is the profit and loss during the entire observation period.</p>
+</li>
+<li><strong>Turnover fee</strong> is the sum of the transaction fees that costs you while trading with this strategy. If you’re trading too frequently, your profit could be offset by this seemingly insignificant cost. The turnover fee could be calculated by the product of the number of total trades and the transaction fees per trade.</li>
+<li><strong>Beta and Alpha</strong> both derive from the CAPM model. Alpha stands for the excess return of your strategy, and beta represents the systematic return.<script type="math/tex; mode=display">Return_{Portfolio} - Return_{Riskfree} = \beta \times (Return_{Market} - Return_{Riskfree}) + \alpha</script></li>
+</ul>
+<p>These are the metrics that I’ve been using while evaluating my trading strategy. Please do tell me what other metrics you think are useful.</p>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Technical-Analysis/" rel="tag"># Technical Analysis</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/01/03/2022-01-10-value-investing-part1/" rel="prev" title="Quants! Learn from your foe - "Value Investing"">
+      <i class="fa fa-chevron-left"></i> Quants! Learn from your foe - "Value Investing"
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#General-Characteristics-of-your-strategy"><span class="nav-number">1.</span> <span class="nav-text">General Characteristics of your strategy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Performance-related-metrics"><span class="nav-number">2.</span> <span class="nav-text">Performance-related metrics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Risk-related-metrics"><span class="nav-number">3.</span> <span class="nav-text">Risk related metrics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Efficiency-related-metrics"><span class="nav-number">4.</span> <span class="nav-text">Efficiency related metrics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Classification-scores-Machine-learning-strategy-specific"><span class="nav-number">5.</span> <span class="nav-text">Classification scores (Machine learning strategy specific)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Others-metrics"><span class="nav-number">6.</span> <span class="nav-text">Others metrics</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
