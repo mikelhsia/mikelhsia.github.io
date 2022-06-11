@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Photo by Brett Jordan on Unsplash   From the previous article, we’ve learned several indicators that we can calculate and use to evaluate the performances of your algorithm trading strategies. G">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Machine Learning】 Part V - Raise your trading win rate through feature engineering">
+<meta property="og:url" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Photo by Brett Jordan on Unsplash   From the previous article, we’ve learned several indicators that we can calculate and use to evaluate the performances of your algorithm trading strategies. G">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/cover.jpeg">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/summary.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/scenario1_benchmark.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/scenario2_benchmark.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/scenario3_benchmark.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/wrong_encoding.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/right_encoding.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/one_hot_summary.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/scenario1_benchmark.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/scenario2_benchmark.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/scenario3_benchmark.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/30_one_hot.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/60_one_hot.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/60_ada_one_hot.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/fairy_dust.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/impute_summary.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/impute0.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/impute1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/impute2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/kmean.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/kmean_summary.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/1-0.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/1-1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/1-2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/post-1-0.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/post-1-1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/post-1-2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/2-0.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/2-1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/2-2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/post-2-0.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/post-2-1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/post-2-2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/3-0.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/3-1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/3-2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/post-3-0.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/post-3-1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/post-3-2.png">
+<meta property="article:published_time" content="2022-06-10T08:21:42.000Z">
+<meta property="article:modified_time" content="2022-06-11T04:09:47.073Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Technical Analysis">
+<meta property="article:tag" content="Backtesting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/cover.jpeg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Machine Learning】 Part V - Raise your trading win rate through feature engineering | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Machine Learning】 Part V - Raise your trading win rate through feature engineering
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-06-10 16:21:42" itemprop="dateCreated datePublished" datetime="2022-06-10T16:21:42+08:00">2022-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-11 12:09:47" itemprop="dateModified" datetime="2022-06-11T12:09:47+08:00">2022-06-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/06/10/2022-06-10-adcanced-optimization/" class="post-meta-item leancloud_visitors" data-flag-title="【Machine Learning】 Part V - Raise your trading win rate through feature engineering" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/06/10/2022-06-10-adcanced-optimization/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/06/10/2022-06-10-adcanced-optimization/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2022/06/10/2022-06-10-adcanced-optimization/cover.jpeg" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Photo by <a target="_blank" rel="noopener" href="https://medium.com/r?url=https%3A%2F%2Funsplash.com%2F%40brett_jordan%3Futm_source%3Dmedium%26utm_medium%3Dreferral">Brett Jordan</a> on <a target="_blank" rel="noopener" href="https://medium.com/r/?url=https%3A%2F%2Funsplash.com%3Futm_source%3Dmedium%26utm_medium%3Dreferral">Unsplash</a></i>
+</p>
+
+<p>From the <a href="https://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/">previous article</a>, we’ve learned several indicators that we can calculate and use to evaluate the performances of your algorithm trading strategies. Given these indicators, we’re able to see how we can further polish our strategy and make it more seemingly profitable. Therefore, let’s work on our features to see how we can improve our machine learning trading strategy.</p>
+<a id="more"></a>
+<p>There are a few feature engineering techniques that we’re going to use in this series of backtests and it is beneficial to get a big picture of how to apply these techniques. I’m not going to go through these techniques in detail as there are too many capable persons who have done so. Therefore, I’ll be only focusing on backtesting the trading strategies using these techniques and how they can impact the performance of the strategy.</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/feature-encoding-techniques-machine-learning/">Encoding</a></li>
+<li><a target="_blank" rel="noopener" href="https://towardsdatascience.com/6-different-ways-to-compensate-for-missing-values-data-imputation-with-examples-6022d9ca0779">Imputing</a></li>
+<li><a target="_blank" rel="noopener" href="https://towardsdatascience.com/a-data-scientists-practical-guide-to-using-kmeans-ff180878e13b">Kmean</a></li>
+</ul>
+<p>Also, I’m using the algorithm trading script that I built from my previous articles below. So we don’t need to build everything from the scratch.</p>
+<blockquote>
+<p><strong>Previous articles</strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">【Machine Learning】 Part I - 10 minutes to learn what I know about machine learning in quantitative trading</a></li>
+<li><a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">【Machine Learning】 Part II - How to build a machine learning boilerplate?</a></li>
+<li><a href="https://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/">【Machine Learning】 Part III - 5 myths about practicing quant trading with machine learning</a></li>
+<li><a href="https://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/">【Machine Learning】 Part IV - How to analyze how good my machine learning strategy is?</a></li>
+</ul>
+</blockquote>
+<h1 id="Train-of-thought"><a href="#Train-of-thought" class="headerlink" title="Train of thought"></a>Train of thought</h1><p>There are three scenarios that we’re going to use as the benchmark performances:</p>
+<ol>
+<li>Using XGBoost as ML model and 30-month data as training data</li>
+<li>Using XGBoost as ML model and 60-month data as training data</li>
+<li>Using AdaBoost as ML model and 60-month data as training data</li>
+</ol>
+<p>Here’s a quick but complete <a target="_blank" rel="noopener" href="https://towardsdatascience.com/the-ultimate-guide-to-adaboost-random-forests-and-xgboost-7f9327061c4f">guide</a> to both XGBoost and AdaBoost. XGBoost is famous for its speed of processing and high accuracy. On the other hand, AdaBoost is slower than XGBoost, but is capable of mitigating the chances of overfitting. So we will adopt both of these models to reach a justifiable performance evaluation.</p>
+<img data-src="/2022/06/10/2022-06-10-adcanced-optimization/summary.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Stats benchmark summary of three scenarios</i>
+</p>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>XGBoost, 30 months</th>
+<th>XGBoost, 60 months</th>
+<th>AdaBoost, 60 months</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/scenario1_benchmark.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/scenario2_benchmark.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/scenario3_benchmark.png" class="" width="200"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Stratified plotting of base scenarios return by probability to win</i>
+</p>
+
+<p>From the above table and charts, <strong>XGBoost with a 30-month data</strong> scenario is apparently the most lucrative scenario, and the scenario of using <strong>AdaBoost with 60-month data</strong> seems to work poorly compared to other scenarios. Now let’s first look at what could bring by adding <code>industry</code> feature to our feature set.</p>
+<h2 id="Adding-industry-feature-Encoding"><a href="#Adding-industry-feature-Encoding" class="headerlink" title="Adding industry feature - Encoding"></a>Adding <code>industry</code> feature - Encoding</h2><h3 id="Why-adding-industry-feature"><a href="#Why-adding-industry-feature" class="headerlink" title="Why adding industry feature"></a>Why adding <code>industry</code> feature</h3><p>It’s a well-known fact that stocks in the same industry have similar wax and wane due to the reason that they are running a similar business, using similar materials, producing similar products, and providing similar services. It’s a common belief that this cyclical characteristic of stocks needs to be factored into our machine learning prediction model in order to reflect this phenomenon.</p>
+<p><code>industry</code> feature contains string-like data such as ‘Technology’, ‘Utilities’, or ‘Manufacturing’. However, both XGBoost and AdaBoost are tree-based classifiers that only accept ordinal numbers as features in training data. Therefore, we need to transform these string-like data into numbers so that our classifiers can understand the data.</p>
+<h3 id="One-hot-encoding"><a href="#One-hot-encoding" class="headerlink" title="One-hot encoding"></a>One-hot encoding</h3><p>The technique to transform string-like data into ordinal data is called <strong>encoding</strong>. Typically we apply <strong>Label Encoding</strong>, in which we use one number to label one string in the <code>Industry</code> column. One implicit drawback of it is that <strong>Label Encoding</strong> might suggest that the bigger number is more important than the smaller number. Taking the below table as an example, is <code>&#123;&#39;Electric&#39; = 4&#125;</code> really more important than <code>&#123;&#39;Technology&#39; = 1&#125;</code> in the transformed training data set?</p>
+<img data-src="/2022/06/10/2022-06-10-adcanced-optimization/wrong_encoding.png" class="" width="400">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Label encoding doesn't work in this case</i>
+</p>
+
+<p>Here’s where <strong>One-hot Encoding</strong> comes into play. <strong>One-hot Encoding</strong> is a labeling technique that essentially uses one full column to present one single value in the original <code>Industry</code> column. The transformed data would have <em>N</em> new columns when there is <em>N</em> unique value in the <code>Industry</code> column. By doing this, we can remove the ordinal implication from <strong>Label Encoding</strong>.</p>
+<img data-src="/2022/06/10/2022-06-10-adcanced-optimization/right_encoding.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>One-hot encoding transformation</i>
+</p>
+
+<h3 id="Backtest-results"><a href="#Backtest-results" class="headerlink" title="Backtest results"></a>Backtest results</h3><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/one_hot_summary.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i> Performance summary of three base scenarios with one-hot transformed industry feature</i>
+</p>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>XGBoost, 30 months</th>
+<th>XGBoost, 60 months</th>
+<th>AdaBoost, 60 months</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/scenario1_benchmark.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/scenario2_benchmark.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/scenario3_benchmark.png" class="" width="200"></td>
+</tr>
+<tr>
+<td><div style="text-align: center;">One-hot encoded</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+<td><div style="text-align: center;">One-hot encoded</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+<td><div style="text-align: center;">One-hot encoded</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+</tr>
+<tr>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/30_one_hot.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/60_one_hot.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/60_ada_one_hot.png" class="" width="200"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Stratified plotting of one-hot encoded enhanced scenario returns by probability to win</i>
+</p>
+
+<p>The performance of the two scenarios using XGBoost actually improved quite a bit in terms of the portfolio return, win rate, and even the Machine Learning score like F1, AUC, and MCC. These backtest results possibly suggest that accounting <code>industry</code> feature into our machine learning model does help generate a better-trained model.</p>
+<h2 id="Dealing-with-missing-data-NA-Imputer"><a href="#Dealing-with-missing-data-NA-Imputer" class="headerlink" title="Dealing with missing data (NA) - Imputer"></a>Dealing with missing data (NA) - Imputer</h2><p>Previously in the post <a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">【Machine Learning】 Part II - How to build a machine learning boilerplate?</a>, the way we deal with the missing data is to drop all of them to avoid adding human-biased data. This is actually a luxury move for data scientists as the amount of the data is usually quite limited. If we can gently cast some fairy dust and revive those dumped data, the amount of data could be doubled or even tripled, and then train our model to be more accurate.</p>
+<img data-src="/2022/06/10/2022-06-10-adcanced-optimization/fairy_dust.png" class="" width="400">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i></i>
+</p>
+
+<h3 id="Imputer-What-is-it"><a href="#Imputer-What-is-it" class="headerlink" title="Imputer? What is it?"></a>Imputer? What is it?</h3><p>Imputer is a word actually found in <code>sklearn</code> machine learning python package, and the meaning of the word hardly tells me what it does. Imputer in <code>sklearn</code> is a sub-package to fill the missing data in various ways. There are <strong>SimpleImputer</strong> that fills the missing data with the mean of all the numbers, <strong>KNNImputer</strong> that separate data into different groups and fills the missing data with the mean of numbers in the same group, and also <strong>IterativeImputer</strong> that fills the missing data by estimation instead of the mean. In this post, <strong>SimpleImputer</strong> would be the tool that we’re using to fill the missing data.</p>
+<h3 id="Three-scenarios-to-fill-the-missing-data"><a href="#Three-scenarios-to-fill-the-missing-data" class="headerlink" title="Three scenarios to fill the missing data"></a>Three scenarios to fill the missing data</h3><p>Even though we’re using the simple <strong>SimpleImputer</strong>, there are still ways we can fill the missing data in a more sensible way.</p>
+<ul>
+<li>Drop all the columns that have missing data<ul>
+<li>This is the original method how we deal with the missing data in our machine learning model. The missing data is dropped instead of filling any arbitrary number so that we don’t add any personal bias to the dataset.</li>
+</ul>
+</li>
+<li>Fill all the data by column<ul>
+<li>We fill every the missing data together so that all the missing numbers of the same feature will be filled in the mean of all available numbers.</li>
+</ul>
+</li>
+<li>Fill the missing data by symbol<ul>
+<li>In our training data, we have features such as company quarterly sales, gross profit, and cash/debt ratio(refer to <a href="https://mikelhsia.github.io/2021/02/23/2021-02-11-factor-analysis-3/">Factor analysis Part III</a>). These company-specific fundamental numbers can be very different from one company to another due to the nature of the industry or company itself. For example, company A quarterly sales are 1M, 1.5M, 2M in Q1, Q2, and Q3 respectively. On the other hand, the quarterly sales of company B could be 20B in Q1, 21B in Q2, but Q3 data is missing. It won’t make any sense if we fill the missing Q3 of company B with the mean of (1M, 1.5M, 2M, 20B, 21B), right? That’s why it is better we fill the missing data according to the existing data of the company itself.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Backtest-results-1"><a href="#Backtest-results-1" class="headerlink" title="Backtest results"></a>Backtest results</h3><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/impute_summary.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i> Performance summary of three base scenarios with imputed data</i>
+</p>
+
+<img data-src="/2022/06/10/2022-06-10-adcanced-optimization/impute0.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>XGBoost, 30-month data performance stratified plot</i>
+</p>
+
+<img data-src="/2022/06/10/2022-06-10-adcanced-optimization/impute1.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>XGBoost, 60-month data performance stratified plot</i>
+</p>
+
+<img data-src="/2022/06/10/2022-06-10-adcanced-optimization/impute2.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>AdaBoost, 60-month data performance stratified plot</i>
+</p>
+
+<p>From the first summary table, it’s quite clear that the performances of the data-imputed scenarios are worse than the performance of the drop-missing-data scenario. Not only the annual return dropped 20~30%, and also the win rate, MDD, MCC score, and other figures drop significantly compared to the benchmark scenario. Then we move on to the stratified plot of our three base scenarios. Either the fill-everything scenario or the fill-missing-data-by-company scenario has greatly contributed to the ability to effectively separate the most probable winning group (group 1, red line) from the other groups. We might now be able to extract and form our preliminary conclusion that <code>&quot;SimpleImputer&quot; might not work in these scenarios but add more noises to the model, further decreasing the precision and accuracy of our model.</code> You can also try out the <strong>KNNImputer</strong> or <strong>IterativeImputer</strong> to see whether can achieve a better outcome.</p>
+<h2 id="Combine-features-gt-Kmean"><a href="#Combine-features-gt-Kmean" class="headerlink" title="Combine features -&gt; Kmean"></a>Combine features -&gt; Kmean</h2><h3 id="What-is-Kmean-and-how-to-decide-“K”"><a href="#What-is-Kmean-and-how-to-decide-“K”" class="headerlink" title="What is Kmean and how to decide “K”"></a>What is Kmean and how to decide “K”</h3><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/K-means_clustering">K-mean</a> is a method/technique that aims to cluster all the data into <em>K</em> groups by analyzing the given features. I’m not going to go through the details and how to conduct your own k-mean clustering, as there are so many people doing so on <a target="_blank" rel="noopener" href="https://medium.com/">medium</a> and other ML platforms. I’m only going to reveal and illustrate the backtest outcomes to you.</p>
+<p> What’s the benefit of conducting k-mean clustering? In the financial ML model, there are so many fundamental data such as sales, gross profit, and cash-to-debt ratio of every individual company. However, it’s a bit too complicated to take all these fundamental figures into account while training our ML model. Therefore, instead of using these fundamental figures as they were, it would be easier, more meaningful, and more effective if we can categorize them into several groups before we feed the data into the machine learning model.</p>
+<h3 id="Combining-features"><a href="#Combining-features" class="headerlink" title="Combining features"></a>Combining features</h3><p>Let’s take the example that we used in our backtest, that we combine features <code>ROA</code>, <code>asset turnover</code>, <code>Sharpe ratio since the last 20 days</code>, and <code>Sharpe ratio since the last 60 days</code>. Instead of feeding these figures right into the machine learning model, we use the k-mean clustering method to categorize them into <em>K</em> groups and name the group feature <code>profitability_of_the_company</code>. Wouldn’t that make more sense for the model to know how profitable the company is rather than knowing the fundamental figures of the company? But remember, that the ordinal number is not suitable for the category type of data. Make sure you use <strong>One-hot encoding</strong> to separate the profitability type into features so that you’ll be able to feed these data into the model in a correct way.</p>
+<img data-src="/2022/06/10/2022-06-10-adcanced-optimization/kmean.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>Using Kmean to produce meaningful features</i>
+</p>
+
+<h3 id="Backtest-results-2"><a href="#Backtest-results-2" class="headerlink" title="Backtest results"></a>Backtest results</h3><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/kmean_summary.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i> Performance summary of three base scenarios with imputed data and additional kmean clustering</i>
+</p>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Drop missing data</th>
+<th>Impute everything</th>
+<th>Impute missing data by company</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/1-0.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/1-1.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/1-2.png" class="" width="200"></td>
+</tr>
+<tr>
+<td><div style="text-align: center;">Added kmean feature</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+<td><div style="text-align: center;">Added kmean feature</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+<td><div style="text-align: center;">Added kmean feature</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+</tr>
+<tr>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/post-1-0.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/post-1-1.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/post-1-2.png" class="" width="200"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>XGBoost, 30-month data performance stratified plot</i>
+</p>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Drop missing data</th>
+<th>Impute everything</th>
+<th>Impute missing data by company</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/2-0.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/2-1.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/2-2.png" class="" width="200"></td>
+</tr>
+<tr>
+<td><div style="text-align: center;">Added kmean feature</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+<td><div style="text-align: center;">Added kmean feature</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+<td><div style="text-align: center;">Added kmean feature</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+</tr>
+<tr>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/post-2-0.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/post-2-1.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/post-2-2.png" class="" width="200"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>XGBoost, 60-month data performance stratified plot</i>
+</p>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Drop missing data</th>
+<th>Impute everything</th>
+<th>Impute missing data by company</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/3-0.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/3-1.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/3-2.png" class="" width="200"></td>
+</tr>
+<tr>
+<td><div style="text-align: center;">Added kmean feature</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+<td><div style="text-align: center;">Added kmean feature</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+<td><div style="text-align: center;">Added kmean feature</div><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/arrow_down.png" class="" width="20"></td>
+</tr>
+<tr>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/post-3-0.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/post-3-1.png" class="" width="200"></td>
+<td><img data-src="/2022/06/10/2022-06-10-adcanced-optimization/post-3-2.png" class="" width="200"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+    <i>AdaBoost, 60-month data performance stratified plot</i>
+</p>
+
+<p>Again, let’s first look at the summary table. There are only two out of nine scenarios that have better annual returns after adopting the kmean clustering method. Our <code>profitability_of_the_company</code> factor doesn’t seem to be an effective way to raise the probability of win rate in the trading strategy. Fortunately, the experiment doesn’t have to stop right here. There are hundreds of features that we can test and try to see how to produce an effective, explainable feature that corresponds to our trading idea.</p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>Among all three feature engineering techniques that we have adopted into our strategy, it seems that <strong>One-hot encodes</strong> the <code>industry</code> feature does enhance the predicting ability in our trading model. On the other hand, we can use <strong>KNNImputer</strong> as an alternative for <strong>SimpleImputer</strong>, and maybe try more combinations to create our new feature from the existing features.</p>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Technical-Analysis/" rel="tag"># Technical Analysis</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/18/2022-04-20-forex-grid-trading-system/" rel="prev" title="Looking for no-loss trading strategy? Here's the strategy that you should look at.">
+      <i class="fa fa-chevron-left"></i> Looking for no-loss trading strategy? Here's the strategy that you should look at.
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Train-of-thought"><span class="nav-number">1.</span> <span class="nav-text">Train of thought</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-industry-feature-Encoding"><span class="nav-number">1.1.</span> <span class="nav-text">Adding industry feature - Encoding</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-adding-industry-feature"><span class="nav-number">1.1.1.</span> <span class="nav-text">Why adding industry feature</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#One-hot-encoding"><span class="nav-number">1.1.2.</span> <span class="nav-text">One-hot encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtest-results"><span class="nav-number">1.1.3.</span> <span class="nav-text">Backtest results</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dealing-with-missing-data-NA-Imputer"><span class="nav-number">1.2.</span> <span class="nav-text">Dealing with missing data (NA) - Imputer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Imputer-What-is-it"><span class="nav-number">1.2.1.</span> <span class="nav-text">Imputer? What is it?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Three-scenarios-to-fill-the-missing-data"><span class="nav-number">1.2.2.</span> <span class="nav-text">Three scenarios to fill the missing data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtest-results-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">Backtest results</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Combine-features-gt-Kmean"><span class="nav-number">1.3.</span> <span class="nav-text">Combine features -&gt; Kmean</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-Kmean-and-how-to-decide-%E2%80%9CK%E2%80%9D"><span class="nav-number">1.3.1.</span> <span class="nav-text">What is Kmean and how to decide “K”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Combining-features"><span class="nav-number">1.3.2.</span> <span class="nav-text">Combining features</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtest-results-2"><span class="nav-number">1.3.3.</span> <span class="nav-text">Backtest results</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">2.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
