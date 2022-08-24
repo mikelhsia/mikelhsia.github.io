@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="When it comes to using machine learning algorithm to pick the stocks that most likely to produce a good return, it is similar to seeking the opinion of an investing consultant. However, it can be uns">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【ML algo trading】 VI - Employ the power of ensemble learning to increase your portfolio return">
+<meta property="og:url" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="When it comes to using machine learning algorithm to pick the stocks that most likely to produce a good return, it is similar to seeking the opinion of an investing consultant. However, it can be uns">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/cover.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/or_do_we.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/ensemble_types.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/stacking.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/backtest_results.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/1-group.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/1-return.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/2-group.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/2-return.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/3-group.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/3-return.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/4-group.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/4-return.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/5-group.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/5-return.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/6-group.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/6-return.png">
+<meta property="article:published_time" content="2022-08-20T03:45:58.000Z">
+<meta property="article:modified_time" content="2022-08-24T18:00:02.298Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Technical Analysis">
+<meta property="article:tag" content="Backtesting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/cover.jpg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【ML algo trading】 VI - Employ the power of ensemble learning to increase your portfolio return | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【ML algo trading】 VI - Employ the power of ensemble learning to increase your portfolio return
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-08-20 11:45:58" itemprop="dateCreated datePublished" datetime="2022-08-20T11:45:58+08:00">2022-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-08-25 02:00:02" itemprop="dateModified" datetime="2022-08-25T02:00:02+08:00">2022-08-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/08/20/2022-08-20-votingclassifier/" class="post-meta-item leancloud_visitors" data-flag-title="【ML algo trading】 VI - Employ the power of ensemble learning to increase your portfolio return" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/08/20/2022-08-20-votingclassifier/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/20/2022-08-20-votingclassifier/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2022/08/20/2022-08-20-votingclassifier/cover.jpg" class="" width="800">
+<p>When it comes to using machine learning algorithm to pick the stocks that most likely to produce a good return, it is similar to seeking the opinion of an investing consultant. However, it can be unsettling to make your investment decision after listening to just one consultant. Now is the moment to get second opinions and hire more investment advisors to make sure the investment concept is reliable, doable, and profitable.</p>
+<p>The same principle that you consult other machine learning algorithms to confirm the predictions made by these models is applied in ensemble learning. When you have collected all of the final data from these models, you may take your time relaxing in your nice chair like a big boss, analyzing the results and make your important and sacred decision.</p>
+<a id="more"></a>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><p>In the previous articles <a href="https://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">1</a> <a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">2</a> <a href="https://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/">3</a> <a href="https://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/">4</a> and <a href="https://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/">5</a>, we have built the machine learning script to predict the winners in the stock market using only the XGBoost model. Nevertheless, there are many algorithms out there for us to try and evaluate. So the most important question for us becomes much more complex. We need to build multiple machine learning models, use <code>GridSearch</code> to find the best hyperparameters, train/fit many different machine learning models, evaluate each model with the same metrics, and pick the best-performing model for us to use, and …….</p>
+<img data-src="/2022/08/20/2022-08-20-votingclassifier/or_do_we.png" class="" width="600">
+<h1 id="How-are-we-going-to-do-this"><a href="#How-are-we-going-to-do-this" class="headerlink" title="How are we going to do this?"></a>How are we going to do this?</h1><h2 id="Ensemble-learning"><a href="#Ensemble-learning" class="headerlink" title="Ensemble learning"></a>Ensemble learning</h2><p>Ensemble learning is a method to combine the predictions from different machine learning models. We gave these machine learning models the name <code>weak learners</code>, as compared to our finalize machine learning model, these <code>weak learners</code> contribute only a part of their efforts to produce the final predictions. By saying that, the ensemble learning model is a more powerful predictor by using a <code>strong learner</code> to assemble the results from many <code>weak learners</code>, so that our final predictor is able to waive the variances from some of the machine learning models and also prevent overfitting of a singular model. Below is the list of the ensemble learning techniques:</p>
+<img data-src="/2022/08/20/2022-08-20-votingclassifier/ensemble_types.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Different types of ensemble learning techniques</i>
+</p>
+
+<h2 id="Pause-Let’s-narrow-it-down"><a href="#Pause-Let’s-narrow-it-down" class="headerlink" title="Pause!! Let’s narrow it down"></a>Pause!! Let’s narrow it down</h2><p>Among these ensemble learning techniques, Bagging and Boosting are the most commonly known techniques. They are even used in the modern machine learning algorithm such as the Adaboost model or the XGBoost model that we used in our previous articles. However, to cover all these techniques would probably bore you to death. Therefore, we’re going to introduce two techniques in this article, <strong>Average Voting</strong> and <strong>Stacking</strong>. Also, as explaining the basic theory is not my strength, I’ll put less effort into explaining and more effort into describing the details of the backtests and coding details.</p>
+<h3 id="Average-Voting"><a href="#Average-Voting" class="headerlink" title="Average Voting"></a>Average Voting</h3><p>As the name implies, average voting is to average the predicted scores/probabilities from your <code>weak learners</code> and output the final scores/probabilities. For example, you have three <code>weak learners</code> classifier models trained and produced the final predicted probabilities of getting the positive return tomorrow.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Classifier Model</th>
+<th>Stock 1</th>
+<th>Stock 2</th>
+<th>Stock 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>0.9</td>
+<td>0.9</td>
+<td>0.7</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0.7</td>
+<td>0.3</td>
+<td>0.7</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0.6</td>
+<td>0.7</td>
+<td>0.7</td>
+</tr>
+<tr>
+<td><strong>Averaged possibility</strong></td>
+<td><strong>0.73</strong></td>
+<td><strong>0.63</strong></td>
+<td><strong>0.7</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Possibilities of getting the positive return tomorrow (Soft voting)</i>
+</p>
+
+<p>If we look at models A, B, and C respectively, we probably end up buying Stock 2 as it has a relatively high probability to receive a positive return from models A and C. After employing the average voting technique, the probability of Stock 2 now drops to 66% and Stock 1 probability would top Stock 2, indicating that Stock 1 would actually have a higher probability to receive a positive return than the other two stocks. This is so-called <strong>Soft Voting</strong>.</p>
+<p>There is also <strong>Hard Voting</strong>, which takes binary inputs, True or False, into account instead of the probabilities. Taking the same example as above, we add one more condition that the output would be 1 (True) only when the possibility is over 0.7. The final result would be quite different.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Classifier Model</th>
+<th>Stock 1</th>
+<th>Stock 2</th>
+<th>Stock 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>0.9 (1)</td>
+<td>0.9 (1)</td>
+<td>0.7 (1)</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0.7 (1)</td>
+<td>0.3 (0)</td>
+<td>0.7 (1)</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0.6 (0)</td>
+<td>0.7 (1)</td>
+<td>0.7 (1)</td>
+</tr>
+<tr>
+<td><strong>Voter</strong></td>
+<td><strong>2 Positives &amp; 1 Negative</strong></td>
+<td><strong>2 Positives &amp; 1 Negative</strong></td>
+<td><strong><em>3 Positives</em></strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Possibilities of getting the positive return tomorrow (Hard voting)</i>
+</p>
+
+<p>By looking at the total number of the voters who vote positive, the final winner would be Stock 3 as it has 3 people who think it’s going to receive a positive return tomorrow. Therefore the <strong>Hard Voting</strong> would recommend Stock 3, yet the <strong>Soft Voting</strong> would recommend Stock 2. The concept is quite straightforward, but this technique does help the model to mitigate the impact of the high variance of one single model.</p>
+<h3 id="Stacking"><a href="#Stacking" class="headerlink" title="Stacking"></a>Stacking</h3><p>Other than average voting, <strong>Stacking</strong> processes the predictions for the <code>weak learners</code> in a more advanced way. <strong>Stacking</strong> treats the outputs of its <code>weak learners</code> as features and stacks them together into secondary training data. The secondary training data will be used as the inputs for the final estimator (a.k.a. meta-model), and then computes the final prediction.</p>
+<img data-src="/2022/08/20/2022-08-20-votingclassifier/stacking.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Stacking technique illustration</i>
+</p>
+
+<p>As illustrated above, classification models A, B, and C use the same training data to train the model and then produce predictions A, predictions B, and predictions C. The final estimator treats these predictions as new features to compute the final prediction.</p>
+<h1 id="Walk-through-the-strategies"><a href="#Walk-through-the-strategies" class="headerlink" title="Walk through the strategies"></a>Walk through the strategies</h1><p>We now have the general idea of these two ensemble learning techniques, let’s move on to the backtest so that we can understand the power of ensemble learning. In this series of backtests, we are going to use the same dataset to train 1. XGBoost, 2. LogisticRegression, 3. SVM, and 4. Deep Learning with 2 layers of hidden layers. After conducting the backtests using these models respectively, we will combine these models together and apply <strong>Average Voting</strong> and <strong>Stacking</strong> techniques respectively to see whether the performances are improved or not.</p>
+<h2 id="Universe-and-training-data"><a href="#Universe-and-training-data" class="headerlink" title="Universe and training data"></a>Universe and training data</h2><p>I’m still using <code>ZZ500</code> as our universe and the same set of features as the training data. If you are interested in knowing how to define the universe and what features I’ve been using, you can check out my previous articles regarding machine learning and factor analysis.</p>
+<h2 id="Backtest-timeframe"><a href="#Backtest-timeframe" class="headerlink" title="Backtest timeframe"></a>Backtest timeframe</h2><p>My backtest timeframe is from <code>2020-04 ~ 2022-07</code>. For each month, I would need 60 months’ data as the training data to train the model. Therefore, it would require 27 (validation data) + 60 (training data) = 87 months = ~ 8 years of stock data.</p>
+<h2 id="Backtest-scenarios"><a href="#Backtest-scenarios" class="headerlink" title="Backtest scenarios"></a>Backtest scenarios</h2><p>Here are the four models that I employed in this backtest. Again, I’m not the professor of the machine learning algorithm that can turn you into a machine learning expert with what I know. Instead, I’m going to put some quick descriptions and the materials that help me understand the basics of these ML models.</p>
+<p><strong><em>1. XGBoost</em></strong><br>This is the decision-tree-base model that I’ve been using since the first article. The advantage of this algorithm is it’s <strong><em>extremely fast</em></strong>. This model took 1/5 of the time to train compared to other models. Below are the <a target="_blank" rel="noopener" href="https://www.youtube.com/c/joshstarmer/videos">StatQuest</a> videos that help me to understand what XGBoost is about:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=3CC4N4z3GJc">Gradient Boost Part 1 (of 4): Regression Main Ideas</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=2xudPOBz-vs">Gradient Boost Part 2 (of 4): Regression Details</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=jxuNLH5dXCs">Gradient Boost Part 3 (of 4): Classification</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=StWY5QWMXCw">Gradient Boost Part 4 (of 4): Classification Details</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=OtD8wVaFm6E&amp;t=12s">XGBoost Part 1 (of 4): Regression</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=8b1JEDvenQU&amp;t=1153s">XGBoost Part 2 (of 4): Classification</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=ZVFeW798-2I">XGBoost Part 3 (of 4): Mathematical Details</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=oRrKeUCEbq8">XGBoost Part 4 (of 4): Crazy Cool Optimizations</a></li>
+</ul>
+<p><strong><em>2. LogisticRegression</em></strong><br>Logistic Regression is very much like the Linear regression that I talked about in <a href="https://mikelhsia.github.io/2021/01/31/2021-01-31-factor-analysis/">【Factor analysis】 Vol. 1. Introduction the idea of factor analysis</a>. It uses various ordinal features to predict the probability of whether a thing will happen or not. To transform the probability into a Boolean value that stands for whether a certain incidence will happen or not, an activation function (such as Sigmoid or Softmax) will be applied. Here are the materials for you to know more about logistic regression:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=yIYKR4sgzI8">StatQuest: Logistic Regression</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=vN5cNN2-HWE">Logistic Regression Details Pt1: Coefficients</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=BfKanl1aSG0">Logistic Regression Details Pt 2: Maximum Likelihood</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=M59JElEPgIg&amp;t=355s">The SoftMax Derivative, Step-by-Step!!!</a></li>
+</ul>
+<p><strong><em>3. SVM</em></strong><br>I have introduced the concept of SVM <a href="https://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/">here</a>. SVM is a variant of logistic regression. Instead of finding the exact line to separate all the 0’s and the 1’s, we include an extra hyperplane into the model. We hope that by adding this hyperplane,  we will be able to clearly separate the data into different groups. The method for inserting this hyperplane is referred to as a ‘kernel.’</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=efR1C6CvhmE">Support Vector Machines Part 1 (of 3): Main Ideas!!!</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Toet3EiSFcM">Support Vector Machines Part 2: The Polynomial Kernel (Part 2 of 3)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Qc5IyLW_hns">Support Vector Machines Part 3: The Radial (RBF) Kernel (Part 3 of 3)</a></li>
+</ul>
+
+<p style="text-align:center; color: grey;">
+    <i>SVM is a more flexible classification model</i>
+</p>
+
+<p><strong><em>4. Neural Networks</em></strong><br>Neural network is a type of deep learning algorithm. It uses numerous nodes to simulate the neuron in a neural system of a person, that each neuron makes individual solution and combine these solutions to make the final solution. Below are the related articles to talk about the NN model:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.TensorFlow.org/guide">TensorFlow Guide</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=L35fFDpwIM4">Tensors for Neural Networks, Clearly Explained!!!</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=CqOfi41LfDw&amp;t=34s">Neural Networks Pt. 1: Inside the Black Box</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=IN2XmBhILt4">Neural Networks Pt. 2: Backpropagation Main Ideas</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=68BZ5f7P94E">Neural Networks Pt. 3: ReLU In Action!!!</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=83LYR-1IcjA">Neural Networks Pt. 4: Multiple Inputs and Outputs</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=KpKog-L9veg">Neural Networks Part 5: ArgMax and SoftMax</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=6ArSys5qHAU">Neural Networks Part 6: Cross Entropy</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=xBEh66V9gZo">Neural Networks Part 7: Cross Entropy Derivatives and Backpropagation</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=HGwBXDKFk9I">Neural Networks Part 8: Image Classification with Convolutional Neural Networks (CNNs)</a></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_model</span>():</span></span><br><span class="line">  model = tf.keras.Sequential()</span><br><span class="line">  model.add(tf.keras.layers.Dense(<span class="number">256</span>, activation=<span class="string">&quot;relu&quot;</span>, input_shape=(<span class="number">179</span>, ), name=<span class="string">&quot;dense_1&quot;</span>))</span><br><span class="line">  model.add(tf.keras.layers.Dropout(<span class="number">0.1</span>),)</span><br><span class="line">  model.add(tf.keras.layers.Dense(<span class="number">256</span>, activation=<span class="string">&quot;relu&quot;</span>, name=<span class="string">&quot;dense_2&quot;</span>))</span><br><span class="line">  model.add(tf.keras.layers.Dropout(<span class="number">0.1</span>)),</span><br><span class="line">  model.add(tf.keras.layers.Dense(<span class="number">1</span>, activation=<span class="string">&quot;sigmoid&quot;</span>, name=<span class="string">&quot;predictions&quot;</span>))</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Compile model</span></span><br><span class="line">  model.compile(</span><br><span class="line">    optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">    loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>,</span><br><span class="line">    metrics=[</span><br><span class="line">      tf.keras.metrics.AUC(),</span><br><span class="line">      tf.keras.metrics.BinaryAccuracy(),</span><br><span class="line">    ],</span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+<p style="text-align:center; color: grey;">
+  <i>My neural network model set up</i>
+</p>
+
+<p><strong><em>5. Average Voting Algorithm</em></strong><br>As previously explained, <strong>Average Voting</strong> essentially averages out the predicted scores/possibilities participated in machine learning models. Therefore, it’s relatively easy to implement the average voting model by putting your model into a list as an <code>estimator</code> parameter. The tricky part is, that the TensorFlow library that the neural network model uses is originally developed by <em>Google</em>, and the scikit-learn library that built the <code>VotingClassifier</code> is not. These two models are not naturally compatible and your neural network model can’t be tucked into the <code>estimator</code> parameter directly. Fortunately, TensorFlow also provides the function to wrap our NN model into a format that the scikit-learn library can understand. Hence, remember to wrap your NN model before you start building your <strong>Average Voting Algorithm</strong>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> TensorFlow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">nn_model = tf.keras.wrappers.scikit_learn.KerasClassifier(</span><br><span class="line">    build_fn=get_model,</span><br><span class="line">    epochs=<span class="number">40</span>,</span><br><span class="line">    verbose=<span class="literal">False</span>,</span><br><span class="line">)</span><br><span class="line">nn_model._estimator_type = <span class="string">&#x27;classifier&#x27;</span></span><br><span class="line"></span><br><span class="line">scaled_nn_model = make_pipeline(</span><br><span class="line">    RobustScaler(),</span><br><span class="line">    nn_model</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p style="text-align:center; color: grey;">
+  <i>Use `tf.keras.wrapper.scikit_learn` to wrap our NN model</i>
+</p>
+
+<p>Once you have your models ready, you simply need to put them together into a list and add the wrapper to the <code>VotingClassifier</code> function. Here we use <code>voting=&#39;soft&#39;</code> to smooth the variance of the model predictions.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> VotingClassifier</span><br><span class="line"></span><br><span class="line"><span class="comment"># Instantiate the VotingClassifier class</span></span><br><span class="line">voting_model = VotingClassifier(estimators=[</span><br><span class="line">    (<span class="string">&#x27;xgboost_model&#x27;</span>, xgb_model),</span><br><span class="line">    (<span class="string">&#x27;scaled_lr&#x27;</span>, scaled_lr_model),</span><br><span class="line">    (<span class="string">&#x27;scaled_svm&#x27;</span>, scaled_svm_model),</span><br><span class="line">    (<span class="string">&#x27;scaled_nn&#x27;</span>, scaled_nn_model),</span><br><span class="line">  ],</span><br><span class="line">  voting=<span class="string">&#x27;soft&#x27;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Train the voting model</span></span><br><span class="line">voting_model.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Run the prediction</span></span><br><span class="line">y_predict = voting_model.predict(X_test)</span><br></pre></td></tr></table></figure>
+<p style="text-align:center; color: grey;">
+  <i>VotingClassifier basic instruction</i>
+</p>
+
+<p><strong><em>6. Stacking</em></strong><br>In our <strong>StackingClassifier</strong>, we use the XGBoost model,  the Support Vector Machine model, and Neural Network models as our base estimators. As for the final estimator to produce the final prediction, we use the Logistic Regression model with the parameters needed. Once the model is instantiated, we can use this instance as the rest of scikit-learn model to <code>fit</code> and to <code>predict</code>. Make sure you include the hyperparameters before you build your base learner models.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> StackingClassifier</span><br><span class="line">base_learners = [</span><br><span class="line">  (<span class="string">&#x27;xgboost_model&#x27;</span>, xgb_model),</span><br><span class="line">  (<span class="string">&#x27;scaled_svm&#x27;</span>, scaled_svm_model),</span><br><span class="line">  (<span class="string">&#x27;scaled_nn&#x27;</span>, scaled_nn_model),</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">model = StackingClassifier(</span><br><span class="line">  estimators=base_learners,</span><br><span class="line">  final_estimator=LogisticRegression()</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">model.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line">y_predict = model.predict(X_test)</span><br></pre></td></tr></table></figure>
+<p style="text-align:center; color: grey;">
+  <i>Basic set up of StackingClassifier</i>
+</p>
+
+<h2 id="Backtest-results"><a href="#Backtest-results" class="headerlink" title="Backtest results"></a>Backtest results</h2><h3 id="Backtest-results-summary"><a href="#Backtest-results-summary" class="headerlink" title="Backtest results summary"></a>Backtest results summary</h3><img data-src="/2022/08/20/2022-08-20-votingclassifier/backtest_results.png" class="" width="800">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Backtest results summary</i>
+</p>
+
+<p>Even though the annual returns of both VotingClassifier and StackingClassifier are not higher than the other machine learning model, the Sharpe Ratio and the Maximum Drawdown are relatively lower. The win rate of the VotingClassifier scenario even increases to 61%, indicating our model is more powerful in its predictability to pick the stocks that are more possible to gain positive returns. To gain a more intuitive sense of how the ensemble learning method impacts our model, let’s look at the stratified and the return diagrams.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Stratified Diagram</th>
+<th>Return Diagram</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XGBoost</td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/1-group.png" class="" width="300"></td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/1-return.png" class="" width="300"></td>
+</tr>
+<tr>
+<td>Logistic Regression</td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/2-group.png" class="" width="300"></td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/2-return.png" class="" width="300"></td>
+</tr>
+<tr>
+<td>SVM</td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/3-group.png" class="" width="300"></td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/3-return.png" class="" width="300"></td>
+</tr>
+<tr>
+<td>Neural Network</td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/4-group.png" class="" width="300"></td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/4-return.png" class="" width="300"></td>
+</tr>
+<tr>
+<td>Average Voting</td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/5-group.png" class="" width="300"></td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/5-return.png" class="" width="300"></td>
+</tr>
+<tr>
+<td>Stacking</td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/6-group.png" class="" width="300"></td>
+<td><img data-src="/2022/08/20/2022-08-20-votingclassifier/6-return.png" class="" width="300"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>It’s quite clear that our ensemble learning methods (<strong><em>Average Voting</em></strong> and <strong><em>Stacking</em></strong>) less fluctuate than the rest of the models. By comparing the same bear market period from <code>2022-02</code>~<code>2022-04</code>, our loss appears a lot less than the non-ensemble learning methods.</p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>For the <strong><em>Average Voting</em></strong> ensemble learning method, it seems to produce a better result and improve the predictability of our model. However, there are a lot fewer places we can step in to better fine-tune the model. On the contrary, there is much more room for us to find out the best combination of the base estimators when we look at the <strong><em>Stacking</em></strong> ensemble learning method. Hence, one thing we can try is using the result from <strong><em>Average Voting</em></strong> as a benchmark and using <strong><em>Stacking</em></strong> as a tool to see whether we can build a much more powerful model to better predict the market.</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://neptune.ai/blog/ensemble-learning-guide">A Comprehensive Guide to Ensemble Learning: What Exactly Do You Need to Know?</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Technical-Analysis/" rel="tag"># Technical Analysis</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/10/2022-06-10-adcanced-optimization/" rel="prev" title="【ML algo trading】 V - Raise your trading win rate through feature engineering">
+      <i class="fa fa-chevron-left"></i> 【ML algo trading】 V - Raise your trading win rate through feature engineering
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Motivation"><span class="nav-number">1.</span> <span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-are-we-going-to-do-this"><span class="nav-number">2.</span> <span class="nav-text">How are we going to do this?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ensemble-learning"><span class="nav-number">2.1.</span> <span class="nav-text">Ensemble learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pause-Let%E2%80%99s-narrow-it-down"><span class="nav-number">2.2.</span> <span class="nav-text">Pause!! Let’s narrow it down</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Average-Voting"><span class="nav-number">2.2.1.</span> <span class="nav-text">Average Voting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stacking"><span class="nav-number">2.2.2.</span> <span class="nav-text">Stacking</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Walk-through-the-strategies"><span class="nav-number">3.</span> <span class="nav-text">Walk through the strategies</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Universe-and-training-data"><span class="nav-number">3.1.</span> <span class="nav-text">Universe and training data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-timeframe"><span class="nav-number">3.2.</span> <span class="nav-text">Backtest timeframe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-scenarios"><span class="nav-number">3.3.</span> <span class="nav-text">Backtest scenarios</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-results"><span class="nav-number">3.4.</span> <span class="nav-text">Backtest results</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtest-results-summary"><span class="nav-number">3.4.1.</span> <span class="nav-text">Backtest results summary</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
