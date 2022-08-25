@@ -21,12 +21,12 @@
     var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="When it comes to using machine learning algorithm to pick the stocks that most likely to produce a good return, it is similar to seeking the opinion of an investing consultant. However, it can be uns">
+  <meta name="description" content="When it comes to using machine learning algorithm to pick the stocks that are most likely to produce a good return, it is similar to seeking the opinion of an investment consultant. However, it can b">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【ML algo trading】 VI - Employ the power of ensemble learning to increase your portfolio return">
 <meta property="og:url" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/index.html">
 <meta property="og:site_name" content="Michael&#39;s blog">
-<meta property="og:description" content="When it comes to using machine learning algorithm to pick the stocks that most likely to produce a good return, it is similar to seeking the opinion of an investing consultant. However, it can be uns">
+<meta property="og:description" content="When it comes to using machine learning algorithm to pick the stocks that are most likely to produce a good return, it is similar to seeking the opinion of an investment consultant. However, it can b">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/cover.jpg">
 <meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/or_do_we.png">
@@ -46,9 +46,8 @@
 <meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/6-group.png">
 <meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/6-return.png">
 <meta property="article:published_time" content="2022-08-20T03:45:58.000Z">
-<meta property="article:modified_time" content="2022-08-24T18:00:02.298Z">
+<meta property="article:modified_time" content="2022-08-25T02:21:08.673Z">
 <meta property="article:author" content="Michael Hsia">
-<meta property="article:tag" content="Technical Analysis">
 <meta property="article:tag" content="Backtesting">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/cover.jpg">
@@ -227,7 +226,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-08-25 02:00:02" itemprop="dateModified" datetime="2022-08-25T02:00:02+08:00">2022-08-25</time>
+                <time title="Modified: 2022-08-25 10:21:08" itemprop="dateModified" datetime="2022-08-25T10:21:08+08:00">2022-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -276,12 +275,12 @@
 
       
         <img data-src="/2022/08/20/2022-08-20-votingclassifier/cover.jpg" class="" width="800">
-<p>When it comes to using machine learning algorithm to pick the stocks that most likely to produce a good return, it is similar to seeking the opinion of an investing consultant. However, it can be unsettling to make your investment decision after listening to just one consultant. Now is the moment to get second opinions and hire more investment advisors to make sure the investment concept is reliable, doable, and profitable.</p>
-<p>The same principle that you consult other machine learning algorithms to confirm the predictions made by these models is applied in ensemble learning. When you have collected all of the final data from these models, you may take your time relaxing in your nice chair like a big boss, analyzing the results and make your important and sacred decision.</p>
+<p>When it comes to using machine learning algorithm to pick the stocks that are most likely to produce a good return, it is similar to seeking the opinion of an investment consultant. However, it can be unsettling to make your investment decision after listening to just one consultant. Now is the moment to get second opinions and hire more investment advisors to make sure the investment concept is reliable, doable, and profitable.</p>
+<p>The same principle that you consult other machine learning algorithms to confirm the predictions made by these models are applied in ensemble learning. When you have collected all of the final data from these models, you may take your time relaxing in your nice chair like a big boss, analyzing the results, and making your important and sacred decision.</p>
 <a id="more"></a>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><p>In the previous articles <a href="https://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">1</a> <a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">2</a> <a href="https://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/">3</a> <a href="https://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/">4</a> and <a href="https://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/">5</a>, we have built the machine learning script to predict the winners in the stock market using only the XGBoost model. Nevertheless, there are many algorithms out there for us to try and evaluate. So the most important question for us becomes much more complex. We need to build multiple machine learning models, use <code>GridSearch</code> to find the best hyperparameters, train/fit many different machine learning models, evaluate each model with the same metrics, and pick the best-performing model for us to use, and …….</p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><p>In the previous articles <a href="https://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">1</a> <a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">2</a> <a href="https://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/">3</a> <a href="https://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/">4</a> and <a href="https://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/">5</a>, we have built the machine learning script to predict the winners in the stock market using only the XGBoost model. Nevertheless, there are many algorithms out there for us to try and evaluate. So the most important question for us becomes much more complex. We need to build multiple machine learning models, use <code>GridSearch</code> to find the best hyperparameters, train/fit many different machine learning models, evaluate each model with the same metrics, pick the best-performing model for us to use, and …….</p>
 <img data-src="/2022/08/20/2022-08-20-votingclassifier/or_do_we.png" class="" width="600">
-<h1 id="How-are-we-going-to-do-this"><a href="#How-are-we-going-to-do-this" class="headerlink" title="How are we going to do this?"></a>How are we going to do this?</h1><h2 id="Ensemble-learning"><a href="#Ensemble-learning" class="headerlink" title="Ensemble learning"></a>Ensemble learning</h2><p>Ensemble learning is a method to combine the predictions from different machine learning models. We gave these machine learning models the name <code>weak learners</code>, as compared to our finalize machine learning model, these <code>weak learners</code> contribute only a part of their efforts to produce the final predictions. By saying that, the ensemble learning model is a more powerful predictor by using a <code>strong learner</code> to assemble the results from many <code>weak learners</code>, so that our final predictor is able to waive the variances from some of the machine learning models and also prevent overfitting of a singular model. Below is the list of the ensemble learning techniques:</p>
+<h1 id="How-are-we-going-to-do-this"><a href="#How-are-we-going-to-do-this" class="headerlink" title="How are we going to do this?"></a>How are we going to do this?</h1><h2 id="Ensemble-learning"><a href="#Ensemble-learning" class="headerlink" title="Ensemble learning"></a>Ensemble learning</h2><p>Ensemble learning is a method to combine the predictions from different machine learning models. We gave these machine learning models the name <code>weak learners</code>, as compared to our finalize machine learning model, these <code>weak learners</code> contribute only a part of their efforts to produce the final predictions. By saying that, the ensemble learning model is a more powerful predictor by using a <code>strong learner</code> to assemble the results from many <code>weak learners</code>, so that our final predictor is able to waive the variances from some of the machine learning models and also prevent the overfitting of a singular model. Below is the list of the ensemble learning techniques:</p>
 <img data-src="/2022/08/20/2022-08-20-votingclassifier/ensemble_types.png" class="" width="600">
 <p style="font-size: 0.8em; text-align:center; color: grey;">
   <i>Different types of ensemble learning techniques</i>
@@ -376,7 +375,7 @@
 </p>
 
 <p>By looking at the total number of the voters who vote positive, the final winner would be Stock 3 as it has 3 people who think it’s going to receive a positive return tomorrow. Therefore the <strong>Hard Voting</strong> would recommend Stock 3, yet the <strong>Soft Voting</strong> would recommend Stock 2. The concept is quite straightforward, but this technique does help the model to mitigate the impact of the high variance of one single model.</p>
-<h3 id="Stacking"><a href="#Stacking" class="headerlink" title="Stacking"></a>Stacking</h3><p>Other than average voting, <strong>Stacking</strong> processes the predictions for the <code>weak learners</code> in a more advanced way. <strong>Stacking</strong> treats the outputs of its <code>weak learners</code> as features and stacks them together into secondary training data. The secondary training data will be used as the inputs for the final estimator (a.k.a. meta-model), and then computes the final prediction.</p>
+<h3 id="Stacking"><a href="#Stacking" class="headerlink" title="Stacking"></a>Stacking</h3><p>Other than average voting, <strong>Stacking</strong> processes the predictions from the <code>weak learners</code> in a more advanced way. <strong>Stacking</strong> treats the outputs of its <code>weak learners</code> as features and stacks them together into secondary training data. The secondary training data will be used as the inputs for the final estimator (a.k.a. meta-model), and then computes the final prediction.</p>
 <img data-src="/2022/08/20/2022-08-20-votingclassifier/stacking.png" class="" width="600">
 <p style="font-size: 0.8em; text-align:center; color: grey;">
   <i>Stacking technique illustration</i>
@@ -411,12 +410,7 @@
 <li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Toet3EiSFcM">Support Vector Machines Part 2: The Polynomial Kernel (Part 2 of 3)</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Qc5IyLW_hns">Support Vector Machines Part 3: The Radial (RBF) Kernel (Part 3 of 3)</a></li>
 </ul>
-
-<p style="text-align:center; color: grey;">
-    <i>SVM is a more flexible classification model</i>
-</p>
-
-<p><strong><em>4. Neural Networks</em></strong><br>Neural network is a type of deep learning algorithm. It uses numerous nodes to simulate the neuron in a neural system of a person, that each neuron makes individual solution and combine these solutions to make the final solution. Below are the related articles to talk about the NN model:</p>
+<p><strong><em>4. Neural Networks</em></strong><br>The neural network is a type of deep learning algorithm. It uses numerous nodes to simulate the neuron in a neural system of a person, that each neuron makes individual solution and combine these solutions to make the final solution. Below are the related articles to talk about the NN model:</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.TensorFlow.org/guide">TensorFlow Guide</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=L35fFDpwIM4">Tensors for Neural Networks, Clearly Explained!!!</a></li>
@@ -555,7 +549,6 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Technical-Analysis/" rel="tag"># Technical Analysis</a>
               <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
           </div>
 
