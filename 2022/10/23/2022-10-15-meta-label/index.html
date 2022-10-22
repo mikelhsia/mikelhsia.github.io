@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="The Triple barrier method and meta-labeling technique were together introduced in the book Advances in Financial Machine Learning by Marcos Lopez De Prado. It seems that the combination of these two t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Momentum Trading】Use machine learning to boost your day trading skill - meta-labeling">
+<meta property="og:url" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="The Triple barrier method and meta-labeling technique were together introduced in the book Advances in Financial Machine Learning by Marcos Lopez De Prado. It seems that the combination of these two t">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/triple_barrier.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/triple_barrier2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/meta_label_process.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/modified_triple_barrier.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/data_process_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/data_process_2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/data_process_3.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/winsorize.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/log_transform.png">
+<meta property="article:published_time" content="2022-10-23T06:12:47.000Z">
+<meta property="article:modified_time" content="2022-10-22T16:58:15.674Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Technical Analysis">
+<meta property="article:tag" content="Backtesting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/triple_barrier.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Momentum Trading】Use machine learning to boost your day trading skill - meta-labeling | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2022/10/23/2022-10-15-meta-label/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Momentum Trading】Use machine learning to boost your day trading skill - meta-labeling
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-10-23 14:12:47 / Modified: 00:58:15" itemprop="dateCreated datePublished" datetime="2022-10-23T14:12:47+08:00">2022-10-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/10/23/2022-10-15-meta-label/" class="post-meta-item leancloud_visitors" data-flag-title="【Momentum Trading】Use machine learning to boost your day trading skill - meta-labeling" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/10/23/2022-10-15-meta-label/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/10/23/2022-10-15-meta-label/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        
+<p>The Triple barrier method and meta-labeling technique were together introduced in the book <strong><em>Advances in Financial Machine Learning</em></strong> by <em>Marcos Lopez De Prado</em>. It seems that the combination of these two tools makes a great pair to either stabilize or further increase your portfolio growth. In this post, I’m going to quote my old research result (<a href="https://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/">here</a>) from last time as the fundamental strategy benchmark, and apply these two techniques to see what beneficial impact we could bring to this strategy.</p>
+<a id="more"></a>
+<p><strong><em>Previous researches</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2022/03/18/2022-03-22-supertrend-indicator/">【Momentum Trading】Yes or No? Adopting the Supertrend indicator in your trading strategies?</a></li>
+<li><a href="https://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/">【Momentum Trading】Four strategies of using RSI indicator to better time your market entry</a></li>
+<li><a href="https://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/">【Momentum Trading】Optimize your MACD strategies with advanced indicators</a></li>
+</ul>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><p>After researching the combination of several technical indicators as buy-in signals, I feel the research framework is missing a robust method to mitigate the subjective impact of the technical indicators. Theoretically speaking, stock prices and other statistics represent the current market overview. Using this information to predict future stock price movements would be irrational. However, standing from the behavioral finance point of view, the historic stock prices and statistics could be used to summarize the standard behavior of general investors’ actions when certain critical points were reached. That’s where the momentum trading strategy begins to thrive. Traders/Investors combine several effective indicators and define the fixed or dynamic threshold to find the group of stocks that possess the momentum (uptrend or downtrend) in them. Then the problem comes back to, how do we define the threshold in a more objective method.</p>
+<p>In the book <strong><em>Advances in Financial Machine Learning</em></strong> by <em>Marcos Lopez De Prado</em>, the Triple barrier method <em>(Chapter 3.4)</em> and the meta-labeling technique <em>(Chapter 3.6)</em> were introduced with his quote <em>“In that case, meta-labeling will help us figure out when we should pursue or dismiss a discretionary PM’s call” (Page 54).</em> These two tools could be adopted and leverage the power of machine learning to mitigate the subjectiveness in the technical-indicator-oriented momentum strategy.</p>
+<p>As usual, I’m not going to introduce these two ideas from ground zero. The article <a target="_blank" rel="noopener" href="http://www.sefidian.com/2021/06/26/labeling-financial-data-for-machine-learning/"><em>What is Triple Barrier Method(TBM) and Meta-labeling</em></a> breaks down the definitions of these two terms and attaches the code snippet for easier comprehension. See below for you to understand what they are.</p>
+<h2 id="The-definition-of-the-Triple-Barrier-Method-TBM"><a href="#The-definition-of-the-Triple-Barrier-Method-TBM" class="headerlink" title="The definition of the Triple Barrier Method (TBM)"></a>The definition of the Triple Barrier Method (TBM)</h2><p>TBM adopts two horizontal lines and one vertical line to form a box, which is used for deciding the next move depending on the relative position of the stock price inside the box. There are three potential scenarios would be produced:</p>
+<ul>
+<li>If the upper barrier (profit-take) is hit first. Label “buy” or “1”.</li>
+<li>If the lower barrier (stop-loss) is hit first. Label “sell” or “-1”.</li>
+<li>If the vertical barrier (expiration) is hit first. Label = “return in this period” or “0”.</li>
+</ul>
+<img data-src="/2022/10/23/2022-10-15-meta-label/triple_barrier.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Triple Barrier Method Scenario 3 - hitting the vertical barrier</i>
+</p>
+
+<img data-src="/2022/10/23/2022-10-15-meta-label/triple_barrier2.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Triple Barrier Method Scenario 1 - hitting the horizontal barrier</i>
+</p>
+
+<h2 id="The-definition-of-the-meta-Labeling"><a href="#The-definition-of-the-meta-Labeling" class="headerlink" title="The definition of the meta-Labeling"></a>The definition of the meta-Labeling</h2><p>The meta-Labeling sounds like simply an extra label, but it is actually a term that indicates a series of actions for getting the final prediction at the end. <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=ZCFmZFBtqsQ">This Youtube video</a> by <a target="_blank" rel="noopener" href="https://hudsonthames.org/">Hudson &amp; Thames</a> successfully summarizes the core idea of Meta-labeling:</p>
+<blockquote>
+<p><em>Meta-labeling is a machine learning (ML) layer that sits on top of any base primary strategy to help size positions, filter out false-positive signals, and improve metrics such as the Sharpe ratio and maximum drawdown.</em></p>
+</blockquote>
+<p>The steps to implement the meta-labeling can be summarized in the followings:</p>
+<ol>
+<li>Build the primary fundamental model and get the fundamental prediction.</li>
+<li>Use a fixed value to filter the prediction.</li>
+<li>Combine the prediction into your <code>x_train</code> as your new training data.</li>
+<li>Combine the prediction into your <code>y_train</code> to form the new <code>y_train</code> data.</li>
+<li>Construct the secondary model, and use your new <code>x_train</code> and <code>y_train</code> to train your secondary model.</li>
+<li>Feed your <code>test_data</code> into both your primary and secondary model, and produce the predictions respectively.</li>
+<li>Combine the predictions of both the primary and secondary models in order to acquire your final prediction.</li>
+</ol>
+<img data-src="/2022/10/23/2022-10-15-meta-label/meta_label_process.png" class="" width="800">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Meta-Labeling process</i>
+</p>
+
+<p>You might have questions right now as you just read my <a href="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/">previous post</a> and ask <em>“weren’t the Meta-labeling and the ensemble learning referring to the same thing?”</em> The fundamental difference between these two is that ensemble learning (especially the stacking method) solely adds its prediction into the original training set as a new feature. On the other hand, the meta-labeling not only adds its own prediction into the training set, but also modifies the <code>y_label</code> in the training set in accordance with the signal generation logic from the primary model. By having general ideas of what these two are, we can start strategizing how to achieve our goal from zero to one.</p>
+<h1 id="Train-of-thought-from-zero-to-one"><a href="#Train-of-thought-from-zero-to-one" class="headerlink" title="Train of thought - from zero to one"></a>Train of thought - from zero to one</h1><p>To accomplish this backtest, I’ve summarized five steps below to give you a big picture of what we’re going to do:</p>
+<ol>
+<li>Construct our primary model and generate meta label using our primary model</li>
+<li>Use our <strong>modified</strong> Triple-Barrier Method to generate training data for training our secondary model</li>
+<li>Construct the secondary machine learning model</li>
+<li>Train the secondary model</li>
+<li>Execute and place orders with the combined signals.</li>
+</ol>
+<h2 id="1-Construct-our-primary-model"><a href="#1-Construct-our-primary-model" class="headerlink" title="1. Construct our primary model"></a>1. Construct our primary model</h2><p>First of all, we use the strategy left from <a href="https://mikelhsia.github.io/2021/11/03/2021-11-06-rsi-indicator/">here</a> and use the buy/sell signals generated from it as the Meta-label. We used MACD, Awesome Oscillator, and RSI indicator to generate our trading (buy/sell) signals. Other than this, we also prepare the following factors for later use:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">FEATURES = [</span><br><span class="line">  <span class="string">&#x27;_1d_rtn&#x27;</span>, <span class="string">&#x27;_3d_rtn&#x27;</span>, <span class="string">&#x27;_5d_rtn&#x27;</span>, <span class="string">&#x27;_10d_rtn&#x27;</span>, <span class="string">&#x27;_20d_rtn&#x27;</span>, <span class="string">&#x27;_60d_rtn&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;_1d_volume_change&#x27;</span>, <span class="string">&#x27;_3d_volume_change&#x27;</span>, <span class="string">&#x27;_5d_volume_change&#x27;</span>, <span class="string">&#x27;_10d_volume_change&#x27;</span>, <span class="string">&#x27;_20d_volume_change&#x27;</span>, <span class="string">&#x27;_60d_volume_change&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;_macd&#x27;</span>, <span class="string">&#x27;_macd_histo&#x27;</span>, <span class="string">&#x27;_macd_change_3&#x27;</span>, <span class="string">&#x27;_macd_change_5&#x27;</span>, <span class="string">&#x27;_macd_change_10&#x27;</span>, <span class="string">&#x27;_macd_change_15&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;_macd_signal_change_3&#x27;</span>, <span class="string">&#x27;_macd_signal_change_5&#x27;</span>, <span class="string">&#x27;_macd_signal_change_10&#x27;</span>, <span class="string">&#x27;_macd_signal_change_15&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;_macd_histo_change_3&#x27;</span>, <span class="string">&#x27;_macd_histo_change_5&#x27;</span>, <span class="string">&#x27;_macd_histo_change_10&#x27;</span>, <span class="string">&#x27;_macd_histo_change_15&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;_rsi&#x27;</span>, <span class="string">&#x27;_rsi_change_3&#x27;</span>, <span class="string">&#x27;_rsi_change_5&#x27;</span>, <span class="string">&#x27;_rsi_change_10&#x27;</span>, <span class="string">&#x27;_rsi_change_15&#x27;</span>, <span class="string">&#x27;_awesome_oscillator&#x27;</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Factors to be used in the second machine learning model</i>
+</p>
+
+<h2 id="2-Modified-Triple-Barrier-Method"><a href="#2-Modified-Triple-Barrier-Method" class="headerlink" title="2. Modified Triple-Barrier Method"></a>2. Modified Triple-Barrier Method</h2><p>In the original Triple-Barrier Method, the difference between the first and second vertical barriers indicates the expiration time that is a fixed number. However, the sell signal generated from our primary model could happen before reaching the expiration time. Secondly, we’re not able to predict the exact time between the buy signal and sell signal as each stock would have its own cycle and price movement velocity. Therefore, we need to slightly twist the definition of <strong>expiration time</strong> in Triple-Barrier Method by defining different expiration times for each stock base on the time between the time of generating the buy signal and the time of generating the sell signal.</p>
+<img data-src="/2022/10/23/2022-10-15-meta-label/modified_triple_barrier.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Modified Triple-Barrier Method using buy/sell signals to form a close period</i>
+</p>
+
+<p>Since we have defined the expiration time, then we need to resample the original training data into a usable and meaningful format. For example, if we have a time series data that includes ‘price’, ‘1d_rtn’, ‘3d_rtn’, ‘1d_vol’, and ‘3d_vol’ as follows:</p>
+<img data-src="/2022/10/23/2022-10-15-meta-label/data_process_1.png" class="" width="500">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Example data - 1</i>
+</p>
+
+<p>Once we have the original data, now let’s generate the buy and sell signal with it and attach the signals generated to its own row. You can easily mark the row that has one buy signal and one sell signal.<br><img data-src="/2022/10/23/2022-10-15-meta-label/data_process_2.png" class="" width="500"></p>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Example data - 2</i>
+</p>
+
+<p>Lastly, just as we will do when resampling the data, we keep all the factors in the row that has buy signal equal to <code>True</code>. We calculate return gain/loss between the buy and sell signals. Then we remove the column ‘price’, ‘buy signal’, and ‘sell signal’. In the end, we will have our training data that is used for training our secondary model.</p>
+<img data-src="/2022/10/23/2022-10-15-meta-label/data_process_3.png" class="" width="500">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Example data - 3</i>
+</p>
+
+<h2 id="3-Construct-our-secondary-machine-learning-model"><a href="#3-Construct-our-secondary-machine-learning-model" class="headerlink" title="3. Construct our secondary machine learning model"></a>3. Construct our secondary machine learning model</h2><p>Here I use the basic neural network machine learning model to predict the winning stocks. There are two hidden layers in the model. Second, we use <code>Leaky ReLU</code> as the activation function of the hidden layers as I want the negative values to be able to update our model weights instead of doing nothing. I found <a target="_blank" rel="noopener" href="https://mlfromscratch.com/activation-functions-explained/#/">this post</a> very useful to understand the differences among various activation functions such as GELU, SELU, ELU, ReLU, and Leaky ReLU. Also, since it’s going to be a binary classification to predict whether the trades we made are profitable or not, we’re using <code>binary_crossentropy</code> as our loss function.</p>
+<p>See below for the summary of my neural network setup:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">self.model = tf.keras.Sequential()</span><br><span class="line">self.model.add(tf.keras.layers.Dense(len(FEATURES), activation=tf.keras.layers.LeakyReLU(alpha=<span class="number">0.01</span>), input_shape=(len(FEATURES), ), name=<span class="string">&quot;dense_1&quot;</span>))</span><br><span class="line">self.model.add(tf.keras.layers.Dropout(<span class="number">0.1</span>),)</span><br><span class="line">self.model.add(tf.keras.layers.Dense(len(FEATURES), activation=tf.keras.layers.LeakyReLU(alpha=<span class="number">0.01</span>), name=<span class="string">&quot;dense_2&quot;</span>))</span><br><span class="line">self.model.add(tf.keras.layers.Dropout(<span class="number">0.1</span>)),</span><br><span class="line">self.model.add(tf.keras.layers.Dense(<span class="number">1</span>, activation=<span class="string">&quot;sigmoid&quot;</span>, name=<span class="string">&quot;predictions&quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Compile model</span></span><br><span class="line">self.model.compile(</span><br><span class="line">    optimizer=<span class="string">&#x27;Adam&#x27;</span>,</span><br><span class="line">    loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="4-Training-and-predicting"><a href="#4-Training-and-predicting" class="headerlink" title="4. Training and predicting"></a>4. Training and predicting</h2><p>Since having our training data and our secondary model ready in steps 2 and 3, we are now going to feed the data into our machine-learning model and start training. Before that, do remember that our data is raw and could have many outliers and missing data that could potentially contaminate the results of the prediction. Feature engineering is a must-take step. Here are a few things I did before throwing data into the black box:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">PrepareData</span>(<span class="params">self, data</span>):</span></span><br><span class="line">  <span class="string">&#x27;&#x27;&#x27;Prepares the data for a format friendly for our model&#x27;&#x27;&#x27;</span></span><br><span class="line">  target_column = <span class="string">&#x27;rtn_bin&#x27;</span></span><br><span class="line">  data = self.__LabelYData(data, <span class="string">&#x27;_y_trade_rtn&#x27;</span>, target_column)</span><br><span class="line"></span><br><span class="line">  data_tmp = data.dropna()</span><br><span class="line"></span><br><span class="line">  X_train = data_tmp.loc[:, FEATURES]</span><br><span class="line">  y_train = (data_tmp.loc[:, target_column]).astype(int)</span><br><span class="line"></span><br><span class="line">  X_train = self.__WinsorizeCustom(X_train, FEATURES)</span><br><span class="line">  X_train = self.__LogCustom(X_train, LOGNORMAL_FEATURE)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> X_train, y_train</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__LabelYData</span>(<span class="params">self, df, source=<span class="string">&#x27;_y_trade_rtn&#x27;</span>, rtn_bin=<span class="string">&#x27;rtn_bin&#x27;</span></span>):</span></span><br><span class="line">  <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__WinsorizeCustom</span>(<span class="params">self, df, cols: list</span>):</span></span><br><span class="line">  <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__LogCustom</span>(<span class="params">self, df, cols: list</span>):</span></span><br><span class="line">  <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-1-Create-y-label-to-train-our-model"><a href="#4-1-Create-y-label-to-train-our-model" class="headerlink" title="4.1. Create y_label to train our model"></a>4.1. Create y_label to train our model</h3><p>We need our dependent variable, the so-called <code>y label</code>, to train our secondary machine learning model. There are various ways to achieve this. I pick the easiest method to create the <code>y label</code> by assigning <code>True</code> to the stock that its return is greater than <strong>3.0%</strong> after we sell it. You can pick other methods and see which better suits your scenarios and models.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__LabelYData</span>(<span class="params">self, df, source=<span class="string">&#x27;_y_trade_rtn&#x27;</span>, rtn_bin=<span class="string">&#x27;rtn_bin&#x27;</span></span>):</span></span><br><span class="line">  df[rtn_bin] = np.nan</span><br><span class="line"></span><br><span class="line">  df[rtn_bin] = df[source] &gt; <span class="number">0.03</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> df</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-Winsorize-the-outliers"><a href="#4-2-Winsorize-the-outliers" class="headerlink" title="4.2. Winsorize the outliers"></a>4.2. Winsorize the outliers</h3><p>Winsorization is the process of replacing the values of outliers with the less impactful smaller values. Here in order to reduce the impact of extreme values, we use the 5 percentile value to replace the extremely small value, and use the 95 percentile value to replace the extremely large value.</p>
+<img data-src="/2022/10/23/2022-10-15-meta-label/winsorize.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Winsorization</i>
+</p>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__WinsorizeCustom</span>(<span class="params">self, df, cols: list</span>):</span></span><br><span class="line">  <span class="keyword">for</span> col <span class="keyword">in</span> cols:</span><br><span class="line">    quantiles = df.loc[:, col].quantile([<span class="number">0.05</span>, <span class="number">0.95</span>])</span><br><span class="line">    q_05 = quantiles.loc[<span class="number">0.05</span>]</span><br><span class="line">    q_95 = quantiles.loc[<span class="number">0.95</span>]</span><br><span class="line"></span><br><span class="line">    df.loc[:, col] = np.where(</span><br><span class="line">      df.loc[:, col].values &lt;= q_05,</span><br><span class="line">      q_05,</span><br><span class="line">      np.where(</span><br><span class="line">        df.loc[:, col].values &gt;= q_95,</span><br><span class="line">        q_95,</span><br><span class="line">        df.loc[:, col].values</span><br><span class="line">      )</span><br><span class="line">    )</span><br><span class="line">  <span class="keyword">return</span> df</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-Transform-our-data-to-the-log-normal-distribution"><a href="#4-3-Transform-our-data-to-the-log-normal-distribution" class="headerlink" title="4.3. Transform our data to the log-normal distribution"></a>4.3. Transform our data to the log-normal distribution</h3><p>It’s a well-known fact in financial machine learning, that having our data normally distributed is the prerequisite of an effective machine learning model. After plotting each of the factors in the histogram, you can easily tell which feature is skewed, then you apply log transform to make it less skewed. One thing that is worth bringing up again, is that some features could contain a <code>0</code> value. Since log 0 doesn’t exist and will return <code>NaN</code>, causing model training to fail, make sure you add <code>1</code> before you log transform the feature values.</p>
+<img data-src="/2022/10/23/2022-10-15-meta-label/log_transform.png" class="" width="800">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Transform the right-skewed distribution to normal distribution</i>
+</p>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__LogCustom</span>(<span class="params">self, df, cols: list</span>):</span></span><br><span class="line">  <span class="keyword">for</span> col <span class="keyword">in</span> cols:</span><br><span class="line">    df.loc[:, col] = np.log(df.loc[:, col] + <span class="number">1</span>)</span><br><span class="line">  <span class="keyword">return</span> df</span><br></pre></td></tr></table></figure>
+<h3 id="4-4-Drop-the-null-data"><a href="#4-4-Drop-the-null-data" class="headerlink" title="4.4. Drop the null data"></a>4.4. Drop the null data</h3><p>Don’t forget to trim the null data. Otherwise, your model is going to fail while training and predicting.</p>
+<h2 id="5-Execute-and-place-orders-with-the-combined-signal"><a href="#5-Execute-and-place-orders-with-the-combined-signal" class="headerlink" title="5. Execute and place orders with the combined signal"></a>5. Execute and place orders with the combined signal</h2><p>Lastly, to summarize, our trading strategy would be that when we receive the signal from the primary model, we send the data on the day as the testing data for predicting with the secondary model. Once the secondary model confirms the signal with the prediction higher than 0.5 possibility to be a winning trade, then we place the buy order. As for selling the stock, we don’t need confirmation from the secondary model. As long as the primary model confirms and generates the sell signal, we sell the related holding stock.</p>
+<h1 id="Backtesting-and-result"><a href="#Backtesting-and-result" class="headerlink" title="Backtesting and result"></a>Backtesting and result</h1><p>Ok. Let’s see what the backtesting results look like following the strategy that we describe above. I will start by describing the backtesting scenarios that we’re going to perform, and then demonstrate the results.</p>
+<h2 id="Platform"><a href="#Platform" class="headerlink" title="Platform"></a>Platform</h2><p><a target="_blank" rel="noopener" href="https://www.quantconnect.com/">QuantConnect</a></p>
+<h2 id="Universe"><a href="#Universe" class="headerlink" title="Universe"></a>Universe</h2><ul>
+<li>Sort stocks by <code>PERatio</code>, <code>EPS</code>, <code>ROE</code>, <code>NetIncome</code> and take top 60%</li>
+<li>Sort stocks by <code>PBRatio</code>, from high to low</li>
+<li>Focus on <code>technology</code> industry</li>
+<li>Using QQQ as the portfolio benchmark</li>
+</ul>
+<h2 id="Rebalancing-Strategy"><a href="#Rebalancing-Strategy" class="headerlink" title="Rebalancing Strategy"></a>Rebalancing Strategy</h2><ul>
+<li>Recalculate our universe and indicators to search for the buy and sell signals every day.</li>
+<li>We keep 10 stocks that have buy-in signals and with the highest PBRatio.</li>
+<li>We assign weight to each position evenly.</li>
+<li>We don’t adjust the weight of each stock until we close these positions.</li>
+<li>The secondary model will be re-trained monthly, weekly, and daily.</li>
+</ul>
+<h2 id="Backtest-time-frame"><a href="#Backtest-time-frame" class="headerlink" title="Backtest time frame"></a>Backtest time frame</h2><p>Backtest Date: <code>2018, 12 ,29</code> ~ <code>2022, 09, 24</code></p>
+<h2 id="Execution-and-backtest"><a href="#Execution-and-backtest" class="headerlink" title="Execution and backtest"></a>Execution and backtest</h2><h3 id="Scenarios"><a href="#Scenarios" class="headerlink" title="Scenarios"></a>Scenarios</h3><p>There are two strategies in our arsenal and I’m going to try them out. I’m also going to take the frequency of updating our model into consideration by retraining the model with the up-to-date data every month, week, and day. Therefore, there are going to be six scenarios and two basic scenarios as our benchmark strategy in our backtests.</p>
+<p><strong><em>1. MACD strategy benchmark</em></strong><br><strong><em>2. MACD strategy + Update monthly</em></strong><br><strong><em>3. MACD strategy + Update weekly</em></strong><br><strong><em>4. MACD strategy + Update daily</em></strong><br><strong><em>5. MACD+RSI strategy benchmark</em></strong><br><strong><em>6. MACD+RSI strategy + Update monthly</em></strong><br><strong><em>7. MACD+RSI strategy + Update weekly</em></strong><br><strong><em>8. MACD+RSI strategy + Update daily</em></strong></p>
+<h3 id="Backtesting-results"><a href="#Backtesting-results" class="headerlink" title="Backtesting results"></a>Backtesting results</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Total Trades</th>
+<th>PSR</th>
+<th>Unrealized</th>
+<th>Fee</th>
+<th>Return</th>
+<th>Sharpe</th>
+<th>MDD</th>
+<th>Win rate</th>
+<th>Alpha</th>
+<th>Beta</th>
+<th>Annual variance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MACD Benchmark</td>
+<td>838</td>
+<td>23.299%</td>
+<td>-$29,616.40</td>
+<td>-$4,091.44</td>
+<td><strong>146.89%</strong></td>
+<td>0.787</td>
+<td>42.300%</td>
+<td><strong>67%</strong></td>
+<td>0.119</td>
+<td>1.053</td>
+<td>0.087</td>
+</tr>
+<tr>
+<td>MACD Monthly</td>
+<td>928</td>
+<td>14.622%</td>
+<td>-$30,950.28</td>
+<td>-$4,372.03</td>
+<td><font color="scarlet">79.55%</font></td>
+<td>0.587</td>
+<td>44.700%</td>
+<td><font color="scarlet">66%</font></td>
+<td>0.038</td>
+<td>1.067</td>
+<td>0.068</td>
+</tr>
+<tr>
+<td>MACD Weekly</td>
+<td>834</td>
+<td>21.410%</td>
+<td>$-25,909.75</td>
+<td>-$3,761.04</td>
+<td><font color="green">150.54%</font></td>
+<td>0.773</td>
+<td>41.200%</td>
+<td><font color="green">68%</font></td>
+<td>0.125</td>
+<td>1.074</td>
+<td>0.096</td>
+</tr>
+<tr>
+<td>MACD Daily</td>
+<td>832</td>
+<td>28.575%</td>
+<td>$-36,755.89</td>
+<td>-$4,177.46</td>
+<td><font color="green">182.07%</font></td>
+<td>0.88</td>
+<td>42.500%</td>
+<td><font color="green">68%</font></td>
+<td>0.154</td>
+<td>1.02</td>
+<td>0.09</td>
+</tr>
+<tr>
+<td>MACD+RSI Benchmark</td>
+<td>1270</td>
+<td>18.732%</td>
+<td>$-14,361.51</td>
+<td>-$6,592.32</td>
+<td><strong>96.85%</strong></td>
+<td>0.665</td>
+<td>43.200%</td>
+<td><strong>58%</strong></td>
+<td>0.063</td>
+<td>1.014</td>
+<td>0.067</td>
+</tr>
+<tr>
+<td>MACD+RSI Monthly</td>
+<td>941</td>
+<td>14.348%</td>
+<td>$-7,308.52</td>
+<td>-$4,382.58</td>
+<td><font color="scarlet">72.05%</font></td>
+<td>0.575</td>
+<td>46.900%</td>
+<td><font color="scarlet">56%</font></td>
+<td>0.036</td>
+<td>0.946</td>
+<td>0.057</td>
+</tr>
+<tr>
+<td>MACD+RSI Weekly</td>
+<td>829</td>
+<td>1.204%</td>
+<td>$-436.44</td>
+<td>-$3,535.95</td>
+<td><font color="scarlet">-7.91%</font></td>
+<td>0.03</td>
+<td>56.000%</td>
+<td><font color="scarlet">54%</font></td>
+<td>-0.077</td>
+<td>0.771</td>
+<td>0.042</td>
+</tr>
+<tr>
+<td>MACD+RSI Daily</td>
+<td>898</td>
+<td>19.534%</td>
+<td>$-7,414.81</td>
+<td>-$4,494.80</td>
+<td><font color="green">92.44%</font></td>
+<td>0.679</td>
+<td>43.000%</td>
+<td><font color="scarlet">56%</font></td>
+<td>0.065</td>
+<td>0.89</td>
+<td>0.056</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="Beyond-and-next"><a href="#Beyond-and-next" class="headerlink" title="Beyond and next"></a>Beyond and next</h1><p>The purpose of Meta-labeling is not just for correcting the false-positive prediction, but also for raising the F1 score of the model. By adding another machine learning layer beyond the primary non-machine learning model, Meta-labeling enables the capability of processing quantitative fundamental data, technical indicators, and even arbitrary data in a more systematic way. This combines human intuition/experience and the power of machines, enhancing the interpretability and robustness of the model.</p>
+<p>Even though the backtesting results failed to demonstrate the overwhelming power of the meta-labeling, there are still a few other thoughts and ideas to extend our backtesting and to further optimize our Meta-labeling trading algorithm:</p>
+<ul>
+<li>Add company-wise fundamental data into our training data to let our secondary machine learning model know more about the conditions and hence make better decisions.</li>
+<li>In our backtest scenario, we round the prediction result and make it either True or False. That means the threshold is 0.5 that prediction lower than 0.5 would be deemed as a potentially losing trade, and the number above 0.5 would have a higher chance to become a winning trade. One thing we can do is to raise the threshold bar from 0.5 to a higher number to make sure you have an even higher chance to win in this trade. But keep this in mind, it’s going to be a trade-off between the number of trades and you could let the winning opportunities slip through your fingers.</li>
+<li>Find a better method to label your y-label in order to distinguish the stocks that are going to soar or decline. You could either raise the original <strong>3.0%</strong> to a bigger number or mark the top 20% winning stocks so that our y-label will not be restricted to only the winning stocks during the bear market.</li>
+</ul>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li>The book <strong><em>Advances in Financial Machine Learning</em></strong> by <em>Marcos Lopes De Prado</em></li>
+<li><a target="_blank" rel="noopener" href="http://www.sefidian.com/2021/06/26/labeling-financial-data-for-machine-learning/">Labeling financial data for Machine Learning</a> by <em>Amir Masoud Sefidian</em></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=ZCFmZFBtqsQ">Meta-Labeling: Theory and Framework - Youtube video</a> by <a target="_blank" rel="noopener" href="https://hudsonthames.org/"><em>Hudson &amp; Thames</em></a></li>
+</ul>
+<hr>
+<blockquote>
+<p>If you enjoy reading this, feel free to <a src='https://medium.com/@mikelhsia/membership'> join Medium membership program</a> to read more about Quantitative Trading Strategy.</p>
+</blockquote>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Technical-Analysis/" rel="tag"># Technical Analysis</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/20/2022-08-20-votingclassifier/" rel="prev" title="【ML algo trading】 VI - Employ the power of ensemble learning to increase your portfolio return">
+      <i class="fa fa-chevron-left"></i> 【ML algo trading】 VI - Employ the power of ensemble learning to increase your portfolio return
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Motivation"><span class="nav-number">1.</span> <span class="nav-text">Motivation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-definition-of-the-Triple-Barrier-Method-TBM"><span class="nav-number">1.1.</span> <span class="nav-text">The definition of the Triple Barrier Method (TBM)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-definition-of-the-meta-Labeling"><span class="nav-number">1.2.</span> <span class="nav-text">The definition of the meta-Labeling</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Train-of-thought-from-zero-to-one"><span class="nav-number">2.</span> <span class="nav-text">Train of thought - from zero to one</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Construct-our-primary-model"><span class="nav-number">2.1.</span> <span class="nav-text">1. Construct our primary model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Modified-Triple-Barrier-Method"><span class="nav-number">2.2.</span> <span class="nav-text">2. Modified Triple-Barrier Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Construct-our-secondary-machine-learning-model"><span class="nav-number">2.3.</span> <span class="nav-text">3. Construct our secondary machine learning model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Training-and-predicting"><span class="nav-number">2.4.</span> <span class="nav-text">4. Training and predicting</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Create-y-label-to-train-our-model"><span class="nav-number">2.4.1.</span> <span class="nav-text">4.1. Create y_label to train our model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-Winsorize-the-outliers"><span class="nav-number">2.4.2.</span> <span class="nav-text">4.2. Winsorize the outliers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-Transform-our-data-to-the-log-normal-distribution"><span class="nav-number">2.4.3.</span> <span class="nav-text">4.3. Transform our data to the log-normal distribution</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-Drop-the-null-data"><span class="nav-number">2.4.4.</span> <span class="nav-text">4.4. Drop the null data</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Execute-and-place-orders-with-the-combined-signal"><span class="nav-number">2.5.</span> <span class="nav-text">5. Execute and place orders with the combined signal</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Backtesting-and-result"><span class="nav-number">3.</span> <span class="nav-text">Backtesting and result</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Platform"><span class="nav-number">3.1.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Universe"><span class="nav-number">3.2.</span> <span class="nav-text">Universe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rebalancing-Strategy"><span class="nav-number">3.3.</span> <span class="nav-text">Rebalancing Strategy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-time-frame"><span class="nav-number">3.4.</span> <span class="nav-text">Backtest time frame</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Execution-and-backtest"><span class="nav-number">3.5.</span> <span class="nav-text">Execution and backtest</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Scenarios"><span class="nav-number">3.5.1.</span> <span class="nav-text">Scenarios</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtesting-results"><span class="nav-number">3.5.2.</span> <span class="nav-text">Backtesting results</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Beyond-and-next"><span class="nav-number">4.</span> <span class="nav-text">Beyond and next</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
