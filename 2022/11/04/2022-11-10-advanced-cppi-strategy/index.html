@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Photo by Sasun Bughdaryan on Unsplash   We’ve been talking too much about the attack side of quantitative trading, such as momentum, mean reversion, and ML. These strategies aim to outperform the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Momentum Trading】The shield of your trading strategy - CPPI (Constant Proportion Portfolio Insurance)">
+<meta property="og:url" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Photo by Sasun Bughdaryan on Unsplash   We’ve been talking too much about the attack side of quantitative trading, such as momentum, mean reversion, and ML. These strategies aim to outperform the">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/cover.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/riskfree.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/intro-to-CPPI.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/basic_cppi.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/newhigh_cppi.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/newhigh_cppi_2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/backtest_period.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/fulltime_backtest.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/fulltime_chart.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/bear_backtest.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/bear_chart.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/bull_backtest.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/bull_chart.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/my_winning_candidate.png">
+<meta property="article:published_time" content="2022-11-03T17:04:25.000Z">
+<meta property="article:modified_time" content="2022-11-09T07:45:30.311Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Strategy">
+<meta property="article:tag" content="Momentum">
+<meta property="article:tag" content="Backtesting">
+<meta property="article:tag" content="Fundamental Analysis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/cover.jpg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Momentum Trading】The shield of your trading strategy - CPPI (Constant Proportion Portfolio Insurance) | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Momentum Trading】The shield of your trading strategy - CPPI (Constant Proportion Portfolio Insurance)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-04 01:04:25" itemprop="dateCreated datePublished" datetime="2022-11-04T01:04:25+08:00">2022-11-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-11-09 15:45:30" itemprop="dateModified" datetime="2022-11-09T15:45:30+08:00">2022-11-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/11/04/2022-11-10-advanced-cppi-strategy/" class="post-meta-item leancloud_visitors" data-flag-title="【Momentum Trading】The shield of your trading strategy - CPPI (Constant Proportion Portfolio Insurance)" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/11/04/2022-11-10-advanced-cppi-strategy/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/04/2022-11-10-advanced-cppi-strategy/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/cover.jpg" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Photo by <a target="_blank" rel="noopener" href='https://medium.com/r?url=https%3A%2F%2Funsplash.com%2F%40sasun1990%3Futm_source%3Dmedium%26utm_medium%3Dreferral'>Sasun Bughdaryan</a> on <a target="_blank" rel="noopener" href='https://unsplash.com/?utm_source=medium&utm_medium=referral'>Unsplash</a></i>
+</p>
+
+<p>We’ve been talking too much about the attack side of quantitative trading, such as momentum, mean reversion, and ML. These strategies aim to outperform the benchmark/index by adding your personal points of view to the trading strategies. Beating the benchmark becomes the only goal when playing the offense. What about defense? After reading <a target="_blank" rel="noopener" href="https://quantpedia.com/introduction-to-cppi-constant-proportion-portfolio-insurance/">Introduction to CPPI – Constant Proportion Portfolio Insurance</a>, I started to feel that I can’t agree more with the idea of “The best defense is a good offense” once said by Sun Tzu, a Chinese military general, a strategist, and a philosopher. What does defense mean in the field of quantitative trading? Does defense mean we strive not to lose money and then nothing else worth doing? Maybe talking about the CPPI strategy would give us a better picture of what actually defense means to the traders. Let’s now have a look at how to approach the other side of trading.</p>
+<a id="more"></a>
+<hr>
+<blockquote>
+<p>If you enjoy reading this and my other articles, feel free to <a src='https://medium.com/@mikelhsia/membership'> join Medium membership program</a> to read more about Quantitative Trading Strategy.</p>
+</blockquote>
+<hr>
+<h1 id="What-does-it-mean-by-playing-defense-in-trading"><a href="#What-does-it-mean-by-playing-defense-in-trading" class="headerlink" title="What does it mean by playing defense in trading?"></a>What does it mean by playing defense in trading?</h1><p>When talking about quantitative strategy, they all come down to this advanced CAPM formula and use it to categorize different trading strategies. $\beta$ in this formula stands for the sensitivity of your portfolio against the movement of the market return and $\alpha$ stands for the excessive market return that can’t be captured by the $\beta$ term. For example, if the current risk-free rate is 1%, and the market return is 4% with 0 in $\alpha$, then you can calculate that your expected return would be $2*(4\%-1\%) + 1\% = 7\%$ if the $\beta$ equals to 2, or 10% if the $\beta$ equals 3.</p>
+<script type="math/tex; mode=display">Return_{Expected} = Return_{riskfree} + \beta \times (Return_{market} - Return_{riskfree}) + \alpha</script><p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Advanced CAPM model by <a target="_blank" rel="noopener" href='https://www.investopedia.com/terms/j/jensensmeasure.asp'>Jensen</a></i>
+</p>
+
+<p>The $\beta$ here is essentially the <strong>exposure</strong> of our portfolio against market fluctuation. The idea of playing defense in trading is to reduce the exposure against the market so that you will lose less money than other people in the bear market. There are ways to reduce market exposure, such as market-neutral strategy, portfolio diversification, hedging, and many other methods that help reduce your market exposure and $\beta$ of your portfolio. However, reducing $\beta$ could also harm your profit when the overall market goes up because you have a smaller $\beta$. This is what happens when you play defense in trading.</p>
+<h1 id="What-is-CPPI-Constant-Proportion-Portfolio-Insurance-strategy"><a href="#What-is-CPPI-Constant-Proportion-Portfolio-Insurance-strategy" class="headerlink" title="What is CPPI (Constant Proportion Portfolio Insurance) strategy?"></a>What is CPPI (Constant Proportion Portfolio Insurance) strategy?</h1><p>CPPI (Constant Proportion Portfolio Insurance) strategy achieves the goal of reducing risk exposure by adding a risk-free asset such as a 3-month treasury into your portfolio, which can be considered as a type of <em>portfolio diversification</em>. Short-term treasury usually has very little risk exposure against the market. You can see below the close price movement of SHV, SHY, TLT, and IEF compare to the movement of SPY close price.</p>
+<img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/riskfree.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Which asset is worth being picked as a risk-free asset? As SHY and SHV are short-term Treasury ETFs, and TLT and IEF are long-term Treasury ETF</i>
+</p>
+
+<p>On top of adding a risk-free asset into the portfolio, the CPPI strategy proposes concepts named <strong><em>Floor</em></strong> and <strong><em>Cushion</em></strong>. <strong><em>Floor</em></strong> would be the minimum asset value that you want to protect from loss, and the <strong><em>Cushion</em></strong> is the asset value that you would like to invest in riskier assets in order to gain an additional return. CPPI strategy allows investors to keep the potential chances of profiting, and limiting the downside risk by scaling the ratios of the floor and cushion dynamically. I’m listing the related formulas below for reference. For more details, go take a look at the <a target="_blank" rel="noopener" href="https://quantpedia.com/introduction-to-cppi-constant-proportion-portfolio-insurance/">article</a> in <a target="_blank" rel="noopener" href="https://quantpedia.com">QuantPedia</a>.</p>
+<img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/intro-to-CPPI.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Extracted from <a target="_blank" rel="noopener" href='https://quantpedia.com/introduction-to-cppi-constant-proportion-portfolio-insurance/'>Introduction to CPPI – Constant Proportion Portfolio Insurance</a></i>
+</p>
+
+<h1 id="Disadvantages-when-applying-CPPI-strategies"><a href="#Disadvantages-when-applying-CPPI-strategies" class="headerlink" title="Disadvantages when applying CPPI strategies"></a>Disadvantages when applying CPPI strategies</h1><p>After conducting a series of backtesting against the proposed strategies in the <a target="_blank" rel="noopener" href="https://quantpedia.com/introduction-to-cppi-constant-proportion-portfolio-insurance/">article</a>, I’ve found the strategies are less promising and less satisfying than I originally expected. Here are a few things I discovered:</p>
+<h2 id="Floor-level-is-fixed-even-if-the-total-asset-value-go-rocket-high"><a href="#Floor-level-is-fixed-even-if-the-total-asset-value-go-rocket-high" class="headerlink" title="Floor level is fixed even if the total asset value go rocket high"></a>Floor level is fixed even if the total asset value go rocket high</h2><ul>
+<li>In <strong>Basic CPPI</strong> strategy: I approached this strategy by setting a fixed percentage (80%) of the original asset that I want to protect from the beginning. This means, for example, I have \$100,000 as my start-up fund, and I want to protect 80% value of my fund. Then I’ll have \$80,000 as my floor level.</li>
+<li>Even though we have the minimum asset value protected, the floor value stays the same throughout the entire backtesting period. This also means that there is a big chunk of the asset not protected when the portfolio grows a certain amount. That’s the reason why we suffer a huge drop at the beginning of 2022.</li>
+</ul>
+<img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/basic_cppi.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Basic CPPI: Max Drawdown: 59.3%, Annual Variance: 0.069</i>
+</p>
+
+<h2 id="The-value-floor-trench"><a href="#The-value-floor-trench" class="headerlink" title="The value floor trench"></a>The value floor trench</h2><ul>
+<li>In <strong>New High CPPI</strong> Strategy: Applying <em>New High CPPI strategy</em> will update the floor when the total portfolio value reaches a new high and the floor value accordingly. Therefore, our increasingly growing floor will help us protect more value when there’s higher value in our portfolio.</li>
+<li>There’s one scenario that could cause this strategy less effective. When your portfolio value grows substantially, your floor value also increased along the way and reached a skyrocket-high number. What if one day the market crashed and the portfolio value dropped way below the floor value, you’ll then need to invest 100% of your asset into bonds/treasuries by the definition of the New High CPPI strategy. It’d take months or even years for the portfolio to recover to above the floor level. By looking at the backtesting result below, we miss the fantastic opportunity to grow our portfolio back to where it was and <em>fall into a floor trench</em>.</li>
+</ul>
+<img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/newhigh_cppi.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>New High CPPI ex1: Invest nearly 100% in bonds/treasuries after 2020</i>
+</p>
+
+<img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/newhigh_cppi_2.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>New High CPPI ex2: Investment loss will take a long time to recover back to floor level</i>
+</p>
+
+
+<h1 id="Let’s-add-some-spices-to-make-the-strategy-promising"><a href="#Let’s-add-some-spices-to-make-the-strategy-promising" class="headerlink" title="Let’s add some spices to make the strategy promising"></a>Let’s add some spices to make the strategy promising</h1><p>Since now we know the basics and pros and cons of the CPPI strategy, let’s add some spice to this strategy to make it more appealing so that traders like you will be more than willing to invest.</p>
+<h2 id="Change-the-meat"><a href="#Change-the-meat" class="headerlink" title="Change the meat"></a>Change the meat</h2><p>As we all know the CPPI strategy can preserve the upward potential and limit the downward loss to a certain degree, why don’t we use the 2x SPY ETF to replace the SPY ETF to gain more upward space? Therefore,</p>
+<ul>
+<li>Risky asset<ul>
+<li>We use <code>SSO</code> which is a <code>2x SPY</code> ETF so that we can exploit the high upward growth possibility.</li>
+</ul>
+</li>
+<li>Risk-free asset<ul>
+<li>We use <code>SHV</code> as it seems to be the more stable among the four risk-free assets we mentioned earlier in this post.</li>
+</ul>
+</li>
+<li>Benchmark<ul>
+<li>We still use <code>SPY</code> to be our benchmark</li>
+</ul>
+</li>
+</ul>
+<h2 id="Add-seasoning"><a href="#Add-seasoning" class="headerlink" title="Add seasoning"></a>Add seasoning</h2><p>As proposed in the article <a target="_blank" rel="noopener" href="https://quantpedia.com/introduction-to-cppi-constant-proportion-portfolio-insurance/">Introduction to CPPI – Constant Proportion Portfolio Insurance</a>, we can apply the dynamic multiplier method so that we get to use different multipliers depending on the market volatility instead of picking a fixed number throughout the backtesting period.</p>
+<ul>
+<li>Fixed multiplier<ul>
+<li>We make the multiplier equal to 3 at all times.</li>
+</ul>
+</li>
+<li>Dynamic multiplier<ul>
+<li>We set a few indicators to categorize the regimes of current market volatility<ul>
+<li>$EMA_{21d}$: Exponential moving average of close price in past 21 days</li>
+<li>$SMA_{63d}$: Simple moving average of close price in the past 63 days</li>
+<li>$\overline{EMA_{21d}}$: 126 days average of $EMA_{21d}$</li>
+<li>$\overline{SMA_{63d}}$: 126 days average of $SMA_{63d}$<script type="math/tex; mode=display">
+\text{Dynamic multiplier} = \left\{
+\begin{array}\\
+  4 & \text{if } EMA_{21d} > \overline{EMA_{21d}} \text{ and } SMA_{63d} > \overline{SMA_{63d}} \\
+  2 & \text{if } EMA_{21d} < \overline{EMA_{21d}} \text{ and } SMA_{63d} < \overline{SMA_{63d}} \\
+  3 & \mbox{if others } \\
+\end{array}
+\right.</script></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Additional-flavor-Smart-Floor"><a href="#Additional-flavor-Smart-Floor" class="headerlink" title="Additional flavor: Smart Floor"></a>Additional flavor: Smart Floor</h2><p>An idea struck me when I was working on backtesting the scenarios from the article: what if we can build a somewhat flexible/intelligent mechanism that can adjust the floor level based on historic values? The whole process of calculating the floor value has reminded me the process of using <strong>Gradient Descent</strong> to approach the local optima. If you are not familiar with the idea of <strong>Gradient Descent</strong>, check this video out, and it will give you a general idea of what it is and what it is for.</p>
+<p><iframe src="//player.bilibili.com/player.html?aid=678849381&bvid=BV1Mm4y1Z7C4&cid=501387405&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe></p>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Gradient Descent, Step-by-Step by <a target="_blank" rel="noopener" href='https://www.youtube.com/c/joshstarmer'>StatQuest</a></i>
+</p>
+
+<p>Therefore by borrowing the main idea from the Gradient Descent, we can update our floor value based on the difference between the current total asset value and the total asset value from the previous period. We multiply this difference with the learning rate $\alpha$ and add it to the previous total asset value. Then the base value used for calculating the floor level is now one step closer to the current total asset value. Here’s what the formula looks like:</p>
+<script type="math/tex; mode=display">\begin{align}
+\text{diff} &= \text{Current AV} - \text{Previous AV}\\
+\text{Updated Base Value} &= \text{Previous AV} + \text{diff} * \alpha\\
+\text{Smart Floor} &= \text{Updated Base Value} * \text{Floor Percentage}\\
+\end{align}</script><script type="math/tex; mode=display">where</script><script type="math/tex; mode=display">AV = \text{Asset Value}</script><script type="math/tex; mode=display">\alpha = \text{Learning Rate}</script><p>To mitigate the impact of trading fee charges, you can also add a buffer when updating the <em>Base Value</em> to make sure you don’t update it too frequently, causing unnecessary loss on the trading fee.</p>
+<h1 id="Backtesting-and-result"><a href="#Backtesting-and-result" class="headerlink" title="Backtesting and result"></a>Backtesting and result</h1><p>Now we have three ways to update our floor value: <code>basic floor</code>, <code>new high floor</code>, <code>smart floor</code>, and two ways to decide our multiplier: <code>fixed multiplier</code> and <code>dynamic multiplier</code>. Including the <code>buy and hold</code> strategy as the benchmark, let’s mashup these conditions and start conducting backtest against each of the scenarios.</p>
+<h2 id="Platform"><a href="#Platform" class="headerlink" title="Platform"></a>Platform</h2><p><a target="_blank" rel="noopener" href="https://www.quantconnect.com/">QuantConnect</a></p>
+<h2 id="Universe"><a href="#Universe" class="headerlink" title="Universe"></a>Universe</h2><ul>
+<li>Using <code>SPY</code> as the portfolio benchmark</li>
+<li><code>SHV</code> as risk-free asset</li>
+<li><code>SSO</code> as the risky asset</li>
+</ul>
+<h2 id="Rebalancing-strategy"><a href="#Rebalancing-strategy" class="headerlink" title="Rebalancing strategy"></a>Rebalancing strategy</h2><p>We update the CPPI and floor value every week, and then we adjust the proportion of risky and risk-free assets accordingly.</p>
+<h2 id="Backtest-time-frame"><a href="#Backtest-time-frame" class="headerlink" title="Backtest time frame"></a>Backtest time frame</h2><p>Three time periods we’re going to test against with:</p>
+<ol>
+<li>Full period: <em>2010, 1, 1 - 2022, 11, 1</em><ul>
+<li>To backtest the complete period and evaluate the overall performance</li>
+</ul>
+</li>
+<li>Bear market period: <em>2007, 1, 1 - 2012, 1, 1</em><ul>
+<li>To backtest the bear market scenario and evaluate accordingly</li>
+</ul>
+</li>
+<li>Bull market period: <em>2015, 1, 1 - 2019, 1, 1</em><ul>
+<li>To backtest the slow bull market and evaluate its performance</li>
+</ul>
+</li>
+</ol>
+<img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/backtest_period.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Benchmark backtest full period: 2010/01/01 - 2022/11/01</i>
+</p>
+
+
+<h2 id="Execution-and-backtest"><a href="#Execution-and-backtest" class="headerlink" title="Execution and backtest"></a>Execution and backtest</h2><p>Here we go!</p>
+<h3 id="Scenarios"><a href="#Scenarios" class="headerlink" title="Scenarios"></a>Scenarios</h3><p>We’re going to run the following backtest scenarios against three time periods:</p>
+<ul>
+<li>SPY, Buy-and-hold</li>
+<li>SSO, Buy-and-hold</li>
+<li>SSO, Basic floor, Fixed Multiplier</li>
+<li>SSO, Basic floor, Dynamic Multiplier</li>
+<li>SSO, Newhigh floor, Fixed Multiplier</li>
+<li>SSO, Newhigh floor, Dynamic Multiplier</li>
+<li>SSO, Learning floor, Fixed Multiplier</li>
+<li>SSO, Learning floor, Dynamic Multiplier</li>
+</ul>
+<h3 id="Backtesting-results"><a href="#Backtesting-results" class="headerlink" title="Backtesting results"></a>Backtesting results</h3><h4 id="Full-period"><a href="#Full-period" class="headerlink" title="Full period"></a>Full period</h4><img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/fulltime_backtest.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Backtest full period: 2010/01/01 - 2022/11/01</i>
+</p>
+
+<p>The backtest results on the right-hand side have the highest max drawdown 59.3% among all scenarios. We can see that the scenarios <code>SSO, Learning floor, Fixed Multiplier</code> and <code>SSO, Learning floor, Dynamic Multiplier</code> both have similar annual returns as the <code>SPY benchmark</code> scenario, but have lower and better MMD and variance. At the first glance, the <code>Smart (learning) floor</code> seems to have a great capability to keep to upward potential and limit the downward risks. Now let’s look at the other two scenarios.</p>
+<img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/fulltime_chart.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Scatter chart of full period: 2010/01/01 - 2022/11/01</i>
+</p>
+
+<h4 id="Bear-market-period"><a href="#Bear-market-period" class="headerlink" title="Bear market period"></a>Bear market period</h4><img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/bear_backtest.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Backtest bear period: 2007/01/01 - 2012/01/01</i>
+</p>
+
+<p>It’s very obvious that the scenario <code>SSO, Learning floor, Fixed Multiplier</code> and <code>SSO, Learning floor, Dynamic Multiplier</code> has the highest returns among all the backtests including the benchmark buy-and-hold backtest. The Sharpe ratio, MDD, and annual variance of these two scenarios are also improved compared to the benchmark scenario. Seems <code>CPPI with learning floor</code> does have the capability to limit the downward loss.</p>
+<img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/bear_chart.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Scatter chart of bear period: 2007/01/01 - 2012/01/01</i>
+</p>
+
+<h4 id="Bull-market-period"><a href="#Bull-market-period" class="headerlink" title="Bull market period"></a>Bull market period</h4><img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/bull_backtest.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Backtest bull period: 2015/01/01 - 2019/01/01</i>
+</p>
+
+<p>The distribution of the backtests looks similar to the full-time period chart. The three right-most scenarios <code>SSO-buy-and-hold</code>, <code>SSO-basic-fixed</code>, and <code>SSO-basic-dynamic</code> have the highest MDD, which is the outcome that we’re trying to avoid from the beginning. In the meantime, the scenario <code>SSO, Learning floor, Fixed Multiplier</code> and <code>SSO, Learning floor, Dynamic Multiplier</code> still outperform the other scenarios in terms of overall returns and MDD.</p>
+<img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/bull_chart.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Scatter chart of bull period: 2015/01/01 - 2019/01/01</i>
+</p>
+
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>Here’s my report card of my winning candidate strategy: <code>SSO, learning floor, fixed multiplier</code>:<br><img data-src="/2022/11/04/2022-11-10-advanced-cppi-strategy/my_winning_candidate.png" class="" width="600"></p>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>SSO; Smart Floor; Fixed multiplier</i>
+</p>
+
+<p>It seems that all the scenarios are able to limit their downside risk due to the fact that we added risk-free assets into our portfolio, achieving the goal to diversify the risk. Even though the returns are diluted, some of the scenarios still show promising outcomes by keeping proportional profit in the book (especially the scenarios using <code>Smart Floor</code>). As for the impact of whether adopting either dynamic multiplier or fixed multiplier is not yet significant, there would be more research needed to make a statistical decision on which method works better than the other.</p>
+<hr>
+<h1 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h1><h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://quantpedia.com/introduction-to-cppi-constant-proportion-portfolio-insurance/">Introduction to CPPI – Constant Proportion Portfolio Insurance</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.mbalib.com/wiki/%E5%9B%BA%E5%AE%9A%E6%AF%94%E4%BE%8B%E6%8A%95%E8%B5%84%E7%BB%84%E5%90%88%E4%BF%9D%E9%99%A9%E7%AD%96%E7%95%A5">MBA Lib: Constant Proportion Portfolio Insurance Strategy</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.scienpress.com/Upload/JFIA/Vol%207_3_2.pdf">Portfolio insurance strategies in a low interest rate environment: A simulation based study</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/swlh/protect-your-portfolio-using-cppi-strategy-in-python-c3184c2b6767">If you can’t beat the market at least you can protect from it using Python</a></li>
+</ul>
+<h2 id="Backtest-code"><a href="#Backtest-code" class="headerlink" title="Backtest code"></a>Backtest code</h2><script src='https://www.quantconnect.com/terminal/backtest.js?sid=b67dea595ad0a269ac788f35379b8971'></script>
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
+              <a href="/tags/Momentum/" rel="tag"># Momentum</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+              <a href="/tags/Fundamental-Analysis/" rel="tag"># Fundamental Analysis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/21/2022-10-15-meta-label/" rel="prev" title="【Momentum Trading】Use machine learning to boost your day trading skill - meta-labeling">
+      <i class="fa fa-chevron-left"></i> 【Momentum Trading】Use machine learning to boost your day trading skill - meta-labeling
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-does-it-mean-by-playing-defense-in-trading"><span class="nav-number">1.</span> <span class="nav-text">What does it mean by playing defense in trading?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-CPPI-Constant-Proportion-Portfolio-Insurance-strategy"><span class="nav-number">2.</span> <span class="nav-text">What is CPPI (Constant Proportion Portfolio Insurance) strategy?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Disadvantages-when-applying-CPPI-strategies"><span class="nav-number">3.</span> <span class="nav-text">Disadvantages when applying CPPI strategies</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Floor-level-is-fixed-even-if-the-total-asset-value-go-rocket-high"><span class="nav-number">3.1.</span> <span class="nav-text">Floor level is fixed even if the total asset value go rocket high</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-value-floor-trench"><span class="nav-number">3.2.</span> <span class="nav-text">The value floor trench</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Let%E2%80%99s-add-some-spices-to-make-the-strategy-promising"><span class="nav-number">4.</span> <span class="nav-text">Let’s add some spices to make the strategy promising</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Change-the-meat"><span class="nav-number">4.1.</span> <span class="nav-text">Change the meat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Add-seasoning"><span class="nav-number">4.2.</span> <span class="nav-text">Add seasoning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Additional-flavor-Smart-Floor"><span class="nav-number">4.3.</span> <span class="nav-text">Additional flavor: Smart Floor</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Backtesting-and-result"><span class="nav-number">5.</span> <span class="nav-text">Backtesting and result</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Platform"><span class="nav-number">5.1.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Universe"><span class="nav-number">5.2.</span> <span class="nav-text">Universe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rebalancing-strategy"><span class="nav-number">5.3.</span> <span class="nav-text">Rebalancing strategy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-time-frame"><span class="nav-number">5.4.</span> <span class="nav-text">Backtest time frame</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Execution-and-backtest"><span class="nav-number">5.5.</span> <span class="nav-text">Execution and backtest</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Scenarios"><span class="nav-number">5.5.1.</span> <span class="nav-text">Scenarios</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backtesting-results"><span class="nav-number">5.5.2.</span> <span class="nav-text">Backtesting results</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Full-period"><span class="nav-number">5.5.2.1.</span> <span class="nav-text">Full period</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Bear-market-period"><span class="nav-number">5.5.2.2.</span> <span class="nav-text">Bear market period</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Bull-market-period"><span class="nav-number">5.5.2.3.</span> <span class="nav-text">Bull market period</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">6.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Misc"><span class="nav-number">7.</span> <span class="nav-text">Misc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">7.1.</span> <span class="nav-text">Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-code"><span class="nav-number">7.2.</span> <span class="nav-text">Backtest code</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
