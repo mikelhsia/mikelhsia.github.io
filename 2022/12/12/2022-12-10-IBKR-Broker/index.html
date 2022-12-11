@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Building your trading strategy to connect to a broker with the broker’s proprietary API is always dreadful. There are tones of API documentation to read, tones of trial-and-error tests to conduct, an">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【How 2】Set Up Trading API Template In Python - Connecting My Trading Strategies To Interactive Brokers">
+<meta property="og:url" content="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Building your trading strategy to connect to a broker with the broker’s proprietary API is always dreadful. There are tones of API documentation to read, tones of trial-and-error tests to conduct, an">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/tws.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/ib_gateway.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/login.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/api_configuration.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/api_configuration2.png">
+<meta property="article:published_time" content="2022-12-11T18:11:46.114Z">
+<meta property="article:modified_time" content="2022-12-11T18:11:46.114Z">
+<meta property="article:author" content="Michael Hsia">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【How 2】Set Up Trading API Template In Python - Connecting My Trading Strategies To Interactive Brokers | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【How 2】Set Up Trading API Template In Python - Connecting My Trading Strategies To Interactive Brokers
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-12-12 02:11:46" itemprop="dateCreated datePublished" datetime="2022-12-12T02:11:46+08:00">2022-12-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/How2/" itemprop="url" rel="index"><span itemprop="name">How2</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/How2/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/12/12/2022-12-10-IBKR-Broker/" class="post-meta-item leancloud_visitors" data-flag-title="【How 2】Set Up Trading API Template In Python - Connecting My Trading Strategies To Interactive Brokers" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/12/12/2022-12-10-IBKR-Broker/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/12/12/2022-12-10-IBKR-Broker/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2022/12/12/2022-12-10-IBKR-Broker/cover.png" class="" width="800">
+<p>Building your trading strategy to connect to a broker with the broker’s proprietary API is always dreadful. There are tones of API documentation to read, tones of trial-and-error tests to conduct, and tones of unknown causes and bugs that fail your API test. In this post, I’m going to demonstrate my MVP API template to get my trading strategies to work, so that you can build your own in a way that makes your trading strategies work as well.</p>
+<a id="more"></a>
+<hr>
+<blockquote>
+<p>If you enjoy reading this and my other articles, feel free to <a src='https://medium.com/@mikelhsia/membership'> join Medium membership program</a> to read more about Quantitative Trading Strategy.</p>
+</blockquote>
+<hr>
+<p><strong><em>Previous researches</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/">【Momentum Trading】A Defense Trading Strategy That Works - CPPI (Constant Proportion Portfolio Insurance)</a></li>
+</ul>
+<p>After completing the research CPPI investment strategy, I need to find a new broker with a new account to start trading. <a target="_blank" rel="noopener" href="https://www.interactivebrokers.ca/en/trading/lp-why-ibkr.php?wid=978897570"><strong>Interactive Broker (IBKR)</strong></a> is the first broker that I am familiar with when I was a student, so I kinda have this obsession to make my trades through it. Years later, I consider myself finally had the luxury to sit down and spend time reading their API documentation. I’ve found the <a target="_blank" rel="noopener" href="https://www.interactivebrokers.com/en/trading/api-guides.php">IBKR API</a> doesn’t support retrieving historical transaction data, for example, the orders you placed three days ago and the commissions you paid for each trade wouldn’t be stored anywhere in the IBKR server. However, I need this information to build my performance evaluation report. Therefore, I’ve decided to put it on hold until there’s a good enough solution to come to rescue me. Now, as my knowledge grows, I’ve figured it’s about time to tackle this task.</p>
+<p><a target="_blank" rel="noopener" href="https://www.interactivebrokers.ca/en/trading/lp-why-ibkr.php?wid=978897570"><strong>Interactive Broker (IBKR)</strong></a> is a renowned investment broker that has successfully operated its business across the world. It is also famous for its low trading fees in both the equity and the derivative markets. On the other hand, its proprietary API is notorious for being complicated enough to work with. I’m going to give you my two cents here and hopefully it’ll help people who would like to consider Interactive Broker as their market broker. Here are the things I’m going to talk about:</p>
+<ul>
+<li>IBKR TWS and IB gateway</li>
+<li>IB gateway configurations</li>
+<li>My MVP broker API template</li>
+<li>Introduce ib_insync package and start connecting</li>
+<li>Implement our first IBKR call</li>
+</ul>
+<h1 id="IBKR-TWS-and-IB-gateway"><a href="#IBKR-TWS-and-IB-gateway" class="headerlink" title="IBKR TWS and IB gateway"></a>IBKR TWS and IB gateway</h1><p>In order to connect to the broker’s API service, each broker provides different methods to do so. <a target="_blank" rel="noopener" href="https://developer.tdameritrade.com/apis">TD Ameritrade API</a> allows you to use their API service remotely through the API token provided. <a target="_blank" rel="noopener" href="https://openapi.futunn.com/futu-api-doc/en/">Futu OpenAPI</a> requires you to download extra software on your local PC/laptop, so that your API calls will be able to access their API service through this middleware. As for [IBKR API], it is similar to Futu OpenAPI that all the API calls are connected through its proprietary software to reach the API service.</p>
+<img data-src="/2022/12/12/2022-12-10-IBKR-Broker/cover.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>How does your API call reach the IBKR API service</i>
+</p>
+
+<p>Interactive broker provides two software applications to help you connect to their API service:</p>
+<p><strong>TWS</strong><br>TWS stands for Trader Workstation. TWS is designed for trades who would like to conduct a series of research and trade equity and derivatives across many markets in one unified platform. Users can read the latest news, study company fundamentals and annual reports, research the stock trend or patterns, and even place orders with it. Also, it embeds the capability of being an intermediary between your desktop/laptop and the IBKR API service.<br><img data-src="/2022/12/12/2022-12-10-IBKR-Broker/tws.png" class="" width="600"></p>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>IBKR TWS Trading Station</i>
+</p>
+
+<p><strong>IB gateway</strong><br>Compared to TWS, IB gateway is simply an API gateway without all the User Interface that you can see in the TWS. You can’t buy or sell or do anything with the IB gateway. It allows you to connect to the IBKR API service and nothing more. In general, it is a super lightweight TWS that will consume much less of your desktop/laptop memories and resources.<br><img data-src="/2022/12/12/2022-12-10-IBKR-Broker/ib_gateway.png" class="" width="600"></p>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>IBKR IB Gateway</i>
+</p>
+
+<p>These two software applications have similar configurations but hold separate parameters which they don’t share mutually. Now let’s take a look at the configurations that will concern us before we start programming our API connection to IBKR.</p>
+<h1 id="IB-gateway-configurations"><a href="#IB-gateway-configurations" class="headerlink" title="IB gateway configurations"></a>IB gateway configurations</h1><p>Let’s use IB gateway as an example so that we don’t get distracted by the various features that TWS offers. First of all, we need to log in to the IB gateway software application. I don’t want to mess around with my real money while testing my trading script, I would instead use a paper account. <em>(Tip: You can reset your paper account on your account management page every day.)</em></p>
+<img data-src="/2022/12/12/2022-12-10-IBKR-Broker/login.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Login to your paper account</i>
+</p>
+
+<p>Here is a few configurations that you need to pay attention to before starting to code:</p>
+<ol>
+<li>In API -&gt; Setting, uncheck the <em>“Read-Only API”</em>.</li>
+<li>In API -&gt; Setting, remember or configure the <em>“Socket port”</em> because you will need it when connecting to this software.</li>
+<li>In API -&gt; Precautions, check the box <em>“Bypass Order Precaution for API Order”</em> to prevent additional errors or warning dialog boxes popped up when you place orders through API.</li>
+<li>If you’re using TWS as your middleman service, you need to check one more box <em>“Enable ActiveX and Socket Client”</em>.</li>
+</ol>
+<img data-src="/2022/12/12/2022-12-10-IBKR-Broker/api_configuration.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>API configuration</i>
+</p>
+
+<img data-src="/2022/12/12/2022-12-10-IBKR-Broker/api_configuration2.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>API configuration 2</i>
+</p>
+
+<p>Now we’re all set. Let’s get down to the business.</p>
+<h1 id="My-MVP-broker-API-template"><a href="#My-MVP-broker-API-template" class="headerlink" title="My MVP broker API template"></a>My MVP broker API template</h1><p>There are a few actions required in your trading strategies in order to run the basic buy/sell operations properly:</p>
+<ol>
+<li>Connect to and disconnect from the dedicated broker API service.</li>
+<li>Get your basic account info in order to know the account status such as <code>Total asset value</code>, <code>Remaining cash balance</code>, <code>Purchasing power</code>, … and so on.</li>
+<li>Check the trading calendar and trading hours to see whether the market is open for trading or if it’s a holiday today.</li>
+<li>Check the current quote price of a specific symbol in order to know how many shares we would purchase.</li>
+<li>Place orders through the broker API.</li>
+<li>Get the transaction history for performance evaluation later on.</li>
+</ol>
+<p>I use the <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/abc.html">python package <code>abc</code></a> (abbreviation for <strong>Abstract Base Class</strong>) to build my base API template. The most obvious advantage of building a baseclass with an abstract base class is that you can easily extend from it to build another class. For example, you have a class called <strong>InteractiveBrokerClass</strong> to make trades, and another class called <strong>TDAmeritradeBrokerClass</strong> to make trades with <a target="_blank" rel="noopener" href="https://www.tdameritrade.com/">TD Ameritrade</a>. Both broker classes do similar things and require similar functions. Implementing them using as abstract base class would make your life easier in terms of managing the actions in both derived classes. Here’s my broker base class:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># TradeAPI.py</span></span><br><span class="line"><span class="keyword">import</span> abc</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AbstractTradeInterface</span>(<span class="params">metaclass=abc.ABCMeta</span>):</span></span><br><span class="line"><span class="meta">  @abc.abstractmethod</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">connect</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">  @abc.abstractmethod</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_account_detail</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">  @abc.abstractmethod</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_last_price_from_quote</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">  @abc.abstractmethod</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">place_order</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">  @abc.abstractmethod</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_market_open</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">  @abc.abstractmethod</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_market_open_now</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">  @abc.abstractmethod</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_transactions</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Abstract Trading API Template</i>
+</p>
+
+<p>Implementing any of them could be straightforward and also could be extremely complex, depending on the design of the structure of the proprietary broker API. Like I said earlier that Interactive Broker didn’t support querying historic transactions/trades, we need to build alternative functions on the side in order to support the <code>def get_transactions(self)</code> in our base template. I’m not going to dive into how to build them now and we will come back to this in another post. I will start by looking at how we are going to connect to the IB gateway by implementing the <code>def connect()</code> function, and then we can check the quote price and place orders with API calls whenever we want to.</p>
+<h1 id="Introduce-ib-insync-package-and-start-connecting"><a href="#Introduce-ib-insync-package-and-start-connecting" class="headerlink" title="Introduce ib_insync package and start connecting"></a>Introduce ib_insync package and start connecting</h1><p>Instead of using the native <code>ib_api</code> package to connect to the IBKR API service, I choose to use <a target="_blank" rel="noopener" href="https://pypi.org/project/ib-insync/"><code>ib_insync</code></a> package developed by <strong><em>Ewald R. de Wit</em></strong>. <code>ib_insync</code> not only simplifies the way to connect and communicate with the IBKR API service, but it also adds the asynchronous capability so that less CPU time was wasted while requesting data from the server. Here is an introductory post to get you familiar with the functions provided in <code>ib_insync</code>: <a target="_blank" rel="noopener" href="https://algotrading101.com/learn/ib_insync-interactive-brokers-api-guide/">ib_insync: Interactive Broker API guide</a>. We can clearly learn that we can connect to the IBKR API service with the following code:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ib = IB()</span><br><span class="line">ib.connect(</span><br><span class="line">  host=<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="comment"># local host IP</span></span><br><span class="line">  port=<span class="number">4002</span>, <span class="comment"># The port that we configured in the IB gateway</span></span><br><span class="line">  clientId=<span class="number">1</span> <span class="comment"># The non-duplicated client ID for each connection</span></span><br><span class="line">)</span><br><span class="line">ib.disconnect() <span class="comment"># To disconnect from the server</span></span><br></pre></td></tr></table></figure>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>You would need to connect to server before you make any request</i>
+</p>
+
+<p>This established connection <code>ib</code> was handled and maintained by whoever initiated it. In order to better and easier to handle the connection and close it effectively once we finished using it, I would suggest using <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/contextlib.html"><code>contextmanager</code></a> so that the context manager will close the connection once we finished using it. We don’t have to explicitly disconnect from the API service. Instead, the context manager will handle it every time when the <code>with</code> clause is finished.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test.py</span></span><br><span class="line"><span class="meta">@contextmanager</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">connect</span>(<span class="params">self</span>):</span></span><br><span class="line">  self.client = ib_insync.IB()</span><br><span class="line">  self.client.connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">7497</span>, <span class="number">300</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">yield</span> self <span class="comment"># Return the self instance</span></span><br><span class="line"></span><br><span class="line">  self.client.disconnect()</span><br><span class="line">  self.client.sleep(<span class="number">2</span>)  <span class="comment"># make sure the connection is closed before next time you connect to IBKR API service</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  <span class="keyword">with</span> broker.connect() <span class="keyword">as</span> c:</span><br><span class="line">    <span class="comment"># Make requests to the server</span></span><br><span class="line">  <span class="comment"># The connections will be closed since we disconnect from the server after `yield self`</span></span><br></pre></td></tr></table></figure>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Connect function implemented with context manager</i>
+</p>
+
+<h1 id="Implement-our-first-IBKR-call"><a href="#Implement-our-first-IBKR-call" class="headerlink" title="Implement our first IBKR call"></a>Implement our first IBKR call</h1><p>In the last part of this post, let’s try to implement <code>get_account_detail()</code> call in our broker class so that we could learn the account status.</p>
+<p>In the original <a target="_blank" rel="noopener" href="https://ib-insync.readthedocs.io/api.html">ib_insync document</a>, I found out that <code>ib.managedAccounts()</code> can retrieve a list of account names, and <code>ib.accountValues(account:str)</code> can retrieve all stats under this account parameter. Hence, I’m going to:</p>
+<ol>
+<li>First, use <code>ib.managedAccounts()</code> to retrieve all the accounts created.</li>
+<li>Use <code>ib.accountValues()</code> to get all variables related to this account.</li>
+<li>Extract the <code>TotalCashBalance</code> and <code>StockMarketValue</code> concerned USD so that I could tell how much money I have in cash and as well the total value under my account.</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test.py</span></span><br><span class="line"><span class="keyword">from</span> contextlib <span class="keyword">import</span> contextmanager</span><br><span class="line"><span class="keyword">import</span> ib_insync</span><br><span class="line"><span class="keyword">from</span> zoneinfo <span class="keyword">import</span> ZoneInfo</span><br><span class="line"><span class="keyword">from</span> modules.broker.TradeAPI <span class="keyword">import</span> AbstractTradeInterfac</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InteractiveBrokerTradeAPI</span>(<span class="params">AbstractTradeInterface</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,currency=<span class="string">&#x27;USD&#x27;</span></span>):</span></span><br><span class="line">        self.client = <span class="literal">None</span></span><br><span class="line">        self.accounts = []</span><br><span class="line">        self.currency = currency</span><br><span class="line"></span><br><span class="line"><span class="meta">    @contextmanager</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">connect</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.client = ib_insync.IB()</span><br><span class="line">        self.client.connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">7497</span>, <span class="number">300</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">yield</span> self</span><br><span class="line"></span><br><span class="line">        self.client.disconnect()</span><br><span class="line">        self.client.sleep(<span class="number">2</span>)  <span class="comment"># make sure the connection is closed before next time you connect to IBKR API service</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_account_detail</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.accounts = self.client.managedAccounts()</span><br><span class="line"></span><br><span class="line">        acc_data = []</span><br><span class="line">        <span class="keyword">for</span> account <span class="keyword">in</span> self.accounts:</span><br><span class="line">            acc = &#123;&#125;</span><br><span class="line">            acc[<span class="string">&#x27;account&#x27;</span>] = account</span><br><span class="line">            data = self.client.accountValues(account)</span><br><span class="line">            acc[<span class="string">&#x27;cash&#x27;</span>] = <span class="number">0</span></span><br><span class="line">            acc[<span class="string">&#x27;total_assets&#x27;</span>] = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> row <span class="keyword">in</span> data:</span><br><span class="line">                <span class="keyword">if</span> row.tag <span class="keyword">in</span> [<span class="string">&#x27;TotalCashBalance&#x27;</span>] <span class="keyword">and</span> row.currency == self.currency:</span><br><span class="line">                    acc[<span class="string">&#x27;cash&#x27;</span>] = row.value</span><br><span class="line">                    acc[<span class="string">&#x27;total_assets&#x27;</span>] += float(row.value)</span><br><span class="line">                <span class="keyword">elif</span> row.tag <span class="keyword">in</span> [<span class="string">&#x27;StockMarketValue&#x27;</span>] <span class="keyword">and</span> row.currency == self.currency:</span><br><span class="line">                    acc[<span class="string">&#x27;total_assets&#x27;</span>] += float(row.value)</span><br><span class="line">            acc_data.append(acc)</span><br><span class="line">        <span class="keyword">return</span> acc_data</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_last_price_from_quote</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">place_order</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_market_open</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_market_open_now</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_transactions</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Main function</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    broker = InteractiveBrokerTradeAPI()</span><br><span class="line">    <span class="keyword">with</span> broker.connect() <span class="keyword">as</span> c:</span><br><span class="line">        accounts = c.get_account_detail()</span><br><span class="line">        print(accounts)</span><br></pre></td></tr></table></figure>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Full code</i>
+</p>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Output</span></span><br><span class="line">&gt;&gt; [&#123;<span class="string">&#x27;account&#x27;</span>: <span class="string">&#x27;DU4399668&#x27;</span>, <span class="string">&#x27;cash&#x27;</span>: <span class="string">&#x27;77.44&#x27;</span>, <span class="string">&#x27;total_assets&#x27;</span>: <span class="number">96737.42</span>&#125;]</span><br></pre></td></tr></table></figure>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Account status output</i>
+</p>
+
+<p><em>Noted: Make sure you attach the rest of the unimplemented functions as I did, as this is required in an abstract class. Otherwise, you will see the following error message when you run the test code.</em><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/Users/michael/quantitative-strategy/app/trading/test.py&quot;</span>, line <span class="number">86</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    broker = InteractiveBrokerTradeAPI(version_param=SCRIPT_VERSION)</span><br><span class="line">TypeError: Can<span class="string">&#x27;t instantiate abstract class InteractiveBrokerTradeAPI with abstract methods get_last_price_from_quote, get_transactions, is_market_open, is_market_open_now, place_order</span></span><br></pre></td></tr></table></figure></p>
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>You need to implement all defined functions in the base class</i>
+</p>
+
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>Done! We’re not officially connecting our trading script to the Interactive Broker API service. To make sure this broker class can fully support the functionalities of your trading program, there are still more functions to be implemented. Don’t worry, I’ll see you next time.</p>
+
+    </div>
+    
+      
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/04/2022-11-10-advanced-cppi-strategy/" rel="prev" title="【Momentum Trading】A Defense Trading Strategy That Works - CPPI (Constant Proportion Portfolio Insurance)">
+      <i class="fa fa-chevron-left"></i> 【Momentum Trading】A Defense Trading Strategy That Works - CPPI (Constant Proportion Portfolio Insurance)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#IBKR-TWS-and-IB-gateway"><span class="nav-number">1.</span> <span class="nav-text">IBKR TWS and IB gateway</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IB-gateway-configurations"><span class="nav-number">2.</span> <span class="nav-text">IB gateway configurations</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#My-MVP-broker-API-template"><span class="nav-number">3.</span> <span class="nav-text">My MVP broker API template</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduce-ib-insync-package-and-start-connecting"><span class="nav-number">4.</span> <span class="nav-text">Introduce ib_insync package and start connecting</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Implement-our-first-IBKR-call"><span class="nav-number">5.</span> <span class="nav-text">Implement our first IBKR call</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">6.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
