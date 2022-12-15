@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Now we come to the third part of this series. In this post, I’m going to show you how I design and build my local database to store IBKR trades and other necessary information for generating meaningf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【How 2】 Set Up Trading API Template In Python - Build Local Storage For Storing Trades">
+<meta property="og:url" content="http://mikelhsia.github.io/2022/12/14/2022-12-17-IBKR-broker-3/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Now we come to the third part of this series. In this post, I’m going to show you how I design and build my local database to store IBKR trades and other necessary information for generating meaningf">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/14/2022-12-17-IBKR-broker-3/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/14/2022-12-17-IBKR-broker-3/db_schema.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2022/12/14/2022-12-17-IBKR-broker-3/db_helper_functions.png">
+<meta property="article:published_time" content="2022-12-13T17:42:02.000Z">
+<meta property="article:modified_time" content="2022-12-15T07:05:45.858Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="How2">
+<meta property="article:tag" content="Python3">
+<meta property="article:tag" content="Interactive Broker">
+<meta property="article:tag" content="Sqlite3">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2022/12/14/2022-12-17-IBKR-broker-3/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2022/12/14/2022-12-17-IBKR-broker-3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【How 2】 Set Up Trading API Template In Python - Build Local Storage For Storing Trades | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2022/12/14/2022-12-17-IBKR-broker-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【How 2】 Set Up Trading API Template In Python - Build Local Storage For Storing Trades
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-12-14 01:42:02" itemprop="dateCreated datePublished" datetime="2022-12-14T01:42:02+08:00">2022-12-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-12-15 15:05:45" itemprop="dateModified" datetime="2022-12-15T15:05:45+08:00">2022-12-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/How2/" itemprop="url" rel="index"><span itemprop="name">How2</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/How2/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2022/12/14/2022-12-17-IBKR-broker-3/" class="post-meta-item leancloud_visitors" data-flag-title="【How 2】 Set Up Trading API Template In Python - Build Local Storage For Storing Trades" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2022/12/14/2022-12-17-IBKR-broker-3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/12/14/2022-12-17-IBKR-broker-3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2022/12/14/2022-12-17-IBKR-broker-3/cover.png" class="" width="800">
+<p>Now we come to the third part of this series. In this post, I’m going to show you how I design and build my local database to store IBKR trades and other necessary information for generating meaningful indicators to review our strategy performance.</p>
+<a id="more"></a>
+<hr>
+<blockquote>
+<p>If you enjoy reading this and my other articles, feel free to <a src='https://medium.com/@mikelhsia/membership'> join Medium membership program</a> to read more about Quantitative Trading Strategy.</p>
+</blockquote>
+<hr>
+<p><strong><em>Previous researches</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/">【Momentum Trading】A Defense Trading Strategy That Works - CPPI (Constant Proportion Portfolio Insurance)</a></li>
+<li><a href="https://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/">【How 2】 Set Up Trading API Template In Python - Connecting My Trading Strategies To Interactive Brokers</a></li>
+<li><a href="https://mikelhsia.github.io/2022/12/12/2022-12-16-IBKR-broker-2/">【How 2】 Set Up Trading API Template In Python - Placing Orders with Interactive Broker</a></li>
+</ul>
+<h1 id="Why-do-we-need-to-build-this-capability-ourselves"><a href="#Why-do-we-need-to-build-this-capability-ourselves" class="headerlink" title="Why do we need to build this capability ourselves?"></a>Why do we need to build this capability ourselves?</h1><p>We have most of our functions ready in our previous two posts except the <code>def get_transaction()</code> function. Most of the brokers would provide the function to retrieve historic transactions for at least 60 days. However, Interactive Brokers doesn’t support the functionality to retrieve the historic trades and portfolio performance from it. The reason I want this function supported is that I need to:</p>
+<ol>
+<li>Use the historic portfolio performance to compare with the benchmark evaluating KPIs and see whether my trading strategy is successful or not.</li>
+<li>In the <a href="https://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/">CPPI strategy</a> we talked about before, the B and E ratio calculation depends on the previous day’s maximum portfolio value. Therefore we need to persist it so that we won’t lose it every time we restart our trading script.</li>
+<li>I would like to take the impact of the commission into account. Since Interactive Brokers won’t save my trading records any longer, I would need to save those trading records on my local DB so that I get to keep track of the commission spent on this strategy.</li>
+</ol>
+<p>To address the requirements that I put together above, building a database on the local machine is imperative. Below, I’m going to put down my solution into two sections:</p>
+<ul>
+<li>Design DB schema</li>
+<li>Implement DB-related capabilities</li>
+</ul>
+<p>Also, in terms of which DB should be used here, SQL such as MySql or NoSQL like MongoDB will be too complicated and way too powerful. Therefore, I simply pick <code>sqlite3</code> to create easy-to-use local storage.</p>
+<h1 id="Design-DB-schema"><a href="#Design-DB-schema" class="headerlink" title="Design DB schema"></a>Design DB schema</h1><p>We are going to create three tables, and each of them is going to address the requirements that we raised above respectively.</p>
+<ul>
+<li>IB_SQLITE_CPPI_TBL_NAME<ul>
+<li>The only critical variable here is the <code>MAX_ASSET</code>. This is a value to keep track of the max portfolio value and calculate the CPPI E_ratio and B_ratio. If you want to know why we need this variable tracked in the data table, you can check out <a href="https://mikelhsia.github.io/2022/11/04/2022-11-10-advanced-cppi-strategy/">this post</a></li>
+</ul>
+</li>
+<li>IB_SQLITE_TRANSACTION_TBL_NAME<ul>
+<li>This table is basically recording the daily performance of our portfolio and market benchmark. We have <code>PORTFOLIO_CLOSE_VALUE</code>, <code>SPY_CLOSE_PRICE</code>, and <code>COMMISSION</code>, where the commission is a sum added up from the <strong>IB_SQLITE_ORDER_TBL_NAME</strong>.</li>
+</ul>
+</li>
+<li>IB_SQLITE_ORDER_TBL_NAME<ul>
+<li>This table is meant to record all the orders placed. I extracted the following information from the <code>ib.trades()</code> response and tuck them into the table: <code>symbol</code>, <code>order_id</code>, <code>action</code> (buy or sell), <code>quantity</code>, <code>order status</code>, <code>commission cost</code>, and the <code>account number</code>.</li>
+</ul>
+</li>
+</ul>
+<img data-src="/2022/12/14/2022-12-17-IBKR-broker-3/db_schema.png" class="" width="600">
+<p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>DB schema of three tables</i>
+</p>
+
+
+<h1 id="Implement-DB-related-capabilities"><a href="#Implement-DB-related-capabilities" class="headerlink" title="Implement DB-related capabilities"></a>Implement DB-related capabilities</h1><img data-src="/2022/12/14/2022-12-17-IBKR-broker-3/db_helper_functions.png" class="" width="600">
+<p><p style="font-size: 0.8em; text-align:center; color: grey;">
+  <i>Private and public functions for managing our DB</i>
+</p><br>Here I separated the functions into two groups. The first part of functions is the private functions that conduct database operations such as connecting to the database, creating the table, checking whether the table exists or not, and so on. This provides the minimum capability for managing the database. The second part of the functions is public functions that use private functions to interact with the specified data table in the database.</p>
+<p>Below are the private sqlite3 DB functions:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########################################################################</span></span><br><span class="line"><span class="comment"># Sqlite3 private functions</span></span><br><span class="line"><span class="comment">########################################################################</span></span><br><span class="line"><span class="meta">@contextmanager</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sqlite_connect</span>(<span class="params">self</span>):</span></span><br><span class="line">    dirs = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        db_path = os.path.join(dirs, IB_SQLITE_DB_NAME)</span><br><span class="line">        conn = sqlite3.connect(db_path)</span><br><span class="line">        print(<span class="string">f&#x27;Sqlite connection established&#x27;</span>)</span><br><span class="line">        <span class="keyword">yield</span> conn</span><br><span class="line">        conn.close()</span><br><span class="line">        print(<span class="string">f&#x27;Sqlite connection closed&#x27;</span>)</span><br><span class="line">    <span class="keyword">except</span> OSError <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">f&#x27;We are having an OS error&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__sqlite_create_table</span>(<span class="params">self, conn=None, tbl_name=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> tbl_name <span class="keyword">or</span> <span class="keyword">not</span> conn:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> tbl_name == IB_SQLITE_TRANSACTION_TBL_NAME:</span><br><span class="line">        conn.execute(<span class="string">f&#x27;&#x27;&#x27;CREATE TABLE <span class="subst">&#123;IB_SQLITE_TRANSACTION_TBL_NAME&#125;</span></span></span><br><span class="line"><span class="string">            (ID INTEGER PRIMARY KEY AUTOINCREMENT,</span></span><br><span class="line"><span class="string">            CREATE_TIME DATETIME NOT NULL,</span></span><br><span class="line"><span class="string">            PORTFOLIO_CLOSE_VALUE FLOAT NOT NULL,</span></span><br><span class="line"><span class="string">            SPY_CLOSE_PRICE FLOAT NOT NULL,</span></span><br><span class="line"><span class="string">            COMMISSION FLOAT NOT NULL);</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span>)</span><br><span class="line">    <span class="keyword">elif</span> tbl_name == IB_SQLITE_CPPI_TBL_NAME:</span><br><span class="line">        conn.execute(<span class="string">f&#x27;&#x27;&#x27;CREATE TABLE <span class="subst">&#123;IB_SQLITE_CPPI_TBL_NAME&#125;</span></span></span><br><span class="line"><span class="string">            (ID INTEGER PRIMARY KEY AUTOINCREMENT,</span></span><br><span class="line"><span class="string">            CREATE_TIME DATETIME NOT NULL,</span></span><br><span class="line"><span class="string">            MAX_ASSET FLOAT NOT NULL,</span></span><br><span class="line"><span class="string">            E_RATIO FLOAT NOT NULL,</span></span><br><span class="line"><span class="string">            B_RATIO FLOAT NOT NULL);</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span>)</span><br><span class="line">    <span class="keyword">elif</span> tbl_name == IB_SQLITE_ORDER_TBL_NAME:</span><br><span class="line">        conn.execute(<span class="string">f&#x27;&#x27;&#x27;CREATE TABLE <span class="subst">&#123;IB_SQLITE_ORDER_TBL_NAME&#125;</span></span></span><br><span class="line"><span class="string">            (ID INTEGER PRIMARY KEY AUTOINCREMENT,</span></span><br><span class="line"><span class="string">            CREATE_TIME DATETIME NOT NULL,</span></span><br><span class="line"><span class="string">            SYMBOL TEXT NOT NULL,</span></span><br><span class="line"><span class="string">            ORDER_ID TEXT NOT NULL UNIQUE,</span></span><br><span class="line"><span class="string">            ACTION TEXT NOT NULL,</span></span><br><span class="line"><span class="string">            QUANTITY INT NOT NULL,</span></span><br><span class="line"><span class="string">            ORDER_STATUS TEXT NOT NULL,</span></span><br><span class="line"><span class="string">            COMMISSION FLOAT NOT NULL,</span></span><br><span class="line"><span class="string">            ACCOUNT TEXT NOT NULL);</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__sqlite_is_table_exist</span>(<span class="params">self, conn=None, tbl_name=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> tbl_name <span class="keyword">or</span> <span class="keyword">not</span> conn:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    c = conn.cursor()</span><br><span class="line"></span><br><span class="line">    c.execute(<span class="string">f&#x27;&#x27;&#x27;SELECT count(name)</span></span><br><span class="line"><span class="string">        FROM sqlite_master</span></span><br><span class="line"><span class="string">        WHERE type=&quot;table&quot; AND name=&quot;<span class="subst">&#123;tbl_name&#125;</span>&quot;;</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> c.fetchone()[<span class="number">0</span>]==<span class="number">1</span> :</span><br><span class="line">        <span class="comment"># Table exists</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span> :</span><br><span class="line">        <span class="comment"># Table does not exist</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__sqlite_query_data</span>(<span class="params">self, conn=None, tbl_name=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> conn <span class="keyword">or</span> <span class="keyword">not</span> tbl_name:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> self.__sqlite_is_table_exist(conn, tbl_name):</span><br><span class="line">        self.__sqlite_create_table(conn, tbl_name)</span><br><span class="line"></span><br><span class="line">    df = pd.read_sql_query(<span class="string">f&#x27;SELECT * from <span class="subst">&#123;tbl_name&#125;</span>;&#x27;</span>, conn)</span><br><span class="line">    <span class="keyword">return</span> df</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__sqlite_insert_record</span>(<span class="params">self, conn=None, sql=None, value_tuple: tuple=None, tbl_name=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> self.__sqlite_is_table_exist(conn, tbl_name):</span><br><span class="line">        self.__sqlite_create_table(conn, tbl_name)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> sql:</span><br><span class="line">        <span class="keyword">raise</span> RuntimeError(<span class="string">f&#x27;SQL string is empty&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    conn.execute(sql, value_tuple)</span><br><span class="line"></span><br><span class="line">    conn.commit()</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure></p>
+<p>As for the public functions in our script, they provide support for our trading script so that it can achieve the purpose we want it to.</p>
+<p>First of all, these two functions are for us to retrieve data from the corresponding data table and return in <code>pd.DataFrame()</code> format.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_transactions</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">with</span> self.sqlite_connect() <span class="keyword">as</span> conn:</span><br><span class="line">        df = self.__sqlite_query_data(conn, IB_SQLITE_TRANSACTION_TBL_NAME)</span><br><span class="line">    <span class="keyword">return</span> df</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_cppi_variables</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">with</span> self.sqlite_connect() <span class="keyword">as</span> conn:</span><br><span class="line">        df = self.__sqlite_query_data(conn, IB_SQLITE_CPPI_TBL_NAME)</span><br><span class="line">    <span class="keyword">return</span> df</span><br></pre></td></tr></table></figure></p>
+<p>Secondly, we created three functions for handling parsing the corresponding API responses into the data format we need. Therefore, this part of the functions involves interacting with the Interactive Brokers API, fetching data from sqlite3 local database, and processing the data accordingly.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_orders_in_db</span>(<span class="params">self</span>):</span></span><br><span class="line">    sql = <span class="string">f&#x27;&#x27;&#x27;INSERT OR IGNORE INTO <span class="subst">&#123;IB_SQLITE_ORDER_TBL_NAME&#125;</span> (CREATE_TIME, SYMBOL, ORDER_ID, ACTION, QUANTITY, ORDER_STATUS, COMMISSION, ACCOUNT) VALUES (?, ?, ?, ?, ?, ?, ?, ?);&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> self.sqlite_connect() <span class="keyword">as</span> conn:</span><br><span class="line">        trades = self.client.trades()</span><br><span class="line">        <span class="keyword">for</span> trade <span class="keyword">in</span> trades:</span><br><span class="line">            perm_id = trade.order.permId</span><br><span class="line">            qty = trade.order.filledQuantity</span><br><span class="line">            symbol = trade.contract.symbol</span><br><span class="line">            action = trade.order.action</span><br><span class="line">            commission = sum([fill.commissionReport.commission <span class="keyword">for</span> fill <span class="keyword">in</span> trade.fills])</span><br><span class="line">            status = trade.orderStatus.status</span><br><span class="line">            exec_time = trade.log[<span class="number">0</span>].time</span><br><span class="line">            account = trade.order.account</span><br><span class="line">            self.__sqlite_insert_record(</span><br><span class="line">                conn,</span><br><span class="line">                sql,</span><br><span class="line">                (exec_time, symbol, perm_id, action, qty, status, commission, account),</span><br><span class="line">                IB_SQLITE_ORDER_TBL_NAME</span><br><span class="line">            )</span><br><span class="line">    logger.logger.debug(<span class="string">f&#x27;Database <span class="subst">&#123;IB_SQLITE_ORDER_TBL_NAME&#125;</span> updated&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_transactions_in_db</span>(<span class="params">self</span>):</span></span><br><span class="line">    sql = <span class="string">f&#x27;&#x27;&#x27;INSERT OR IGNORE INTO <span class="subst">&#123;IB_SQLITE_TRANSACTION_TBL_NAME&#125;</span> (CREATE_TIME, PORTFOLIO_CLOSE_VALUE, SPY_CLOSE_PRICE, COMMISSION) VALUES (?,?,?,?);&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Portfolio value</span></span><br><span class="line">    portfolio_value = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> account <span class="keyword">in</span> self.accounts:</span><br><span class="line">        data = self.client.accountValues(account)</span><br><span class="line">        <span class="keyword">for</span> row <span class="keyword">in</span> data:</span><br><span class="line">            <span class="keyword">if</span> row.tag <span class="keyword">in</span> [<span class="string">&#x27;TotalCashBalance&#x27;</span>, <span class="string">&#x27;StockMarketValue&#x27;</span>] <span class="keyword">and</span> row.currency == self.currency:</span><br><span class="line">                portfolio_value += float(row.value)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># SPY close value</span></span><br><span class="line">    benchmark_value = self.get_last_price_from_quote(<span class="string">&#x27;SPY&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Update the latest commission</span></span><br><span class="line">    commission = self.get_commission_from_db(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> self.sqlite_connect() <span class="keyword">as</span> conn:</span><br><span class="line">        self.__sqlite_insert_record(</span><br><span class="line">            conn,</span><br><span class="line">            sql,</span><br><span class="line">            (datetime.now(), portfolio_value, benchmark_value, commission),</span><br><span class="line">            IB_SQLITE_TRANSACTION_TBL_NAME</span><br><span class="line">        )</span><br><span class="line">    logger.logger.debug(<span class="string">f&#x27;Database <span class="subst">&#123;IB_SQLITE_TRANSACTION_TBL_NAME&#125;</span> updated&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_cppi_variables_in_db</span>(<span class="params">self, max_asset, E, B</span>):</span></span><br><span class="line">    sql = <span class="string">f&#x27;&#x27;&#x27;INSERT OR IGNORE INTO <span class="subst">&#123;IB_SQLITE_CPPI_TBL_NAME&#125;</span> (CREATE_TIME, MAX_ASSET, E_RATIO, B_RATIO) VALUES (?,?,?,?);&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> self.sqlite_connect() <span class="keyword">as</span> conn:</span><br><span class="line">        self.__sqlite_insert_record(</span><br><span class="line">            conn,</span><br><span class="line">            sql,</span><br><span class="line">            (datetime.now(), max_asset, E, B),</span><br><span class="line">            IB_SQLITE_CPPI_TBL_NAME</span><br><span class="line">        )</span><br></pre></td></tr></table></figure></p>
+<p>Lastly, this is the function to achieve the goal for me to calculate the commission sum on the day (or for multiple days).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_commission_from_db</span>(<span class="params">self, time_delta:int=<span class="number">0</span></span>) -&gt; float:</span></span><br><span class="line">    <span class="keyword">with</span> self.sqlite_connect() <span class="keyword">as</span> conn:</span><br><span class="line">        df = self.__sqlite_query_data(conn, IB_SQLITE_ORDER_TBL_NAME)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> df.empty:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> df[(datetime.now(self.timezone) - pd.to_datetime(df[<span class="string">&#x27;CREATE_TIME&#x27;</span>], utc=<span class="literal">False</span>)) &lt; timedelta(days=time_delta)][<span class="string">&#x27;COMMISSION&#x27;</span>].sum()</span><br></pre></td></tr></table></figure>
+<h1 id="My-strategy-report-card"><a href="#My-strategy-report-card" class="headerlink" title="My strategy report card"></a>My strategy report card</h1><p>In the last part of this post, I’ll show you the portfolio performance metrics that I plan using to evaluate the trading strategy with the data stored in our local database. You can also modify the DB schema, record the information you need, and come up with important and helpful for you to evaluate the effectiveness of your trading script.</p>
+<ol>
+<li>Sharpe Ratio (SR)</li>
+<li>Total return</li>
+<li>Annualized return</li>
+<li>Variance</li>
+<li>Max Drawdown (MDD)</li>
+<li>Trading fee spent</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_strategy_report</span>(<span class="params">self, config=None, verbose=False</span>):</span></span><br><span class="line">    final = self.get_transactions()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> verbose <span class="keyword">is</span> <span class="literal">True</span>:</span><br><span class="line">        print(final)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> tmp.empty:</span><br><span class="line">        ret_data[<span class="string">&#x27;Version&#x27;</span>] = <span class="string">&#x27;1.0&#x27;</span></span><br><span class="line">        ret_data[<span class="string">&#x27;SR/Portfolio&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;SR/Benchmark&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Total Return/Portfolio&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Total Return/Benchmark&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Annualized Return/Portfolio&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Annualized Return/Benchmark&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Variance/Portfolio&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Variance/Benchmark&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;MDD/Portfolio&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;MDD/Benchmark&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Trading fee&#x27;</span>] = <span class="number">0</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Trading fee ratio&#x27;</span>] = <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        ret_data[<span class="string">&#x27;Version&#x27;</span>] = <span class="string">&#x27;1.0&#x27;</span></span><br><span class="line">        ret_data[<span class="string">&#x27;SR/Portfolio&#x27;</span>] = tmp.loc[:, <span class="string">&#x27;PORTFOLIO_CLOSE_VALUE&#x27;</span>].mean() / tmp.loc[:, <span class="string">&#x27;PORTFOLIO_CLOSE_VALUE&#x27;</span>].std()</span><br><span class="line">        ret_data[<span class="string">&#x27;SR/Benchmark&#x27;</span>] = tmp.loc[:, <span class="string">&#x27;SPY_CLOSE_PRICE&#x27;</span>].mean() / tmp.loc[:, <span class="string">&#x27;SPY_CLOSE_PRICE&#x27;</span>].std()</span><br><span class="line">        ret_data[<span class="string">&#x27;Total Return/Portfolio&#x27;</span>] = (tmp.loc[:, <span class="string">&#x27;PORTFOLIO_CLOSE_VALUE&#x27;</span>].iloc[<span class="number">-1</span>] / c[<span class="string">&#x27;init_cash&#x27;</span>]) - <span class="number">1</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Total Return/Benchmark&#x27;</span>] = (tmp.loc[:, <span class="string">&#x27;SPY_CLOSE_PRICE&#x27;</span>].iloc[<span class="number">-1</span>] / tmp.loc[:, <span class="string">&#x27;SPY_CLOSE_PRICE&#x27;</span>].iloc[<span class="number">0</span>]) - <span class="number">1</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Annualized Return/Portfolio&#x27;</span>] = (<span class="number">1</span> + ret_data[<span class="string">&#x27;Total Return/Portfolio&#x27;</span>])**(<span class="number">365</span>/(datetime.today() - pd.to_datetime(c[<span class="string">&#x27;start_date&#x27;</span>])).days) - <span class="number">1</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Annualized Return/Benchmark&#x27;</span>] = (<span class="number">1</span> + ret_data[<span class="string">&#x27;Total Return/Benchmark&#x27;</span>])**(<span class="number">365</span>/(datetime.today() - pd.to_datetime(c[<span class="string">&#x27;start_date&#x27;</span>])).days) - <span class="number">1</span></span><br><span class="line">        ret_data[<span class="string">&#x27;Variance/Portfolio&#x27;</span>] = tmp.loc[:, <span class="string">&#x27;PORTFOLIO_CLOSE_VALUE&#x27;</span>].var()</span><br><span class="line">        ret_data[<span class="string">&#x27;Variance/Benchmark&#x27;</span>] = tmp.loc[:, <span class="string">&#x27;SPY_CLOSE_PRICE&#x27;</span>].var()</span><br><span class="line">        ret_data[<span class="string">&#x27;MDD/Portfolio&#x27;</span>] = self.__calculate_mdd(tmp.loc[:, <span class="string">&#x27;PORTFOLIO_CLOSE_VALUE&#x27;</span>])</span><br><span class="line">        ret_data[<span class="string">&#x27;MDD/Benchmark&#x27;</span>] = self.__calculate_mdd(tmp.loc[:, <span class="string">&#x27;SPY_CLOSE_PRICE&#x27;</span>])</span><br><span class="line">        ret_data[<span class="string">&#x27;Trading fee&#x27;</span>] = tmp.loc[:, <span class="string">&#x27;COMMISSION&#x27;</span>].sum()</span><br><span class="line">        ret_data[<span class="string">&#x27;Trading fee ratio&#x27;</span>] = ret_data[<span class="string">&#x27;Trading fee&#x27;</span>] / tmp.loc[:, <span class="string">&#x27;PORTFOLIO_CLOSE_VALUE&#x27;</span>].iloc[<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ret_data</span><br></pre></td></tr></table></figure>
+<hr>
+<p>That’s it! I know it’s a bit too much code and too little talk in this post, but a good trading strategy should always include a performance evaluation to know whether this strategy is still in effect. This is the last bit of what I built in my API template so I hope it would help people who want to build their own API templates.</p>
+
+    </div>
+    
+      
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/How2/" rel="tag"># How2</a>
+              <a href="/tags/Python3/" rel="tag"># Python3</a>
+              <a href="/tags/Interactive-Broker/" rel="tag"># Interactive Broker</a>
+              <a href="/tags/Sqlite3/" rel="tag"># Sqlite3</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/12/12/2022-12-16-IBKR-broker-2/" rel="prev" title="【How 2】 Set Up Trading API Template In Python - Placing orders with Interactive Brokers">
+      <i class="fa fa-chevron-left"></i> 【How 2】 Set Up Trading API Template In Python - Placing orders with Interactive Brokers
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-do-we-need-to-build-this-capability-ourselves"><span class="nav-number">1.</span> <span class="nav-text">Why do we need to build this capability ourselves?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Design-DB-schema"><span class="nav-number">2.</span> <span class="nav-text">Design DB schema</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Implement-DB-related-capabilities"><span class="nav-number">3.</span> <span class="nav-text">Implement DB-related capabilities</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#My-strategy-report-card"><span class="nav-number">4.</span> <span class="nav-text">My strategy report card</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
