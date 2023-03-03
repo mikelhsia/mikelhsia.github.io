@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Cointegration is a statistical technique to find out whether a time series closely follows the movement of the other time series. Therefore, it becomes an important technique in the pair trading stra">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Pair Trading】 Cointegration Test - A Key to Find High Probability Trading Strategy">
+<meta property="og:url" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Cointegration is a statistical technique to find out whether a time series closely follows the movement of the other time series. Therefore, it becomes an important technique in the pair trading stra">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/methods.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/step1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/step2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/hi_correlation_hi_cointegration.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/low_correlation_hi_cointegration.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/low_correlation_hi_cointegration2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/trading_rules.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/intuitive_visualization.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_w_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_wo_corr_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_wo_corr_1.png">
+<meta property="article:published_time" content="2023-02-25T05:40:39.000Z">
+<meta property="article:modified_time" content="2023-03-03T16:38:32.758Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Strategy">
+<meta property="article:tag" content="Research">
+<meta property="article:tag" content="Pair Trading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Pair Trading】 Cointegration Test - A Key to Find High Probability Trading Strategy | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Pair Trading】 Cointegration Test - A Key to Find High Probability Trading Strategy
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-02-25 13:40:39" itemprop="dateCreated datePublished" datetime="2023-02-25T13:40:39+08:00">2023-02-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-04 00:38:32" itemprop="dateModified" datetime="2023-03-04T00:38:32+08:00">2023-03-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/" class="post-meta-item leancloud_visitors" data-flag-title="【Pair Trading】 Cointegration Test - A Key to Find High Probability Trading Strategy" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/cover.png" class="" width="600">
+<p>Cointegration is a statistical technique to find out whether a time series closely follows the movement of the other time series. Therefore, it becomes an important technique in the pair trading strategy for us to determine the right stock pair to trade with. In this post, we’re going to see why traders prefer using the cointegration test over the correlation test in pair trading, and whether the cointegration test results can boost our trading performance.</p>
+<a id="more"></a>
+<hr>
+<p>Become a <a target="_blank" rel="noopener" href="https://youssefraafat57.medium.com/membership">Medium member</a> to continue learning without limits. I’ll receive a small portion of your membership fee if you use the following link, at no extra cost to you.</p>
+<blockquote>
+<p>If you enjoy reading this and my other articles, feel free to <a src='https://medium.com/@mikelhsia/membership'> join Medium membership program</a> to read more about Quantitative Trading Strategy.</p>
+</blockquote>
+<hr>
+<p><strong><em>Previous researches</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2021/08/02/2021-08-12-pair-trading/">【Pair Trading】Part 1. Introduction to pair trading strategy</a></li>
+<li><a href="https://mikelhsia.github.io/2021/08/30/2021-08-30-pair-trading-distance-approach/">【Pair Trading】Part 2. 5 in-depth analysis of distance approach in pair trading</a></li>
+<li><a href="https://mikelhsia.github.io/2021/09/30/2021-10-05-pair-trading-market-neutral/">【Pair Trading】Part 3. The strategy that helps minimize your portfolio risk</a></li>
+</ul>
+<p>From the results of the previous research posts, I’ve found out that the pair trading strategies using the distance approach and Pearson correlation approach are not as satisfying as I expected. Even though we’re able to achieve the goal of making our strategy market neutral and reducing the max drawdown drastically, our Sharpe Ratio of each strategy variation is also reduced to a relatively low level compared to the benchmark buy-and-hold strategy.</p>
+<p>Since the first method in these five pair trading strategies, let’s start putting efforts into the second method and see whether this test can generate more insights to evaluate and then determine whether this is a profitable pair trading strategy.</p>
+<img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/methods.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Extracted from <a target="_blank" rel="noopener" href='https://www.youtube.com/watch?v=gd009r7QUuM&list=PLfv9eTYgatm3oz8uq8G17-50ed_s-n5ds&index=2&t=238s'>Pairs Trading: The Distance Approach</a> by <a target="_blank" rel="noopener" href='https://www.youtube.com/channel/UC8hI87gt0dmTAIEupEcsckA'>Hudson & Thames</a></i>
+</p>
+
+<h1 id="1-Lesson-101-of-cointegration-pair-trading"><a href="#1-Lesson-101-of-cointegration-pair-trading" class="headerlink" title="1. Lesson 101 of cointegration pair trading"></a>1. Lesson 101 of cointegration pair trading</h1><h2 id="1-1-What-is-Cointegration"><a href="#1-1-What-is-Cointegration" class="headerlink" title="1.1. What is Cointegration"></a>1.1. What is Cointegration</h2><p>Cointegration describes the relationship between time series in the long run. It is a milestone in the long history of studying multi-asset trading strategies. It first appeared in Granger’s seminal paper “<a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/0304407681900798">Some properties of time series data and their use in econometric model specification</a>” <em>(Granger, 1981)</em>. When we put the term cointegration into the words of quantitative trading, cointegration helps us to find whether two stock prices have the spread (usually the difference of price or difference of log(price)) is stationary, indicating the mean and the variance of the spread stays the same in the observation period. This statistic feature meets the criteria of a mean-reversion strategy that involves two indifferent stocks.</p>
+<img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/step1.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+  <i>The price plot of KEY and RF</i>
+</p>
+
+<img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/step2.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+  <i>The price spread between KEY and RF will eventually go back to its mean value</i>
+</p>
+
+<p>But how do we examine whether the spread of two stock prices is stationary? Statistically speaking, a value in time series can be represented with the following equation:</p>
+<script type="math/tex; mode=display">Y_t = \alpha Y_{t-1} + \beta X_e + constant + \epsilon</script><script type="math/tex; mode=display">or</script><script type="math/tex; mode=display">Y_t = \alpha_1 Y_{t-1} + \alpha_2 Y_{t-2} + ... + \alpha_p Y_{t-p} + constant + \epsilon</script><script type="math/tex; mode=display">\begin{align}
+&where:\\
+&Y_t \text{ represents the Y value at time t}\\
+&\alpha \text{ represents the unit root of this equation}\\
+&\beta X_t \text{ represents the impact from the previous Y value from t-1 to t-p}\\
+&\epsilon \text{ represents the residual, which suppose to be a random-distributed value}
+\end{align}</script><p>By looking at the equation, we can tell that if the unit root $\alpha$ is greater than 1, the $Y_t$ is affected by the previous value $Y_{t-1}, Y_{t-2}, …$ in this time series and is no longer a random-distributed time series. Therefore, our goal is to see whether $\alpha$ exists, the smaller the better. If $\alpha$ doesn’t exist in this equation, then we can say that this time series is stationary as $Y_t$ is simply an add-up of $constant$ and a randomly-distributed $\epsilon$. Here’s where the <strong>Augmented Dickey-Fuller test (ADF test)</strong> comes into play. We use the ADF test to examine whether the unit root exists or not.</p>
+<p>There are a lot of materials here for you if you would like to know more about what cointegration is about:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://analyzingalpha.com/stationarity">What is stationary?</a></li>
+<li><a target="_blank" rel="noopener" href="https://analyzingalpha.com/check-time-series-stationarity-python">How to check time series stationarity in Python</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=vvTKjm94Ars">Cointegration - an introduction</a></li>
+</ul>
+<h2 id="1-2-Misconception-about-the-relationship-between-correlation-and-cointegration"><a href="#1-2-Misconception-about-the-relationship-between-correlation-and-cointegration" class="headerlink" title="1.2. Misconception about the relationship between correlation and cointegration"></a>1.2. Misconception about the relationship between correlation and cointegration</h2><p>One might say that, doesn’t the <strong>correlation test</strong> describe the same statistical feature as the <strong><em>cointegration test</em></strong> which both methods are trying to see whether two time series are moving towards the same direction in the same observation period?</p>
+<p>Correlation is meant to examine and measure the linear relationship between two time series. The positive correlation (correlation &gt; 0) means these two variables move in the same direction (up or down) over time, whereas the negative correlation (correlation &lt; 0) means they move in different directions. On the other hand, the cointegration test doesn’t care how these two variables move together. Instead, it measures whether the difference between two variables remains constant over time. Therefore, high cointegration doesn’t necessarily exist if two time series are highly correlated.</p>
+<img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/hi_correlation_hi_cointegration.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+  <i>Time series that illustrates perfect correlation and cointegration - <a target="_blank" rel="noopener" href='https://www.r-bloggers.com/2017/11/cointegration-correlation-and-log-returns/'>Rbloggers</a> by <a target="_blank" rel="noopener" href='https://www.r-bloggers.com/author/cfsmith/'>cfsmith</a></i>
+</p>
+
+<img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/low_correlation_hi_cointegration.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+  <i>Time series that has perfect cointegration, but zero correlation - <a target="_blank" rel="noopener" href='https://www.r-bloggers.com/2017/11/cointegration-correlation-and-log-returns/'>Rbloggers</a> by <a target="_blank" rel="noopener" href='https://www.r-bloggers.com/author/cfsmith/'>cfsmith</a></i>
+</p>
+
+<img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/low_correlation_hi_cointegration2.png" class="" width="500">
+<p style="text-align:center; color: grey;">
+  <i>Time series has the same perfect cointegration, but has a relatively low correlation - <a target="_blank" rel="noopener" href='https://www.r-bloggers.com/2017/11/cointegration-correlation-and-log-returns/'>Rbloggers</a> by <a target="_blank" rel="noopener" href='https://www.r-bloggers.com/author/cfsmith/'>cfsmith</a></i>
+</p>
+
+<p>Reference:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.r-bloggers.com/2017/11/cointegration-correlation-and-log-returns/">Cointegration, correlation, and log return</a></li>
+</ul>
+<h2 id="1-3-The-methodology"><a href="#1-3-The-methodology" class="headerlink" title="1.3. The methodology"></a>1.3. The methodology</h2><p>In this post, I choose to use <strong>Engle-Granger 2-step approach</strong> as it is the most commonly seen cointegration test process for pair trading. As the name tells, there are two steps to go through in order to find out whether the pair of stocks is suitable for this strategy:</p>
+<h3 id="First-step"><a href="#First-step" class="headerlink" title="First step"></a>First step</h3><p>First of all, we use OLS as the regression method to get the residuals of the equation. The regression formula should look like this given both $x$ and $y$ are time series that we have:</p>
+<script type="math/tex; mode=display">y = \beta * x + constant</script><p>By doing this, we can get the parameters $\beta$ and $constant$. Then we are going to calculate the residuals by using the following equation:</p>
+<script type="math/tex; mode=display">\epsilon = y - \beta * x - constant</script><p>Now we save the residuals as the input of the second step.</p>
+<h3 id="Second-step"><a href="#Second-step" class="headerlink" title="Second step"></a>Second step</h3><p>The second step is much more straightforward. We use the Augmented Dickey-Fuller test to see whether the unit root exists in the residuals. If the hypothesis of having a unit root can be rejected by applying the Augmented Dickey-Fuller test, then we can say that the residuals are stationary and the time series $x$ and $y$ are cointegrated. Therefore, we can say this pair $\text{x-y}$ would be our trading target.</p>
+<p>In python, it’s going to be as easy as:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> statsmodels.tsa.stattools <span class="keyword">import</span> adfuller</span><br><span class="line"></span><br><span class="line">adf_value, p_value= adfuller(TIME_SERIES_X, autolag = <span class="string">&#x27;BIC&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="1-4-Trading-rules"><a href="#1-4-Trading-rules" class="headerlink" title="1.4. Trading rules"></a>1.4. Trading rules</h2><p>Theoretically speaking, the OLS-generated residuals should conform to the random distribution. That is to say, the cointegration pair trading strategy essentially is a mean-reverting, market-neutral, long-short strategy as the other pair trading strategy. The only difference is what would be the indicator to monitor and observe. In this case, we use the residual $\epsilon$ to generate the trading signals to either enter or exit a trade. Below is the most common trading rules performed in most of the research papers:</p>
+<ul>
+<li>Variables required<ul>
+<li><strong>Residuals ($\epsilon$)</strong> generated from the OLS regression: $\epsilon = y - \beta * x - constant$</li>
+<li><strong>Mean of the residuals ($\mu$)</strong> as the benchmark line in our residual observation</li>
+<li><strong>Standard deviation of the residuals ($\sigma$)</strong> to calculate the trigger line in our residual observation</li>
+<li><strong>Threshold</strong> is a fixed value that uses together with the standard deviation of the residuals to calculate the trigger line. In this research, we set it to 2.32 for calculating the upper bound and -2.32 for calculating the lower bound. (2.32 is usually used as it includes 99% inside the normal distribution)</li>
+</ul>
+</li>
+<li>Trading rules<ul>
+<li>Generating enter trading signals<ul>
+<li>Open a long position if the current spread is smaller than the mean of the spread $\mu - threshold * \sigma$</li>
+<li>Close a long position if the current spread is bigger than the mean of the spread $\mu$</li>
+<li>Open a short position if the current spread is bigger than the mean of the spread $\mu + threshold * \sigma$</li>
+<li>Close a short position if the current spread is smaller than the mean of the spread $\mu$</li>
+</ul>
+</li>
+<li>Exit trading signals<ul>
+<li>residual cross the mean of the residuals</li>
+</ul>
+</li>
+<li>Repeated trading signals<ul>
+<li>Only process the first signal if there are two consecutive enter/exit signals</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/trading_rules.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+    <i>Pair trading rules flow chart</i>
+</p>
+
+<p>To make our trading rules more intuitively easier to understand, let’s have a look at the below chart:</p>
+<img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/intuitive_visualization.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+    <i>Top: Pair pricing movements; Middle: Residual movement; Bottom: Accumulative return (%)</i>
+</p>
+
+<h1 id="2-Research-plan"><a href="#2-Research-plan" class="headerlink" title="2. Research plan"></a>2. Research plan</h1><h2 id="2-1-Goal-of-this-research"><a href="#2-1-Goal-of-this-research" class="headerlink" title="2.1. Goal of this research"></a>2.1. Goal of this research</h2><p>Before starting to backtest the strategy performance, there are a few things that I would like to understand beforehand. Therefore, I set up three sets of scenarios to validate the answers to the below questions:</p>
+<ol>
+<li>When doing regression, whether stock price or log(price) will give us an edge?</li>
+<li>Do we need to filter out those pairs whose correlation is low before the cointegration test?</li>
+<li>Does the scenario using the pair in the same industries will have a lot of difference in performance compared to the scenario using the pair in different industries?</li>
+</ol>
+<p>I believe having a clear view of the above questions will help conduct backtest in the later stage. So let’s get started!</p>
+<h2 id="2-2-Platform"><a href="#2-2-Platform" class="headerlink" title="2.2. Platform"></a>2.2. Platform</h2><p><a target="_blank" rel="noopener" href="https://www.quantconnect.com">QuantConnect</a></p>
+<h2 id="2-3-Fetching-data-needed"><a href="#2-3-Fetching-data-needed" class="headerlink" title="2.3. Fetching data needed"></a>2.3. Fetching data needed</h2><p>In this research, we use 24 months of data as training data and feed them into the ADF test and OLS regression to get the results forming the pairs we need for the following steps. Once the pairs have formed, we’re going to use another 12 months of data as testing data to see whether the pairs with high cointegration intention would have the character of mean-reversion.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">formation_period = <span class="number">22</span> * <span class="number">24</span></span><br><span class="line">trading_period = <span class="number">22</span> * <span class="number">12</span></span><br><span class="line">data_length = formation_period + trading_period</span><br><span class="line"></span><br><span class="line">history_price = qb.History(universe, data_length+<span class="number">1</span>, Resolution.Daily)</span><br><span class="line">history_price = history_price.reset_index().pivot(index=<span class="string">&#x27;time&#x27;</span>, columns=<span class="string">&#x27;symbol&#x27;</span>, values=<span class="string">&#x27;close&#x27;</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">f&#x27;There are <span class="subst">&#123;history_price.shape[<span class="number">1</span>]&#125;</span> in the symbols&#x27;</span>)</span><br><span class="line"></span><br><span class="line">training_data = history_price.iloc[:formation_period, :]</span><br><span class="line">trading_data = history_price.iloc[formation_period:, :]</span><br></pre></td></tr></table></figure>
+<h2 id="2-4-Universe-and-implementation"><a href="#2-4-Universe-and-implementation" class="headerlink" title="2.4. Universe and implementation"></a>2.4. Universe and implementation</h2><p>I’m using the component stocks from S&amp;P500 at one point as the base universe to start with. After downloading all the historic pricing data, I fed the necessary data into the following class to build the screening criteria:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pair</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, symbol_a:str, symbol_b:str, rtn_a, rtn_b</span>):</span></span><br><span class="line">        self.symbol_a = symbol_a</span><br><span class="line">        self.symbol_b = symbol_b</span><br><span class="line">        self.rtn_a = np.array(rtn_a)</span><br><span class="line">        self.rtn_b = np.array(rtn_b)</span><br><span class="line">        self.corr, self.corr_p = self.correlation()</span><br><span class="line">        self.ols_hedge_ratio, self.ols_intercept, self.coint_value, self.coint_stationary_p, self.ols_res = self.cointeration_test()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">correlation</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="comment"># calculate the sum of squared deviations between two normalized price series</span></span><br><span class="line">        corr, p = pearsonr(self.rtn_a, self.rtn_b)</span><br><span class="line">        <span class="keyword">return</span> corr, p</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cointeration_test</span>(<span class="params">self</span>):</span></span><br><span class="line">        x = self.rtn_a</span><br><span class="line">        y = self.rtn_b</span><br><span class="line"></span><br><span class="line">        x = sm.add_constant(x)</span><br><span class="line">        model = sm.OLS(y, x).fit()</span><br><span class="line"></span><br><span class="line">        intercept = model.params[<span class="number">0</span>]</span><br><span class="line">        beta = model.params[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        adf_result = adfuller(model.resid, autolag = <span class="string">&#x27;BIC&#x27;</span>)</span><br><span class="line">        adf_value = adf_result[<span class="number">0</span>]</span><br><span class="line">        stationary_p_value = adf_result[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> beta, intercept, adf_value, stationary_p_value, model.resid</span><br></pre></td></tr></table></figure></p>
+<p>Then here’s how I feed the data into this defined class:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This is for storing the final results</span></span><br><span class="line">pair_corrs = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> stock_pair <span class="keyword">in</span> tqdm.tqdm(symbol_pairs):</span><br><span class="line">  <span class="keyword">if</span> str(stock_pair[<span class="number">0</span>]) <span class="keyword">not</span> <span class="keyword">in</span> history_price.columns:</span><br><span class="line">    <span class="comment"># print(f&#x27;&#123;str(stock_pair[0])&#125; not in the history_price table&#x27;)</span></span><br><span class="line">    <span class="keyword">continue</span></span><br><span class="line">  <span class="keyword">if</span> str(stock_pair[<span class="number">1</span>]) <span class="keyword">not</span> <span class="keyword">in</span> history_price.columns:</span><br><span class="line">    <span class="comment"># print(f&#x27;&#123;str(stock_pair[1])&#125; not in the history_price table&#x27;)</span></span><br><span class="line">    <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> SPREAD_MODE == LOG_PRICE_MODE:</span><br><span class="line">    tmp = np.log(training_data.loc[:, [str(stock_pair[<span class="number">0</span>]), str(stock_pair[<span class="number">1</span>])]].dropna())</span><br><span class="line">  <span class="keyword">elif</span> SPREAD_MODE == PRICE_MODE:</span><br><span class="line">    tmp = training_data.loc[:, [str(stock_pair[<span class="number">0</span>]), str(stock_pair[<span class="number">1</span>])]].dropna()</span><br><span class="line"></span><br><span class="line">  pair_corrs[(str(stock_pair[<span class="number">0</span>]), str(stock_pair[<span class="number">1</span>]))] = Pair(</span><br><span class="line">    str(stock_pair[<span class="number">0</span>]),</span><br><span class="line">    str(stock_pair[<span class="number">1</span>]),</span><br><span class="line">    tmp.loc[:, str(stock_pair[<span class="number">0</span>])],</span><br><span class="line">    tmp.loc[:, str(stock_pair[<span class="number">1</span>])]</span><br><span class="line">  )</span><br></pre></td></tr></table></figure><br>Once the above actions have been accomplished, I’m choosing only the pairs whose ADF test p-value is smaller than 0.05 to be our candidates for pair trading:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">final_pairs = &#123;key:value <span class="keyword">for</span> key, value <span class="keyword">in</span> pair_corrs.items() <span class="keyword">if</span> value.coint_stationary_p &lt;= <span class="number">0.05</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Lastly, let’s sort the pairs first by their correlation value and then by their cointegration p-value. By doing this, it’ll be easier for us to conduct our stratified analysis based on their level of cointegration.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">final_pairs = &#123;k:v <span class="keyword">for</span> k,v <span class="keyword">in</span> sorted(</span><br><span class="line">  final_pairs.items(),</span><br><span class="line">  key = <span class="keyword">lambda</span> x: x[<span class="number">1</span>].corr</span><br><span class="line">)&#125;</span><br><span class="line">final_pairs = &#123;k:v <span class="keyword">for</span> k,v <span class="keyword">in</span> sorted(</span><br><span class="line">  final_pairs.items(),</span><br><span class="line">  key = <span class="keyword">lambda</span> x: x[<span class="number">1</span>].coint_stationary_p</span><br><span class="line">)&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-5-Results"><a href="#2-5-Results" class="headerlink" title="2.5. Results"></a>2.5. Results</h2><p>To better visualize our results, I’m going to <strong>compare different scenarios simply based on the visualized diagram using stratified analysis and accumulative return diagram from the top 20 stock pairs that have the lowest ADF test p-value</strong>. In the stratified analysis, I expect to see if the accumulative returns of each group are parted from each other and are ranked from group 1 (the lowest cointegration p-value) to group 8 (the highest cointegration p-value). As for the accumulative return diagram from the <strong>top 20</strong> stock pairs, undoubtedly seeing a soaring return without a huge max drawdown would be the optimal result.</p>
+<h3 id="2-5-1-Using-simply-stock-price-v-s-log-stock-price"><a href="#2-5-1-Using-simply-stock-price-v-s-log-stock-price" class="headerlink" title="2.5.1. Using simply stock price v.s. log(stock price)"></a>2.5.1. Using simply stock price v.s. log(stock price)</h3><p>In the blog post <strong><em><a target="_blank" rel="noopener" href="http://epchan.blogspot.com/2013/11/cointegration-trading-with-log-prices.html">Cointegration Trading with Log Prices vs. Prices
+</a></em></strong> by Dr. Ernest P. Chen, the difference between using price and using log price has been stated clearly:</p>
+<blockquote>
+<p>For most cointegrating pairs that I have studied, both the price spreads and the log price spreads are stationary, so it doesn’t matter which one we use for our trading strategy. However, for an unusual pair where its log price spread cointegrates but price spread does not (Hat tip: Adam G. for drawing my attention to one such example), the implication is quite significant.</p>
+<div style="text-align: right"> <i>- Ernest P. Chen</i></div>
+
+</blockquote>
+<p>Therefore, it would be interesting to see how this impact the entire strategy return.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Price</th>
+<th>log(Price)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Industry pairs without correlation filter</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_wo_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_wo_corr_1.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Non-industry pairs without correlation filter</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_wo_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_wo_corr_1.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Industry pairs with correlation filter</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_w_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_w_corr_1.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Non-industry pairs with correlation filter</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_w_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_w_corr_1.png" class="" width="600"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The scenarios using <strong>log(price)</strong> don’t seem to have distinct differences from the scenarios using <strong>price</strong>. So we can’t say for sure that whether using <strong>price</strong> or <strong>log(price)</strong> is superior.</p>
+<h3 id="2-5-2-Filter-by-correlation-cointegration-v-s-filter-by-cointegration"><a href="#2-5-2-Filter-by-correlation-cointegration-v-s-filter-by-cointegration" class="headerlink" title="2.5.2. Filter by correlation + cointegration v.s. filter by cointegration"></a>2.5.2. Filter by correlation + cointegration v.s. filter by cointegration</h3><p>In this second research, I would like to know whether a high correlation has any positive impact on this trading strategy. The way I run this research is that, in addition to the already-have cointegration p-value filter, I add another filter to eliminate the pairs where the correlation value is under 0.9 and the p-value is greater than 0.05. Then, we do everything the same as the previous research.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>with correlation filter</th>
+<th>without correlation filter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Industry pairs with price</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_w_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_wo_corr_1.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Non-industry pairs with log(price)</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_w_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_wo_corr_1.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Industry pairs with log(price)</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_w_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_wo_corr_1.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Non-industry pairs with price</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_w_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_wo_corr_1.png" class="" width="600"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Somehow it seems that the scenarios without the correlation filter are always better performed than the corresponding scenarios with the correlation filter. This might give us a clue that maybe the correlation filter is not needed.</p>
+<h3 id="2-5-3-Construct-pairs-within-the-same-industries-or-across-different-industries"><a href="#2-5-3-Construct-pairs-within-the-same-industries-or-across-different-industries" class="headerlink" title="2.5.3. Construct pairs within the same industries or across different industries"></a>2.5.3. Construct pairs within the same industries or across different industries</h3><p>As we all know that the stock prices of companies in the same industry tend to be impacted simultaneously by the economic or industrial incidence, which we can deduce that companies in the same industry could have higher cointegration relationships than companies in different industries. Is this true? And how will it impact our pair trading strategy? I construct the trading pairs in two different ways: 1. we make all possible combinations using the native python function <code>itertools.combinations()</code>. 2. we only make possible combinations when two companies are in the same industry.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">pairs = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create pairs only when two companies are in the same industry</span></span><br><span class="line">INDUSTRY_PAIR_FLAG = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> INDUSTRY_PAIR_FLAG:</span><br><span class="line">    time = datetime.now()</span><br><span class="line">    sector = &#123;x: y.iloc[<span class="number">-1</span>][<span class="number">-1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> universe <span class="keyword">if</span> <span class="keyword">not</span> (y:=qb.GetFundamental(x, <span class="string">&quot;AssetClassification.MorningstarSectorCode&quot;</span>, time - timedelta(days=<span class="number">3</span>), time)).empty&#125;</span><br><span class="line">    sectors_table = pd.DataFrame.from_dict(sector, orient=<span class="string">&#x27;index&#x27;</span>)</span><br><span class="line">    sectors_set = set(sectors_table.squeeze().values.tolist())</span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> sectors_set:</span><br><span class="line">        sector_list = sectors_table[sectors_table.squeeze() == s].index.tolist()</span><br><span class="line">        pairs.extend(list(it.combinations(sector_list, <span class="number">2</span>)))</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    pairs = list(it.combinations(universe, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">print(<span class="string">f&#x27;The <span class="subst">&#123;len(pairs)=&#125;</span> in the symbols_pairs&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Pairing within the same industry</th>
+<th>Pairing across different industry</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Price with correlation filter</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_w_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_w_corr_1.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Price without correlation filter</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_w_ind_wo_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/price_wo_ind_wo_corr_1.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>log(price) with correlation filter</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_w_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_w_corr_1.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>log(price) without correlation filter</td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_w_ind_wo_corr_1.png" class="" width="600"></td>
+<td><img data-src="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/logprice_wo_ind_wo_corr_1.png" class="" width="600"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Same to previous research results, the first group returns in scenarios that form pairs across different industries seem always better than the ones in scenarios pairing within the same industry. That might tell us the cointegration relationship also exists across industries.</p>
+<h1 id="3-Conclusion"><a href="#3-Conclusion" class="headerlink" title="3. Conclusion"></a>3. Conclusion</h1><p>From the research above, we have gained some insights regarding how each factor impacts the performance of the pair trading strategy. But, are we able to answer the three questions we mentioned above with 100% confidence? No. There are more details that we need to take into account when conducting the backtest, such as:</p>
+<ul>
+<li>Update the universe periodically by recalculating the cointegration p-value of all the pairs.</li>
+<li>Use a smaller threshold to generate trading signals as the smaller entry point and exit will get a shorter holding period and more round trip trades and generally higher profits.</li>
+<li>Use <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/z/zscore.asp#:~:text=Investopedia%20%2F%20Tara%20Anand-,What%20Is%20Z%2DScore%3F,identical%20to%20the%20mean%20score.">z-score</a> method to smooth the $\epsilon$ that we’re tracking.</li>
+<li>Close early if the trades were opened for too long.</li>
+<li>Add a stop-loss threshold to prevent losing more if the $\epsilon$ goes way beyond the threshold.</li>
+<li>…</li>
+</ul>
+<p>A lot of techniques can be experimented with and tested during backtesting. In the next episode, I’m going to work on the backtest and see whether there’s a possibility that we can find a profitable cointegration trading strategy.</p>
+<p>Cheers!</p>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
+              <a href="/tags/Research/" rel="tag"># Research</a>
+              <a href="/tags/Pair-Trading/" rel="tag"># Pair Trading</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/12/15/2022-12-17-IBKR-broker-4/" rel="prev" title="【How 2】 Set Up Trading API Template In Python - Q&A">
+      <i class="fa fa-chevron-left"></i> 【How 2】 Set Up Trading API Template In Python - Q&A
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Lesson-101-of-cointegration-pair-trading"><span class="nav-number">1.</span> <span class="nav-text">1. Lesson 101 of cointegration pair trading</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-What-is-Cointegration"><span class="nav-number">1.1.</span> <span class="nav-text">1.1. What is Cointegration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-Misconception-about-the-relationship-between-correlation-and-cointegration"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. Misconception about the relationship between correlation and cointegration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-The-methodology"><span class="nav-number">1.3.</span> <span class="nav-text">1.3. The methodology</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#First-step"><span class="nav-number">1.3.1.</span> <span class="nav-text">First step</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Second-step"><span class="nav-number">1.3.2.</span> <span class="nav-text">Second step</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-Trading-rules"><span class="nav-number">1.4.</span> <span class="nav-text">1.4. Trading rules</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Research-plan"><span class="nav-number">2.</span> <span class="nav-text">2. Research plan</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Goal-of-this-research"><span class="nav-number">2.1.</span> <span class="nav-text">2.1. Goal of this research</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Platform"><span class="nav-number">2.2.</span> <span class="nav-text">2.2. Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Fetching-data-needed"><span class="nav-number">2.3.</span> <span class="nav-text">2.3. Fetching data needed</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-Universe-and-implementation"><span class="nav-number">2.4.</span> <span class="nav-text">2.4. Universe and implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-Results"><span class="nav-number">2.5.</span> <span class="nav-text">2.5. Results</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-1-Using-simply-stock-price-v-s-log-stock-price"><span class="nav-number">2.5.1.</span> <span class="nav-text">2.5.1. Using simply stock price v.s. log(stock price)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-2-Filter-by-correlation-cointegration-v-s-filter-by-cointegration"><span class="nav-number">2.5.2.</span> <span class="nav-text">2.5.2. Filter by correlation + cointegration v.s. filter by cointegration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-3-Construct-pairs-within-the-same-industries-or-across-different-industries"><span class="nav-number">2.5.3.</span> <span class="nav-text">2.5.3. Construct pairs within the same industries or across different industries</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Conclusion"><span class="nav-number">3.</span> <span class="nav-text">3. Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
