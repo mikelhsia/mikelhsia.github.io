@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Photo by Aaron Burden on Unsplash   In the last post, we learned the basics of performing the pair trading strategy and using cointegration as a method to identify the potential tradable stocks pa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Pair Trading】 Complete Guide to Backtest Cointegration Pair Trading Strategy">
+<meta property="og:url" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Photo by Aaron Burden on Unsplash   In the last post, we learned the basics of performing the pair trading strategy and using cointegration as a method to identify the potential tradable stocks pa">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/cover.jpeg">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/epsilon_channel.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/trial.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/trial_diagnostic.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/trial_diagnostic_w_log.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/time_impact_profitability.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/fixing_the_issue_of_the_backtest.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_price_10.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_log_price_10.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_price_22.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_log_price_22.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_price_132.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_log_price_132.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_price_264.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_log_price_264.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/price_10_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/log_price_10_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/price_22_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/log_price_22_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/price_132_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/log_price_132_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/price_264_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/log_price_264_dist.png">
+<meta property="article:published_time" content="2023-04-26T04:48:46.000Z">
+<meta property="article:modified_time" content="2023-05-08T13:36:22.987Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Strategy">
+<meta property="article:tag" content="Backtesting">
+<meta property="article:tag" content="Pair Trading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/cover.jpeg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【Pair Trading】 Complete Guide to Backtest Cointegration Pair Trading Strategy | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Pair Trading】 Complete Guide to Backtest Cointegration Pair Trading Strategy
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-04-26 12:48:46" itemprop="dateCreated datePublished" datetime="2023-04-26T12:48:46+08:00">2023-04-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-05-08 21:36:22" itemprop="dateModified" datetime="2023-05-08T21:36:22+08:00">2023-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/" class="post-meta-item leancloud_visitors" data-flag-title="【Pair Trading】 Complete Guide to Backtest Cointegration Pair Trading Strategy" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/cover.jpeg" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Photo by <a target="_blank" rel="noopener" href='https://medium.com/r/?url=https%3A%2F%2Funsplash.com%2F%40aaronburden%3Futm_source%3Dmedium%26utm_medium%3Dreferral'>Aaron Burden</a> on <a target="_blank" rel="noopener" href='https://medium.com/r/?url=https%3A%2F%2Funsplash.com%3Futm_source%3Dmedium%26utm_medium%3Dreferral'>Unsplash</a></i>
+</p>
+
+<p>In the <a href="https://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/">last post</a>, we learned the basics of performing the pair trading strategy and using cointegration as a method to identify the potential tradable stocks pair. All the theories and the math formulas are so seemingly promising and convincing enough for us to believe it’s a profitable and stable trading strategy. But is it? In order to test and check the profitability and effectiveness of this strategy, we need to backtest this trading strategy to simulate real-world scenarios.</p>
+<a id="more"></a>
+<hr>
+<p>Become a <a target="_blank" rel="noopener" href="https://medium.com/@mikelhsia/membership">Medium member</a> to continue learning without limits. I’ll receive a small portion of your membership fee if you use the following link, at no extra cost to you.</p>
+<blockquote>
+<p>If you enjoy reading this and my other articles, feel free to <a src='https://medium.com/@mikelhsia/membership'> join Medium membership program</a> to read more about Quantitative Trading Strategy.</p>
+</blockquote>
+<hr>
+<p><strong><em>Previous researches</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/">【Pair Trading】 Cointegration Test - A Key to Find High Probability Trading Strategy</a></li>
+</ul>
+<h1 id="Recap"><a href="#Recap" class="headerlink" title="Recap"></a>Recap</h1><p>Let’s pick up where we left off.</p>
+<p>In the <a href="https://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/">last post</a>, we spent time explaining the basic concepts of cointegration pair trading strategy such as what cointegration means, the meaning of stationary, and how we profit from these concepts. We chose <em><a target="_blank" rel="noopener" href="https://mpra.ub.uni-muenchen.de/75967/1/MPRA_paper_75967.pdf">Engle-Granger 2-step approach</a></em> as a method to inspect the level of cointegration between two time series. Once we are able to find the stock pairs that have higher probabilities to stay cointegrated, then we can start monitoring the co-movement of their price and make trades when the pairs are temporarily not cointegrated.</p>
+<p>We’ve also revealed the preliminary trading rules of the cointegration pair trading strategy. We</p>
+<ul>
+<li>Open a long position if the current spread is smaller than the mean of the spread $\mu - threshold * \sigma$</li>
+<li>Close a long position if the current spread is bigger than the mean of the spread $\mu$</li>
+<li>Open a short position if the current spread is bigger than the mean of the spread $\mu + threshold * \sigma$</li>
+<li>Close a short position if the current spread is smaller than the mean of the spread $\mu$</li>
+</ul>
+<p><em>Where</em></p>
+<ul>
+<li>The <strong>mean of the residuals</strong> ($\mu$) as the benchmark line in our residual observation</li>
+<li>The <strong>standard deviation of the residuals</strong> ($\sigma$) to calculate the trigger line in our residual observation</li>
+<li>The <strong>threshold</strong> would be 2.32, indicating a 99% of the confidence level</li>
+</ul>
+<p>Even if we’ve done a lot of research to learn as much as we can about the pair trading method, there are some factors we can’t avoid in real-life settings. As a result, this is where backtesting comes into play. Conducting a successful backtest would mean a lot to simulate what is going to happen if you throw your trading strategy into the wild and unpredictable stock market.</p>
+<h1 id="Build-our-trading-rules"><a href="#Build-our-trading-rules" class="headerlink" title="Build our trading rules"></a>Build our trading rules</h1><p>To conduct a backtest, we first need to set up the ground for this pair trading strategy. Here are a few trading rules that I have put together.</p>
+<p><a id='pair_formation'></a></p>
+<h2 id="Trading-pair-formation"><a href="#Trading-pair-formation" class="headerlink" title="Trading pair formation"></a>Trading pair formation</h2><ol>
+<li>Selecting around 500 stocks based on their company financial fundamental data to find the companies that are stable and relatively financially healthy.</li>
+<li>Obtaining the <strong>daily close price from the past two years</strong> for every stock that we picked</li>
+<li>Using the <code>scipy.stats.pearsonr(Series_A, Series_B)</code> to calculate the <em>Pearson correlation</em>, and chose the stock pairs whose correlation value is bigger than <code>0.9</code> and the p-value is smaller than <code>0.05</code></li>
+<li>Using the <strong>Engle-Granger 2-step approach</strong> to examine every existing pair<ol>
+<li>Using <code>sm.OLS(Series_B as y, Series_A as x).fit()</code> to get the beta, intercept, and residual of each pair</li>
+<li>Using <code>statsmodels.tsa.stattools.adfuller(model.resid, autolag = &#39;BIC&#39;)</code> to evaluate the level of stationary of the residual of this pair</li>
+<li>Eliminating the stock pairs whose cointegration p-value is bigger than <code>0.05</code>, shows the stationary property is less significant.</li>
+</ol>
+</li>
+<li>Lastly, we sort these pairs by their cointegration p-value, <strong>the smaller the better</strong>.</li>
+<li>We repeat this process <strong><em>every month</em></strong> in order to closely follow the cointegration status of the potentially tradable stock pairs.</li>
+</ol>
+<h2 id="Monitoring-and-trading"><a href="#Monitoring-and-trading" class="headerlink" title="Monitoring and trading"></a>Monitoring and trading</h2><p>Since the pairs have been filtered and sorted by their level of correlation and cointegration, we consider these stock pairs to be our <strong>stock pair universe</strong>. As the methodology mentioned in the <a href="https://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/">previous post</a>, we are already using the data of the past two years to build the upper and lower bands. There are more details to be defined in order to complete our trading strategy.</p>
+<img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/epsilon_channel.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>The upper and lower bands built from the residual of the OLS results</i>
+</p>
+
+<h3 id="Observing-frequency"><a href="#Observing-frequency" class="headerlink" title="Observing frequency"></a>Observing frequency</h3><p>We examine the status of the pairs in our observing universe and the pairs that we already traded for every 15 minutes. Since we’re using the daily close price to form the trading pairs and to trade accordingly, I presume that 15 minutes would be an ideal interval to inspect the status of the pairs.</p>
+<h3 id="Enter-and-exit-signals"><a href="#Enter-and-exit-signals" class="headerlink" title="Enter and exit signals"></a>Enter and exit signals</h3><p>The basic idea of signal generation has been stated in the <strong>Recap</strong> section above, so I won’t waste any of your time and rewrite them here again.</p>
+<h3 id="Stop-loss-and-stop-gain"><a href="#Stop-loss-and-stop-gain" class="headerlink" title="Stop loss and stop gain"></a>Stop loss and stop gain</h3><p>In the post of <a href="https://mikelhsia.github.io/2022/10/21/2022-10-15-meta-label/">【Momentum Trading】Use machine learning to boost your day trading skill - meta-labeling</a>, we have learned the idea of using the <strong>Triple Barrier Method (TBM)</strong> to control our gain/loss ratio. In this pair trading strategy, I’m using <strong>2:1</strong> as our gain/loss ratio. This <strong>2:1</strong> ratio essentially indicates that we will be able to tolerate 50% of our expected gain as our maximum loss per trade. For example, in our trading rules, we will close the pairs for those pairs whose residuals ($\mu$) return to the level of 0, meaning the stop gain would be 2.32 as we exit the trades when the residual is back to the level of 0. Then we define our stop loss to be at the level of <code>2.32 + 2 (2.32 - 0) / 2 = 4.64</code> and exit our trade at it in order to prevent greater loss when both stock prices further deviate.</p>
+<p>As the ground rules have been set up to implement our trading strategy, I’m going to run the first round of backtest to see how it performs and to check the profitability of this strategy.<br><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/trial.png" class="" width="800"></p>
+<p style="text-align:center; color: grey;">
+  <i>First-round backtest of the pair trading strategy</i>
+</p>
+
+<p><strong>Wow!</strong> At first glance, the performance was quite impressive and satisfying. However, if we get a closer look, some illogical mistakes hide behind this backtest result. In the bottom chart <code>HeldPositions</code>, the number of long positions and the number of short positions should equal all the time, as we trade pairs including one long stock and one short stock. Therefore, in the red circle, you can tell the number of one side was decreased and the other side wasn’t. This would leave our portfolio exposed to risk as our positions were not hedged properly, increasing the odds to lose money on such an anomaly in our portfolio.</p>
+<img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/trial_diagnostic.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>Red circles indicate weird things happened in our trading activities</i>
+</p>
+
+<h2 id="Several-scenarios-we-need-to-consider-and-address"><a href="#Several-scenarios-we-need-to-consider-and-address" class="headerlink" title="Several scenarios we need to consider and address"></a>Several scenarios we need to consider and address</h2><p>After looking into the log message in the tested backtest, several loopholes can be found and concluded in my trading strategy:<br><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/trial_diagnostic_w_log.png" class="" width="800"></p>
+<p style="text-align:center; color: grey;">
+  <i>Incorrect trading activities that need to be taken care of properly</i>
+</p>
+
+<h3 id="Hazard-1-Margin-call"><a href="#Hazard-1-Margin-call" class="headerlink" title="Hazard 1: Margin call"></a>Hazard 1: Margin call</h3><p>According to the trading log message, the first red circle was due to the <strong>margin call</strong> getting executed to recover the remaining margin in your margin account. In order to trade stock options or to short-sell assets, you are required by brokers to retain the investor’s equity above a certain percentage so that you demonstrate your capability to repay the potential loss of your current investment. Once such a loss occurs and your equity falls under this percentage, you will receive this <strong>margin call</strong> notice from the broker that requires you to sell a part of your investment and turn it into cash to raise the percentage of equity.</p>
+<p>In our backtest, the stock price of <code>TSLA</code> has declined drastically which brought the percentage of equity below that percentage, that’s why we were forced to sell any investment and turn it into cash. The point being, that we don’t want to sell <strong>ANY</strong> asset in our portfolio. Instead, we need to make sure we sell <strong>a pair of assets</strong> to remain our market neutrality. In the meantime, we also need to decide which pair to be liquidated that has the least impact on our trading strategy. In the paper <a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1330689">An Anatomy of Pairs Trading: The Role of Idiosyncratic News, Common Information and Liquidity</a>, the experiments demonstrate that the probabilities and profitability of the pair start to increase day by day since the deviation has been detected, and then it will start to decline since reaching the top performance on day six. Therefore, I made an assumption that the longer a pair was held, the lower probability for this pair to be profitable. So we need to sell the pair that we hold the longest when the margin call occurs.</p>
+<img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/time_impact_profitability.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>The profitability dwindles as the day pass</i>
+</p>
+
+
+<h3 id="Hazard-2-Fails-to-place-two-orders-one-long-and-one-short-simultaneously"><a href="#Hazard-2-Fails-to-place-two-orders-one-long-and-one-short-simultaneously" class="headerlink" title="Hazard 2: Fails to place two orders (one long and one short) simultaneously"></a>Hazard 2: Fails to place two orders (one long and one short) simultaneously</h3><p>The other two incidents in our <code>HeldPositions</code> plot are referring to <strong>Insufficient Buying Power</strong>. <strong>Buying power</strong> is a concept that is quite easy to understand but is relatively complex to calculate. According to <a target="_blank" rel="noopener" href="https://www.interactivebrokers.co.uk/en/?f=%2Fen%2Fgeneral%2Feducation%2Fpdfnotes%2FWN-UnderstandingIBMargin.php#:~:text=Buying%20Power%20%E2%80%93%20value%20of%20securities,of%20held%20stock%20as%20collateral">Understanding IB Margin Webinar Notes</a>, the buying power can be defined as follow:</p>
+<blockquote>
+<p><strong>Buying Power</strong></p>
+<p>Is the value of securities you can purchase without depositing additional funds. In cash accounts this is the settled cash. In a margin account, buying power is increased through the use of leverage using cash and the value of held stock as collateral. The amount of leverage depends upon whether you have a Reg. T Margin or Portfolio Margin account. Active traders can take advantage of reduced intraday margin for securities – generally 25% of the long stock value. But keep in mind this requirement reverts to the Reg T 50% of stock value to hold overnight.<br>$\text{Cash Account Buying Power} = Min(\text{Equity with Loan Value, Previous Day Equity with Loan Value}) –\text{Initial Margin}$<br>$\text{Margin Account Buying Power} = \text{Cash Account Buying Power} * \text{Leverage Ratio}$</p>
+<p style="text-align:center; color: grey;">
+  <i>Formulas to calculate the Buying Power</i>
+</p>
+
+</blockquote>
+<p>Given the buying power as the limitation of placing orders with the margin account, we will face the scenario that one of the orders in the pair is successfully executed but the other order failed to be executed because the buying power of the day is insufficient. Unfortunately, <a target="_blank" rel="noopener" href="https://www.quantconnect.com">QuantConnect</a> doesn’t provide a function to check the current buying power in real-time. Therefore, we also need to come up with a solution to remedy this problem.</p>
+<img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/fixing_the_issue_of_the_backtest.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Backtest result after fixing the loopholes found</i>
+</p>
+
+<p>We have spotted two different potential scenarios that might endanger the profitability of our trading strategy, and we have successfully addressed them in a more theoretically trustworthy method. Looking back to the number of long positions and short positions in the plot <code>HeldPositions</code> are the same at all times. Now we can move on to the last part of the backtest.</p>
+<h1 id="Backtest"><a href="#Backtest" class="headerlink" title="Backtest"></a>Backtest</h1><p>Even if we have successfully replicated the pair trading technique that has been profitable for the past two years, a single backtest cannot guarantee that this backtest will perform similarly in the real world. However, we may employ this backtest as a research tool to determine which parameters could potentially improve the win rate and Sharpe Ratio. This is so-called <strong>Hyperparameter Optimizing</strong>. In this section, I’m going to run backtest against several scenarios to answer the following questions:</p>
+<ol>
+<li>Should we use close price or log(close price) while calculating cointegration parameters and epsilon</li>
+<li>Does the profitability impact by the holding period as stated in <a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1330689">An Anatomy of Pairs Trading: The Role of Idiosyncratic News, Common Information and Liquidity</a>?<br>Therefore, I’m going to create <strong>eight</strong> scenarios using <code>price/log(price)</code> and close the pair trade when it’s been <code>10/22/132/264 days</code> indicating we close the trade after it’s 10 days, one month, six months, and one year.</li>
+</ol>
+<p>Furthermore, aside from the standard KPIs such as Total Return, Sharpe Ratio, and MaxDrawDown, other KPIs such as Win Rate will be incorrect because it is based on a single stock and always equals around 50%. Hence I wrote a script to process the order records into a pair-wise order record and visualize the pair-wise performance.</p>
+<h2 id="Platform"><a href="#Platform" class="headerlink" title="Platform"></a>Platform</h2><p><a target="_blank" rel="noopener" href="https://www.quantconnect.com">QuantConnect</a></p>
+<h2 id="Backtest-Periods"><a href="#Backtest-Periods" class="headerlink" title="Backtest Periods"></a>Backtest Periods</h2><p>2020/12/27 - 2023/03/03</p>
+<h2 id="Backtest-Universe"><a href="#Backtest-Universe" class="headerlink" title="Backtest Universe"></a>Backtest Universe</h2><p>As stated in the section <a href='#pair_formation'>Pair formation</a></p>
+<h2 id="Backtest-benchmark"><a href="#Backtest-benchmark" class="headerlink" title="Backtest benchmark"></a>Backtest benchmark</h2><p>SPDR S&amp;P 500 ETF Trust (SPY)</p>
+<h2 id="Backtest-Results"><a href="#Backtest-Results" class="headerlink" title="Backtest Results"></a>Backtest Results</h2><h3 id="Strategy-wise-performance"><a href="#Strategy-wise-performance" class="headerlink" title="Strategy-wise performance"></a>Strategy-wise performance</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Using close price</th>
+<th>Using log(close price)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Close after 10 days</td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_price_10.png" class="" width="600"></td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_log_price_10.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Close after one month</td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_price_22.png" class="" width="600"></td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_log_price_22.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Close after six months</td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_price_132.png" class="" width="600"></td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_log_price_132.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Close after one year</td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_price_264.png" class="" width="600"></td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/backtest_log_price_264.png" class="" width="600"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Strategy-wise performance of every scenario</i>
+</p>
+
+<p>Once I put the backtest results altogether, it’s quite easy to notice that the performances of the pair trading strategy do conform to the curve as we see above but not exactly following the days in the plot. You can tell that the portfolio returns that close after six months and one year is comparatively lower than the portfolio returns that close after 10 days and one month. The scenarios that have the highest portfolio returns are all closing the trade after <strong>one month</strong>, no matter whether it’s using close price or log(close price).</p>
+<p>On the other hand, the scenarios using close price don’t seem to have an obvious edge compared to the scenarios using log(close price). I guess we need some more parameters involved and more backtests to be performed in order to find out whether the difference exists.</p>
+<h3 id="Pair-wise-performance"><a href="#Pair-wise-performance" class="headerlink" title="Pair-wise performance"></a>Pair-wise performance</h3><p>Before we shift our focus to this part, there are a few types of labels that I need to explain beforehand:</p>
+<ol>
+<li><strong>Normal Close</strong>: This type of order is the order that received the sell signals before hitting the holding period limitation, the same as hitting the vertical time bar of the <strong>Triple Barrier Method (TBM)</strong> (see <a href="https://mikelhsia.github.io/2022/10/21/2022-10-15-meta-label/">here</a> for more details). In the most optimal case, we would like to see the more <strong>Normal Close</strong> orders the better, as they are the orders that follow the central idea of pair trading to produce positive profit via buying when two stock prices deviate and selling when two stock prices start to cointegrate.</li>
+<li><strong>Early Close</strong>: This category represents the orders that are not yet received the sell signals but hit the vertical time bar. The <strong>Early Close</strong> orders are considered as their momentum/energy/tendency to converge are less stronger than they used to be, therefore we close them before they converge in exchange for other pairs that have higher chances to converge. They could be in the money or out of money while we close these <strong>Early Close</strong> orders and have higher uncertainty compared to <strong>normal close</strong> orders. We use <code>+</code> to label this pair trading generate positive profit and <code>-</code> to label this trade’s profit as negative.</li>
+<li><strong>Stop Loss Close</strong>: These orders are closed because their <em>epsilons</em> are getting too big or too small, indicating the prices of the stocks in this pair are starting to further diverge. To avoid a huge loss, we close this type of order before we hit any other bands. We use <code>+</code> to label this pair trading generate positive profit and <code>-</code> to label this trade’s profit as negative.</li>
+</ol>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Using close price</th>
+<th>Using log(close price)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Close after 10 days</td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/price_10_dist.png" class="" width="600"></td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/log_price_10_dist.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Close after one month</td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/price_22_dist.png" class="" width="600"></td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/log_price_22_dist.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Close after six months</td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/price_132_dist.png" class="" width="600"></td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/log_price_132_dist.png" class="" width="600"></td>
+</tr>
+<tr>
+<td>Close after one year</td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/price_264_dist.png" class="" width="600"></td>
+<td><img data-src="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/log_price_264_dist.png" class="" width="600"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Pair-wise performance of every scenario</i>
+</p>
+
+<p>From the charts above, you can tell that the volume of the <code>Stop Loss orders</code> increases while the holding period increase. That somewhat corroborates the inference stated in the paper <a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1330689">An Anatomy of Pairs Trading: The Role of Idiosyncratic News, Common Information and Liquidity</a> that the profits of pair trading do decrease along with the longer holding period. In the meantime, the volume of the <code>Normal Close</code> and <code>Early Close (+)</code> orders remain fairly stable. The full distribution charts above show that the cointegrated pair has a lower probability to diverge once a specific amount of time has passed. The win rate statistics table provided below further back up our conclusion drawn.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Early Close Win Rate</th>
+<th>Total Win Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>price_10_dist</td>
+<td>60.83%</td>
+<td>50.43%</td>
+</tr>
+<tr>
+<td>price_22_dist</td>
+<td>66.67%</td>
+<td>44.13%</td>
+</tr>
+<tr>
+<td>price_132_dist</td>
+<td>50.00%</td>
+<td>38.31%</td>
+</tr>
+<tr>
+<td>price_1264_dist</td>
+<td>N/A</td>
+<td>38.02%</td>
+</tr>
+<tr>
+<td>log_price_10_dist</td>
+<td>61.31%</td>
+<td>51.22%</td>
+</tr>
+<tr>
+<td>log_price_22_dist</td>
+<td>73.63%</td>
+<td>54.95%</td>
+</tr>
+<tr>
+<td>log_price_132_dist</td>
+<td>75.00%</td>
+<td>40.56%</td>
+</tr>
+<tr>
+<td>log_price_1264_dist</td>
+<td>100.00%</td>
+<td>35.33%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Pair-wise performance of every scenario II</i>
+</p>
+
+<h1 id="Take-away"><a href="#Take-away" class="headerlink" title="Take away"></a>Take away</h1><p>In this post, I have shown you how to implement the cointegration pair trading in detail step-by-step. There are two potential defects in our trading strategy that we detected once we release the trading script to the live environment, and theoretical-based and trustworthy solutions have been applied to mitigate the consequences brought by these defects. Lastly, we use this complete backtest to confirm that the profitability of each trading pair does make a difference given using different holding periods to safeguard your strategy from being sabotaged by time volatility. Hope you enjoy reading this post, and let me know if you would like to know any parameter that might impact the performance of the cointegration pair trading strategy, let me know.</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1330689">An Anatomy of Pairs Trading: The Role of Idiosyncratic News, Common Information and Liquidity</a></li>
+<li><a target="_blank" rel="noopener" href="http://epchan.blogspot.com/2013/11/cointegration-trading-with-log-prices.html">Cointegration Trading with Log Prices vs. Prices</a></li>
+<li><a target="_blank" rel="noopener" href="https://ibkr.info/node/2085/">Determining Buying Power</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Strategy/" rel="tag"># Strategy</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+              <a href="/tags/Pair-Trading/" rel="tag"># Pair Trading</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/25/2023-02-25-pair-trading-cointegration-part1/" rel="prev" title="【Pair Trading】 Cointegration Test - A Key to Find High Probability Trading Strategy">
+      <i class="fa fa-chevron-left"></i> 【Pair Trading】 Cointegration Test - A Key to Find High Probability Trading Strategy
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Recap"><span class="nav-number">1.</span> <span class="nav-text">Recap</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Build-our-trading-rules"><span class="nav-number">2.</span> <span class="nav-text">Build our trading rules</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Trading-pair-formation"><span class="nav-number">2.1.</span> <span class="nav-text">Trading pair formation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Monitoring-and-trading"><span class="nav-number">2.2.</span> <span class="nav-text">Monitoring and trading</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Observing-frequency"><span class="nav-number">2.2.1.</span> <span class="nav-text">Observing frequency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Enter-and-exit-signals"><span class="nav-number">2.2.2.</span> <span class="nav-text">Enter and exit signals</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stop-loss-and-stop-gain"><span class="nav-number">2.2.3.</span> <span class="nav-text">Stop loss and stop gain</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Several-scenarios-we-need-to-consider-and-address"><span class="nav-number">2.3.</span> <span class="nav-text">Several scenarios we need to consider and address</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hazard-1-Margin-call"><span class="nav-number">2.3.1.</span> <span class="nav-text">Hazard 1: Margin call</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hazard-2-Fails-to-place-two-orders-one-long-and-one-short-simultaneously"><span class="nav-number">2.3.2.</span> <span class="nav-text">Hazard 2: Fails to place two orders (one long and one short) simultaneously</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Backtest"><span class="nav-number">3.</span> <span class="nav-text">Backtest</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Platform"><span class="nav-number">3.1.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-Periods"><span class="nav-number">3.2.</span> <span class="nav-text">Backtest Periods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-Universe"><span class="nav-number">3.3.</span> <span class="nav-text">Backtest Universe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-benchmark"><span class="nav-number">3.4.</span> <span class="nav-text">Backtest benchmark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-Results"><span class="nav-number">3.5.</span> <span class="nav-text">Backtest Results</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Strategy-wise-performance"><span class="nav-number">3.5.1.</span> <span class="nav-text">Strategy-wise performance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pair-wise-performance"><span class="nav-number">3.5.2.</span> <span class="nav-text">Pair-wise performance</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Take-away"><span class="nav-number">4.</span> <span class="nav-text">Take away</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
