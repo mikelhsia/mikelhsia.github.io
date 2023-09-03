@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Photo by Priscilla Du Preez on Unsplash   Backtrader is a well-known Python open-source library to backtest your quantitative trading strategy. Most of its components can support trading against o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【How 2】 Upgrade your backtesting arsenal - trading multiple stocks with &quot;backtrader&quot;">
+<meta property="og:url" content="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Photo by Priscilla Du Preez on Unsplash   Backtrader is a well-known Python open-source library to backtest your quantitative trading strategy. Most of its components can support trading against o">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/cover.jpeg">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/plot_true.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/plot_false.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/missing_data_scenario_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/missing_data_scenario_2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/backtrader_process.png">
+<meta property="article:published_time" content="2023-08-31T06:29:36.000Z">
+<meta property="article:modified_time" content="2023-09-03T06:32:48.158Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Research">
+<meta property="article:tag" content="Backtesting">
+<meta property="article:tag" content="Python3">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/cover.jpeg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【How 2】 Upgrade your backtesting arsenal - trading multiple stocks with "backtrader" | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【How 2】 Upgrade your backtesting arsenal - trading multiple stocks with "backtrader"
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-08-31 14:29:36" itemprop="dateCreated datePublished" datetime="2023-08-31T14:29:36+08:00">2023-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-09-03 14:32:48" itemprop="dateModified" datetime="2023-09-03T14:32:48+08:00">2023-09-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Factor-Analysis/" itemprop="url" rel="index"><span itemprop="name">Factor Analysis</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Factor-Analysis/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Factor-Analysis/Quantitative-Trading/How2/" itemprop="url" rel="index"><span itemprop="name">How2</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/" class="post-meta-item leancloud_visitors" data-flag-title="【How 2】 Upgrade your backtesting arsenal - trading multiple stocks with "backtrader"" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/cover.jpeg" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Photo by <a target="_blank" rel="noopener" href='https://unsplash.com/@priscilladupreez?utm_source=medium&utm_medium=referral'>Priscilla Du Preez</a> on <a target="_blank" rel="noopener" href='https://unsplash.com/?utm_source=medium&utm_medium=referral'>Unsplash</a></i>
+</p>
+
+<p>Backtrader is a well-known Python open-source library to backtest your quantitative trading strategy. Most of its components can support trading against one single trading target. To step up the game to trade against multiple stocks, there are a few things that need to be fine-tuned to make sure the trading strategy would trade as you expected. In this post, I’m going to share my experience and crucial tips with you as a starting point to build your own.</p>
+<a id="more"></a>
+<hr>
+<p>Become a <a target="_blank" rel="noopener" href="https://medium.com/@mikelhsia/membership">Medium member</a> to continue learning without limits. I’ll receive a small portion of your membership fee if you use the following link, at no extra cost to you.</p>
+<blockquote>
+<p>If you enjoy reading this and my other articles, feel free to <a src='https://medium.com/@mikelhsia/membership'> join Medium membership program</a> to read more about Quantitative Trading Strategy.</p>
+</blockquote>
+<hr>
+<p><strong><em>Previous researches</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/tags/Interactive-Broker/">【How 2】Set Up Trading API Template In Python</a></li>
+<li><a href="https://mikelhsia.github.io/2021/02/15/2021-02-15-how2-snp500-historic-composition/">【How 2】 Vol. 4. How to produce the S&amp;P 500 Historical Components &amp; Changes</a></li>
+<li><a href="https://mikelhsia.github.io/2020/11/26/2020-11-28-how-to-produce-a-quality-tradable-stock-set-for-backtesting/">【How 2】 Vol. 3. How to produce quality tradable securities for backtesting</a></li>
+</ul>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Backtrader is a well-known Python open-source library that allows you to use it for backtesting, strategy visualization, and live trading. Unfortunately, active development stopped in about 2018 with only a few bug fixes being merged here and there, but it is still considered to be one of the important beginner’s backtesting tools to get familiar with the framework and crucial components in quantitative trading.</p>
+<p>As said, a few things needed to be taken care of to move on to the next phase from trading one single target such as stock, ETF, or bond to trading multiple stocks. I’m going to use one of my trading strategies which trades against stocks that have high IC/IR ratios to demonstrate the differences between before and after the changes. Of course, let me know if you’re interested in knowing this trading strategy. I’ll draft another post if I find out it will help certain people.</p>
+<h2 id="1-How-to-add-data-from-multiple-stocks"><a href="#1-How-to-add-data-from-multiple-stocks" class="headerlink" title="1. How to add data from multiple stocks"></a>1. How to add data from multiple stocks</h2><p>The first thing to trade against multiple stocks is for sure to add data of different symbols into your backtrader <code>cerebro</code>. Below is the method that the official guide suggested to add data to your script:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> backtrader <span class="keyword">as</span> bt</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">start_date = datetime.datetime(<span class="number">2022</span>, <span class="number">11</span>, <span class="number">28</span>)</span><br><span class="line">end_date = datetime.datetime(<span class="number">2023</span>, <span class="number">6</span>, <span class="number">12</span>)</span><br><span class="line">cerebro = bt.Cerebro()</span><br><span class="line">df = pd.read_csv(csv_file_path)</span><br><span class="line">data = bt.feeds.PandasData(</span><br><span class="line">    dataname=df,</span><br><span class="line">    fromdate=start_date,</span><br><span class="line">    todate=end_date,</span><br><span class="line">    name=ticker,</span><br><span class="line">    datetime=<span class="number">0</span>,</span><br><span class="line">    close=<span class="number">6</span>,</span><br><span class="line">    high=<span class="number">7</span>,</span><br><span class="line">    low=<span class="number">8</span>,</span><br><span class="line">    open=<span class="number">9</span>,</span><br><span class="line">    volume=<span class="number">10</span>,</span><br><span class="line">    openinterest=<span class="number">-1</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">cerebro.adddata(data)</span><br></pre></td></tr></table></figure></p>
+<p style="text-align:center; color: grey;">
+  <i>Method to add data suggested by the official guide</i>
+</p>
+
+<p>The way I added multiple symbols data into <code>cerebro</code> is:</p>
+<ol>
+<li>Stitched all the data into one big <code>csv</code> sheet.</li>
+<li>Added <code>date</code> and <code>ticker</code> to remark the date and the symbol name of the data.</li>
+<li>Looped through each ticker and sorted by <code>date</code> to add the data needed</li>
+<li>Added <code>name</code> parameter into the loader function to remark the name of the data</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">cerebro = bt.Cerebro()</span><br><span class="line"></span><br><span class="line">results_df = pd.read_csv(csv_file_path)</span><br><span class="line">universe = <span class="comment"># add symbols to</span></span><br><span class="line"><span class="keyword">for</span> ticker <span class="keyword">in</span> results_df[<span class="string">&#x27;ticker&#x27;</span>]:</span><br><span class="line">    tmp = results_df[(results_df[<span class="string">&#x27;ticker&#x27;</span>] == ticker) &amp; (results_df[<span class="string">&#x27;date&#x27;</span>] &lt;= end_date) &amp; (results_df[<span class="string">&#x27;date&#x27;</span>] &gt;= start_date)].sort_values(<span class="string">&#x27;date&#x27;</span>)</span><br><span class="line">    df1 = pd.merge(benchmark_framework[<span class="string">&#x27;date&#x27;</span>], tmp, left_on=<span class="string">&#x27;date&#x27;</span>, right_on=<span class="string">&#x27;date&#x27;</span>, how=<span class="string">&#x27;outer&#x27;</span>).fillna(<span class="number">0</span>)</span><br><span class="line">    data = bt.feeds.PandasDatar(</span><br><span class="line">        dataname=df1,</span><br><span class="line">        fromdate=start_date,</span><br><span class="line">        todate=end_date,</span><br><span class="line">        name=ticker,</span><br><span class="line">        datetime=<span class="number">0</span>,</span><br><span class="line">        close=<span class="number">6</span>,</span><br><span class="line">        high=<span class="number">7</span>,</span><br><span class="line">        low=<span class="number">8</span>,</span><br><span class="line">        open=<span class="number">9</span>,</span><br><span class="line">        volume=<span class="number">10</span>,</span><br><span class="line">        openinterest=<span class="number">-1</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    cerebro.adddata(data)</span><br></pre></td></tr></table></figure>
+<p style="text-align:center; color: grey;">
+  <i>Method to add data of multiple symbols</i>
+</p>
+
+<p>There you go!</p>
+<h2 id="2-Wait-What-happens-to-my-plotting-visualization"><a href="#2-Wait-What-happens-to-my-plotting-visualization" class="headerlink" title="2. Wait! What happens to my plotting visualization?"></a>2. Wait! What happens to my plotting visualization?</h2><p>One of the features that backtrader is noted for is its plotting feature together with <code>matplotlib</code> library. This is how you enable this feature in your script:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># After you run cerebro.run()</span></span><br><span class="line">cerebro.plot()</span><br></pre></td></tr></table></figure></p>
+<p style="text-align:center; color: grey;">
+  <i>How to enable the plotting feature</i>
+</p>
+
+<p>See! It’s that easy! But the thing is, once you add this line of code into our multiple stocks trading strategy script, it’s going to look like this:</p>
+<img data-src="/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/plot_true.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>The default diagrams when enabling the plotting feature</i>
+</p>
+
+<p>Obviously, there are too many price data lines that have been plotted in one single diagram. In order to make your diagram to be more readable, there are a few twists to be made:</p>
+<h3 id="2-a-Disable-the-default-data-plotting"><a href="#2-a-Disable-the-default-data-plotting" class="headerlink" title="2.a. Disable the default data plotting"></a>2.a. Disable the default data plotting</h3><p>To do this, you have to disable the default plotting features and build your own plots.</p>
+<p>First, you set the <code>plot</code> parameter in the data loader to <em>False</em>.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">data = bt.feeds.PandasDatar(</span><br><span class="line">        dataname=df1,</span><br><span class="line">        fromdate=start_date,</span><br><span class="line">        todate=end_date,</span><br><span class="line">        name=ticker,</span><br><span class="line">        datetime=<span class="number">0</span>,</span><br><span class="line">        close=<span class="number">6</span>,</span><br><span class="line">        high=<span class="number">7</span>,</span><br><span class="line">        low=<span class="number">8</span>,</span><br><span class="line">        open=<span class="number">9</span>,</span><br><span class="line">        volume=<span class="number">10</span>,</span><br><span class="line">        openinterest=<span class="number">-1</span>,</span><br><span class="line">        plot=<span class="literal">False</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-b-Disable-the-default-backtesting-plotting"><a href="#2-b-Disable-the-default-backtesting-plotting" class="headerlink" title="2.b. Disable the default backtesting plotting"></a>2.b. Disable the default backtesting plotting</h3><p>Backtrader also embeds a few default plots when you enable the plotting feature. Let’s also disable them for now.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cerebro &#x3D; bt.Cerebro(</span><br><span class="line">    stdstats&#x3D;False,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="2-c-Add-your-customized-plot"><a href="#2-c-Add-your-customized-plot" class="headerlink" title="2.c. Add your customized plot"></a>2.c. Add your customized plot</h3><p>Lastly, the default plot is used to plot the price/value movement of a single stock. We need to transform the diagram into the way want it to be. Let’s add a customized observer to replace the original plot. In this plot, there are going to be two lines plotted: one is our benchmark data which is set to <code>SPY</code>. The second line would be the portfolio value. Here’s how we do this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BenchmarkBroker</span>(<span class="params">bt.Observer</span>):</span></span><br><span class="line">    _stclock = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    alias = (<span class="string">&#x27;Value&#x27;</span>,)</span><br><span class="line">    lines = (<span class="string">&#x27;value&#x27;</span>, <span class="string">&#x27;benchmark&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    plotinfo = dict(plot=<span class="literal">True</span>, subplot=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, *args, **kwargs</span>):</span></span><br><span class="line">        self.benchmarkFactor = <span class="literal">None</span></span><br><span class="line">        self.i = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;benchmark_symbol&#x27;</span> <span class="keyword">in</span> kwargs.keys():</span><br><span class="line">            self.benchmark_symbol = kwargs[<span class="string">&#x27;benchmark_symbol&#x27;</span>].lower()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.benchmark_symbol = <span class="string">&#x27;spy&#x27;</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i, data <span class="keyword">in</span> enumerate(self.datas):</span><br><span class="line">            <span class="keyword">if</span> data._name == self.benchmark_symbol:</span><br><span class="line">                self.i = i</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        super(bt.Observer, self).__init__()</span><br><span class="line"></span><br><span class="line">cerebro.addobserver(BenchmarkBroker, benchmark_symbol=<span class="string">&#x27;spy&#x27;</span>)</span><br><span class="line">cerebro.addobserver(</span><br><span class="line">    bt.observers.Benchmark,</span><br><span class="line">    data=benchmark_data,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p style="text-align:center; color: grey;">
+  <i>Customized observer class to show both portfolio value and benchmark value</i>
+</p>
+
+<p>In the end, you’ll get the following plot after running your backtest:</p>
+<img data-src="/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/plot_false.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>The final plotting we just built to track the movement of our portfolio value against the benchmark value</i>
+</p>
+
+
+<h2 id="3-Hey-The-start-date-and-the-end-date-won’t-match-my-customized-plot"><a href="#3-Hey-The-start-date-and-the-end-date-won’t-match-my-customized-plot" class="headerlink" title="3. Hey! The start date and the end date won’t match my customized plot!"></a>3. Hey! The start date and the end date won’t match my customized plot!</h2><p>I’ve been running backtests over and over again, and this issue bothered me for a long long time. Initially, I suspected it would be the problem of the missing price data as some of the symbols are either delisted or merged by the other corporations. So I tried not to import them into <code>cerebro</code> during the data importing stage. In the end, I found out that it caused the <a target="_blank" rel="noopener" href="https://unacademy.com/content/jee/study-material/physics/what-is-forward-bias/"><strong><em>Forward bias</em></strong></a> in the algorithm. Then to eliminate this bias, I digged deeper and found this implicit rule hidden in the <code>backtrader</code> library:</p>
+<ul>
+<li>Scenario 1<ul>
+<li>Data0 starts from 2018-01-02, end at 2018-01-30</li>
+<li>Data1 starts from 2018-01-02, end at 2018-02-07</li>
+<li>The missing stock price in data0 will be filled with the same price as 2018-01-30 throughout 2018-01-31 to 2018-02-07</li>
+</ul>
+</li>
+</ul>
+<img data-src="/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/missing_data_scenario_1.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Missing data scenario 1</i>
+</p>
+
+<ul>
+<li>Scenario 2<ul>
+<li>Data0 starts from 2018-01-02, end at 2018-02-07</li>
+<li>Data1 starts from 2018-01-09, end at 2018-02-07</li>
+<li>The data from 2018-01-02 to 2018-01-08 in <strong>Data1</strong> will be discarded because <strong>Data0</strong> data is missing in this period. Therefore, the backtest won’t be performed during this particular period.</li>
+</ul>
+</li>
+</ul>
+<img data-src="/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/missing_data_scenario_2.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Missing data scenario 2</i>
+</p>
+
+<p>Apparently, the backtesting period can be limited by the data length of the symbol that has the least data rows. However, we need to make sure that the stocks staying in our trading universe can still be backtested with the participation of the early delisted stocks or the later added stocks, I came up with a trick to pull this off:</p>
+<h3 id="3-a-Use-price-data-of-SPY-to-produce-the-trading-calendar"><a href="#3-a-Use-price-data-of-SPY-to-produce-the-trading-calendar" class="headerlink" title="3.a. Use price data of SPY to produce the trading calendar"></a>3.a. Use price data of SPY to produce the trading calendar</h3><p>The first step would be using SPY to retrieve a series of trading dates. Then we use this trading calendar as the index for the data of every symbol to make sure every symbol shares the same index.</p>
+<h3 id="3-b-Fill-NA"><a href="#3-b-Fill-NA" class="headerlink" title="3.b. Fill NA"></a>3.b. Fill NA</h3><p>After resetting the index for every symbol, there are a lot of empty cells in your pandas dataframe being generated. Then we need to fill a certain value into these empty cells. Which value we should use? In <code>backtrader</code>, using <code>None</code> or <code>NA</code> would cause a lot of problems. Therefore, I choose <code>0</code> to easily identify and process.</p>
+<h3 id="3-c-Add-0-handling-logic-into-your-trading-script"><a href="#3-c-Add-0-handling-logic-into-your-trading-script" class="headerlink" title="3.c. Add 0 handling logic into your trading script"></a>3.c. Add 0 handling logic into your trading script</h3><p>The last step would be adjusting the logic when processing your <code>buy</code>, <code>sell</code>, and <code>close</code> actions. Make sure you don’t place any orders when the price equals <code>0</code>. It’s that easy to resolve this issue.</p>
+<h2 id="4-What-I-don’t-have-enough-money-again-No-way"><a href="#4-What-I-don’t-have-enough-money-again-No-way" class="headerlink" title="4. What? I don’t have enough money again? No way!"></a>4. What? I don’t have enough money again? No way!</h2><p>Once you have all the processes above set, you can start conducting your backtest and filling in your trading strategy. In my case, after I started running my backtest, I saw one prompt message that showed up multiple times and bothered me the most, which was <code>&quot;[ticker] Order rejected due to Margin order status&quot;</code>. I checked here and there to see if there was anything wrong with my trading logic. I’ve made sure that I sell orders first to release the cash first, and then place the buy orders. I’ve also made sure the size of the order won’t exceed my available cash. How in the world that I still get this message all the time?</p>
+<p>I’ve found two main reasons that cause this issue:</p>
+<h3 id="4-a-The-time-to-execute-the-order"><a href="#4-a-The-time-to-execute-the-order" class="headerlink" title="4.a. The time to execute the order"></a>4.a. The time to execute the order</h3><p>To clearly understand the order execution logic of <code>backtrader</code>, let’s refer to the <a target="_blank" rel="noopener" href="https://www.backtrader.com/docu/order/">backtrader’s documentation page</a>:</p>
+<blockquote>
+<p>Order.Market: A market order will be executed with the next available price. In backtesting it will be the opening price of the next bar.</p>
+</blockquote>
+<p>So the problem is almost vividly portrayed. The close price of yesterday would potentially have a gap against today’s open price. This rule renders the possibility that the actual cost of placing an order would deviate from the estimated cost higher. In reality, quantitative traders who use daily pricing data to predict the stocks to be bought on the next day would place their orders the next morning, and the estimated cost wouldn’t greatly deviate a lot from the actual cost. So how do we produce an effect that is similar to what is happening in real life?</p>
+<p><strong><em>Cheat On Open</em></strong> is mentioned in the <a target="_blank" rel="noopener" href="https://www.backtrader.com/docu/cerebro/cheat-on-open/cheat-on-open/">backtrader’s documentation page</a>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cerebro = bt.Cerebro(</span><br><span class="line">    stdstats=<span class="literal">False</span>,</span><br><span class="line">    <span class="comment"># Add the following parameter to enable &quot;cheat_on_open&quot; feature</span></span><br><span class="line">    cheat_on_open=<span class="literal">True</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>Enabling the <code>cheat_on_open</code> feature with the parameter above, you’ll gain access to an extra function named <code>next_open</code> which is similar to the timing of entering the market if using only open price to place any of your order.</p>
+<img data-src="/2023/08/31/2023-08-31-backtrader-multistocks-backtesting/backtrader_process.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>The process after enabling <b>"cheat_on_open"</b> feature</i>
+</p>
+
+<p>By doing this, you’ll be able to use the open price of the next day to place the buy/sell order, which will greatly decrease the difference in the overnight price gap. This also helps lower the possibility of receiving the  <code>&quot;[ticker] Order rejected due to Margin order status&quot;</code> prompt message.</p>
+<h2 id="4-b-Available-cash-insufficient"><a href="#4-b-Available-cash-insufficient" class="headerlink" title="4.b. Available cash insufficient"></a>4.b. Available cash insufficient</h2><p>There is another scenario that triggers the Margin order state. As the <code>backtrader</code> process displayed above, your orders are usually placed using <strong>for loop</strong> to loop through each symbol in the <code>next</code> or <code>next_open</code> stage. Yet, your orders placed only get executed when you reach the <code>notify_order</code> and <code>notify_store</code> stage. That is to say, your available cash won’t update while you place orders in your <strong>for loop</strong>. If your trading strategy requires you to optimize capital utilization by holding minimum cash, your available cash is very likely to be sufficient to place any buy order even if you try to release your cash by selling your holding stocks.</p>
+<p>To make sure your strategy won’t have any glitches while placing buy and sell orders on the same day, you need to <strong>keep track of your available cash at all times</strong>.</p>
+<h2 id="5-Use-hot-data-over-cold-data"><a href="#5-Use-hot-data-over-cold-data" class="headerlink" title="5. Use hot data over cold data"></a>5. Use hot data over cold data</h2><p>In your trading script, you might need to load a huge pandas dataframe with a lot of columns and factors to support your algorithm. This huge amount of data costs you a lot of time to load into your <code>backtrader</code> script. From my point of view, I would rather complete many backtests as fast as possible. Therefore, I would keep a copy of my data and load it into the trading script as the hot data. In that case, you can save time while loading data into <code>backtrader</code> to be processed a second time.</p>
+<hr>
+<p>These are the things that I found when transforming <code>backtrader</code> into a multiple-stock trading framework. Hope this helps you to build your backtesting tool. Cheers.</p>
+<h1 id="Misc-Source-code"><a href="#Misc-Source-code" class="headerlink" title="Misc - Source code"></a>Misc - Source code</h1><script src="https://gist.github.com/mikelhsia/c92ba87c16200b1b98ac285b2d76f3a2.js"></script>
+    </div>
+    
+      
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Research/" rel="tag"># Research</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+              <a href="/tags/Python3/" rel="tag"># Python3</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/04/26/2023-05-01-pair-trading-cointegration-part2/" rel="prev" title="【Pair Trading】 Complete Guide to Backtest Cointegration Pair Trading Strategy">
+      <i class="fa fa-chevron-left"></i> 【Pair Trading】 Complete Guide to Backtest Cointegration Pair Trading Strategy
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-How-to-add-data-from-multiple-stocks"><span class="nav-number">1.1.</span> <span class="nav-text">1. How to add data from multiple stocks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Wait-What-happens-to-my-plotting-visualization"><span class="nav-number">1.2.</span> <span class="nav-text">2. Wait! What happens to my plotting visualization?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-a-Disable-the-default-data-plotting"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.a. Disable the default data plotting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-b-Disable-the-default-backtesting-plotting"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.b. Disable the default backtesting plotting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-c-Add-your-customized-plot"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.c. Add your customized plot</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Hey-The-start-date-and-the-end-date-won%E2%80%99t-match-my-customized-plot"><span class="nav-number">1.3.</span> <span class="nav-text">3. Hey! The start date and the end date won’t match my customized plot!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-a-Use-price-data-of-SPY-to-produce-the-trading-calendar"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.a. Use price data of SPY to produce the trading calendar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-b-Fill-NA"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.b. Fill NA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-c-Add-0-handling-logic-into-your-trading-script"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.c. Add 0 handling logic into your trading script</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-What-I-don%E2%80%99t-have-enough-money-again-No-way"><span class="nav-number">1.4.</span> <span class="nav-text">4. What? I don’t have enough money again? No way!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-a-The-time-to-execute-the-order"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.a. The time to execute the order</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-b-Available-cash-insufficient"><span class="nav-number">1.5.</span> <span class="nav-text">4.b. Available cash insufficient</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Use-hot-data-over-cold-data"><span class="nav-number">1.6.</span> <span class="nav-text">5. Use hot data over cold data</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Misc-Source-code"><span class="nav-number">2.</span> <span class="nav-text">Misc - Source code</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
