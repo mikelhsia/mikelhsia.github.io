@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Cover image created through Copilot   As is known to all, diversification is the key to managing the risk of your investment. However, it’ll take a lot of effort and time to hand-pick quality asse">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Testing the Waters - Backtesting HAA and Its Variations Towards Success">
+<meta property="og:url" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Cover image created through Copilot   As is known to all, diversification is the key to managing the risk of your investment. However, it’ll take a lot of effort and time to hand-pick quality asse">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_basic_16.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_basic_20.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_tip_16.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_tip_20.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_negative_16.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_negative_20.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_both_16.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_both_20.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_basic_20_compare.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_negative_20_compare.png">
+<meta property="article:published_time" content="2024-04-09T06:01:23.000Z">
+<meta property="article:modified_time" content="2024-04-12T04:08:29.933Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Research">
+<meta property="article:tag" content="Backtesting">
+<meta property="article:tag" content="Python3">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Testing the Waters - Backtesting HAA and Its Variations Towards Success | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Testing the Waters - Backtesting HAA and Its Variations Towards Success
+        </h1>
+
+        
+          <h2 class="post-title" itemprop="name headline" style="font-size: 1em;color: grey;font-style: italic;padding: 0px 50px 0px 50px;">
+            Maximize Returns and Minimize Risk Through The Power of Diversification
+          </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-04-09 14:01:23" itemprop="dateCreated datePublished" datetime="2024-04-09T14:01:23+08:00">2024-04-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-04-12 12:08:29" itemprop="dateModified" datetime="2024-04-12T12:08:29+08:00">2024-04-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2024/04/09/2024-03-25-hybrid-asset-allocation/" class="post-meta-item leancloud_visitors" data-flag-title="Testing the Waters - Backtesting HAA and Its Variations Towards Success" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/04/09/2024-03-25-hybrid-asset-allocation/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/04/09/2024-03-25-hybrid-asset-allocation/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/cover.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>Cover image created through <a target="_blank" rel="noopener" href='https://https://copilot.microsoft.com/'>Copilot</a></i>
+</p>
+
+<p>As is known to all, diversification is the key to managing the risk of your investment. However, it’ll take a lot of effort and time to hand-pick quality assets that have little correlation with each other. In the <a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4346906">Hybrid Asset Allocation trading strategy</a>, <a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4346906">Wouter J. Keller and Jan Willem Keuning</a> actually brought up an easier way to introduce diversification into the trading strategy. In this article, we’re going to first talk about HAA strategy and see how it boosts the diversification of our portfolio. Then, we’re also going to backtest the HAA (Hybrid Asset Allocation) trading strategy and several of its variations against the benchmark.</p>
+<a id="more"></a>
+<hr>
+<p>Become a <a target="_blank" rel="noopener" href="https://medium.com/@mikelhsia/membership">Medium member</a> to support me in writing more interesting articles. I’ll receive a small portion of your membership fee if you use the following link, at no extra cost to you.</p>
+<blockquote>
+<p>If you enjoy reading this and my other articles, feel free to <a src='https://medium.com/@mikelhsia/membership'> join Medium membership program</a> to read more about Quantitative Trading Strategy.</p>
+</blockquote>
+<hr>
+<p><strong><em>Previous researches</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2024/01/18/2024-01-18-Revisit-Buy-On-Gao-Strategy/">From Theory to Profits - Elevating the Buy-on-Gap Strategy with Advanced Techniques</a></li>
+<li><a href="https://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/">Optimize your MACD strategies with advanced indicators</a></li>
+<li><a href="https://mikelhsia.github.io/2023/04/26/2023-05-01-pair-trading-cointegration-part2/">【Pair Trading】 Complete Guide to Backtest Cointegration Pair Trading Strategy</a></li>
+<li><a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">【ML algo trading】 II - How to build a machine learning boilerplate?</a></li>
+</ul>
+<hr>
+<h1 id="What-is-Hybrid-Asset-Allocation-HAA"><a href="#What-is-Hybrid-Asset-Allocation-HAA" class="headerlink" title="What is Hybrid Asset Allocation (HAA)"></a>What is Hybrid Asset Allocation (HAA)</h1><p>Hybrid Asset Allocation (HHA) was first introduced in <u><a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4346906">Dual and Canary Momentum with Rising Yields/Inflation: Hybrid Asset Allocation (HAA)</a></u> from <a target="_blank" rel="noopener" href="https://www.ssrn.com/index.cfm/en/">SSRN</a> in Feb 2023. The intention is to develop a much simpler strategy for the retail investors. This strategy is balanced and rather aggressive compared to the author’s previous trading strategy. It uses <code>US Treasury Inflation-Protected Securities (TIPS, ETF: TIP)</code> as the <strong>canary asset</strong> to determine whether the market possesses positive momentum. Once the canary asset shows positive momentum, we shall invest the <strong>offensive assets</strong> to profit. Otherwise, we invest the <strong>defensive asset</strong> to further protect against loss.</p>
+<p>This strategy not only uses the single <strong>canary asset</strong> as the market momentum indicator. In the meantime, it also adopts the traditional <strong>dual momentum</strong> method to further confirm which assets we should invest among our offensive assets. Combining these two methods, its simplicity greatly reduced the possibility of unintentional overfitting, leaving much room for the intelligent retail investor to compose and customize their asset universe that could be potentially more aggressive or risk-averse.</p>
+<h1 id="How-HAA-adds-diversification-to-our-portfolio"><a href="#How-HAA-adds-diversification-to-our-portfolio" class="headerlink" title="How HAA adds diversification to our portfolio"></a>How HAA adds diversification to our portfolio</h1><p>Even though the canary asset is the crucial part of the strategy that helps identify the current momentum trend of the market, the actual power of risk-aversion resides inside the assets picked: the ETFs in the offensive assets. These eight assets <code>US large caps (represented by SPY)</code>, <code>US small caps (IWM)</code>, <code>developed international stocks (EFA)</code>, <code>emerging market stocks (EEM)</code>, <code>US real estate (VNQ)</code>, <code>commodities (PDBC)</code>, <code>intermediate-term US Treasuries (IEF)</code> and <code>long-term US Treasuries (TLT)</code> in the offensive assets represent the strong and quality stocks worldwide covering most of the industries. This diverse universe is the part that adds diversity to our portfolio.</p>
+<h1 id="Backtesting-HAA-and-its-variations"><a href="#Backtesting-HAA-and-its-variations" class="headerlink" title="Backtesting HAA and its variations"></a>Backtesting HAA and its variations</h1><p>Now let us have a look at our backtesting setup.</p>
+<h2 id="Platform"><a href="#Platform" class="headerlink" title="Platform"></a>Platform</h2><p>I’m using <a target="_blank" rel="noopener" href="https://quantconnect.com/">QuantConnect</a> to backtest this strategy.</p>
+<h2 id="Backtest-period"><a href="#Backtest-period" class="headerlink" title="Backtest period"></a>Backtest period</h2><p>I’m conducting two series of backtests. One from 2016-01-03 to inspect the strategy performance as much as possible. The other one is from 2020-01-03 to inspect the recent changes and to compare it with the previous series.</p>
+<h2 id="Trading-Framework"><a href="#Trading-Framework" class="headerlink" title="Trading Framework"></a>Trading Framework</h2><h3 id="Universe"><a href="#Universe" class="headerlink" title="Universe"></a>Universe</h3><ol>
+<li><strong>Canary asset</strong>: US Treasury Inflation-Protected Securities (TIPS, ETF: TIP)</li>
+<li><strong>Offensive assets</strong>: US large caps (represented by SPY), US small caps (IWM), developed international stocks (EFA), emerging market stocks (EEM), US real estate (VNQ), commodities (PDBC), intermediate-term US Treasuries (IEF) and long-term US Treasuries (TLT)</li>
+<li><strong>Defensive asset</strong>: intermediate-term US Treasuries (IEF)</li>
+</ol>
+<h3 id="Strategy-Benchmark"><a href="#Strategy-Benchmark" class="headerlink" title="Strategy Benchmark"></a>Strategy Benchmark</h3><p>In the article <a target="_blank" rel="noopener" href="https://allocatesmartly.com/hybrid-asset-allocation/">Hybrid Asset Allocation</a>, the 60/40 benchmark was constructed by 60% of SPY and 40% of IEF. To look at the strategy from a more aggressive angle, I use simply the SPY buy-and-hold strategy as the benchmark, which also helps identify the stock market situation.</p>
+<h3 id="Trading-Rules"><a href="#Trading-Rules" class="headerlink" title="Trading Rules"></a>Trading Rules</h3><ol>
+<li>The definition of momentum is defined as the unweighted average return of one-month, three-month, six-month, and twelve-month returns (in %)</li>
+<li>All the positions are created and closed right after the market opens.</li>
+<li>If the canary asset shows positive momentum, we pick the four ETFs with the highest momentum from offensive assets to invest evenly.</li>
+<li>Otherwise, we allocate our capital to defensive asset.</li>
+<li>We rebalance our portfolio every month.</li>
+</ol>
+<script type="math/tex; mode=display">\text{Momentum} = \frac{\text{1-month return} + \text{3-month return} + \text{6-month return} + \text{12-month return}}{4}</script><p style="text-align:center; color: grey;">
+  <i>Formula to calculate the momentum</i>
+</p>
+
+<h3 id="Variation-Strategies"><a href="#Variation-Strategies" class="headerlink" title="Variation Strategies"></a>Variation Strategies</h3><p>There are two switches that I added to this HAA strategy. First is whether to disable the canary asset indicator that we used to detect the market momentum. Once we switch this off, we simply purchase four ETFs that have the highest momentum from the offensive assets no matter the market momentum, turning this strategy into a pure ETF momentum strategy. Second, I added an additional filter to rule out those ETFs whose momentum ranks top four but is actually negative. Below is the backtest results.</p>
+<h2 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Year start</th>
+<th>2016~</th>
+<th>2020~</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HAA basic</td>
+<td><img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_basic_16.png" class="" width="800"></td>
+<td><img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_basic_20.png" class="" width="800"></td>
+</tr>
+<tr>
+<td>HAA ignore canary</td>
+<td><img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_tip_16.png" class="" width="800"></td>
+<td><img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_tip_20.png" class="" width="800"></td>
+</tr>
+<tr>
+<td>HAA ignore negative</td>
+<td><img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_negative_16.png" class="" width="800"></td>
+<td><img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_negative_20.png" class="" width="800"></td>
+</tr>
+<tr>
+<td>HHA ignore both</td>
+<td><img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_both_16.png" class="" width="800"></td>
+<td><img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_ignore_both_20.png" class="" width="800"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Backtesting HHA and its variations against SPY buy-and-hold strategy</i>
+</p>
+
+<p>If you look at the backtest results carefully, you’ll notice that none of the HAA strategy and its variations exceeds the performance of the benchmark SPY buy-and-hold strategy. However, the HAA strategy would help us avoid the loss during the market setback and grow the investment steadily. Take the basic HAA strategy backtest results since 2020 for example. Compared to the HAA ignore canary scenario, our canary asset seems to be able to identify the market turmoil so that our investment focus will turn to the defensive asset to avoid further loss.</p>
+<img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_basic_20_compare.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>Basic HAA V.S. HAA ignore canary asset since 2020</i>
+</p>
+
+<p>Besides, if you compare the basic HAA strategy with the HAA ignore negative strategy, you will see that the HAA ignore negative strategy indeed slightly outperforms the HAA basic strategy for a certain period.</p>
+<img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/haa_negative_20_compare.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>Basic HAA V.S. HAA ignore negative strategy since 2020</i>
+</p>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>2020</th>
+<th>Benchmark (SPY buy-and_hold)</th>
+<th>HAA basic</th>
+<th>HAA ignore canary</th>
+<th>HAA ignore negative</th>
+<th>HAA ignore both</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Annualized Return</td>
+<td><strong>13.553%</strong></td>
+<td>9.892%</td>
+<td>8.889%</td>
+<td>11.554%</td>
+<td>10.120%</td>
+</tr>
+<tr>
+<td>Annualized Volatility</td>
+<td><strong>0.138</strong></td>
+<td>0.109</td>
+<td>0.121</td>
+<td><font color="green">0.108</font></td>
+<td>0.133</td>
+</tr>
+<tr>
+<td>Sharpe Ratio</td>
+<td><strong>0.48</strong></td>
+<td>0.473</td>
+<td>0.382</td>
+<td><font color="green">0.578</font></td>
+<td>0.422</td>
+</tr>
+<tr>
+<td>Sortino Ratio</td>
+<td><strong>0.491</strong></td>
+<td>0.523</td>
+<td>0.423</td>
+<td><font color="green">0.699</font></td>
+<td>0.451</td>
+</tr>
+<tr>
+<td>Max DD</td>
+<td><strong>33.600%</strong></td>
+<td>18.900%</td>
+<td>19.400%</td>
+<td><font color="green">14.000%</font></td>
+<td>26.200%</td>
+</tr>
+<tr>
+<td>Number of orders</td>
+<td><strong>1</strong></td>
+<td>143</td>
+<td>210</td>
+<td>131</td>
+<td>163</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p style="text-align:center; color: grey;">
+  <i>Stats HHA and its variations against SPY buy-and-hold strategy (since 2020)</i>
+</p>
+
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>2016</th>
+<th>Benchmark (SPY buy-and_hold)</th>
+<th>HAA basic</th>
+<th>HAA ignore canary</th>
+<th>HAA ignore negative</th>
+<th>HAA ignore both</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Annualized Return</td>
+<td><strong>14.128%</strong></td>
+<td>10.014%</td>
+<td>8.615%</td>
+<td>10.184%</td>
+<td>8.693%</td>
+</tr>
+<tr>
+<td>Annualized Volatility</td>
+<td><strong>0.151</strong></td>
+<td>0.091</td>
+<td>0.103</td>
+<td>0.091</td>
+<td>0.111</td>
+</tr>
+<tr>
+<td>Sharpe Ratio</td>
+<td><strong>0.579</strong></td>
+<td>0.568</td>
+<td>0.423</td>
+<td><font color="green">0.581</font></td>
+<td>0.406</td>
+</tr>
+<tr>
+<td>Sortino Ratio</td>
+<td><strong>0.573</strong></td>
+<td>0.597</td>
+<td>0.447</td>
+<td><font color="green">0.653</font></td>
+<td>0.423</td>
+</tr>
+<tr>
+<td>Max DD</td>
+<td><strong>33.7%</strong></td>
+<td>18.900%</td>
+<td>19.400%</td>
+<td>14.000%</td>
+<td>26.200%</td>
+</tr>
+<tr>
+<td>Number of orders</td>
+<td><strong>1</strong></td>
+<td>310</td>
+<td>374</td>
+<td>295</td>
+<td>324</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p style="text-align:center; color: grey;">
+  <i>Stats HHA and its variations against SPY buy-and-hold strategy (since 2016)</i>
+</p>
+
+<p>Based on the provided stats above, the HAA strategy and its variations did mitigate the annualized volatility and decrease the maximum drawdown drastically. Yet, the annualized return also shrank along with the decrease of the volatility. Combining both the chart and tables above, the Sharpe ratio and Sortino ratio both improved after we adopted the HAA ignore negative scenario by removing the ETFs that have negative momentum from our target ETFs. This would be an interesting case to further explore.</p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>HAA seems to be a strategy that tries to exploit the advantage of diversification. In the meantime, adding the ETF element to the universe would further elevate the quality level of the universe as the stocks constituted by the ETF are deliberately chosen. As the next step, maybe we can try to find a better diversified ETF to represent the other industries and other aspects of the entire market, improving further the portfolio performance in the future.</p>
+<hr>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4346906">Dual and Canary Momentum with Rising Yields/Inflation: Hybrid Asset Allocation (HAA)</a></li>
+<li><a target="_blank" rel="noopener" href="https://allocatesmartly.com/hybrid-asset-allocation/">Hybrid Asset Allocation</a></li>
+<li><a target="_blank" rel="noopener" href="https://allocatesmartly.com/dr-keller-keunings-simple-variation-of-hybrid-asset-allocation/">Dr. Keller &amp; Keuning’s Simple Variation of “Hybrid Asset Allocation”</a></li>
+<li><a target="_blank" rel="noopener" href="https://nlxfinance.wordpress.com/2024/03/07/the-haa-strategy-revisited/">The HAA strategy revisited</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Research/" rel="tag"># Research</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+              <a href="/tags/Python3/" rel="tag"># Python3</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/01/18/2024-01-18-Revisit-Buy-On-Gao-Strategy/" rel="prev" title="From Theory to Profits - Elevating the Buy-on-Gap Strategy with Advanced Techniques">
+      <i class="fa fa-chevron-left"></i> From Theory to Profits - Elevating the Buy-on-Gap Strategy with Advanced Techniques
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-Hybrid-Asset-Allocation-HAA"><span class="nav-number">1.</span> <span class="nav-text">What is Hybrid Asset Allocation (HAA)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-HAA-adds-diversification-to-our-portfolio"><span class="nav-number">2.</span> <span class="nav-text">How HAA adds diversification to our portfolio</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Backtesting-HAA-and-its-variations"><span class="nav-number">3.</span> <span class="nav-text">Backtesting HAA and its variations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Platform"><span class="nav-number">3.1.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-period"><span class="nav-number">3.2.</span> <span class="nav-text">Backtest period</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Trading-Framework"><span class="nav-number">3.3.</span> <span class="nav-text">Trading Framework</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Universe"><span class="nav-number">3.3.1.</span> <span class="nav-text">Universe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Strategy-Benchmark"><span class="nav-number">3.3.2.</span> <span class="nav-text">Strategy Benchmark</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trading-Rules"><span class="nav-number">3.3.3.</span> <span class="nav-text">Trading Rules</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Variation-Strategies"><span class="nav-number">3.3.4.</span> <span class="nav-text">Variation Strategies</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Results"><span class="nav-number">3.4.</span> <span class="nav-text">Results</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
