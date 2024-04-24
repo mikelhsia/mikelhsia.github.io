@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Cover image created through Copilot   In my previous How2 column Connecting My Trading Strategies To Interactive Brokers, I shared how to set up the Interactive Brokers API connection through the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【How 2】Breaking Free! Use Docker to Create Hands-Off Interactive Broker TWS Managing Experience">
+<meta property="og:url" content="http://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Cover image created through Copilot   In my previous How2 column Connecting My Trading Strategies To Interactive Brokers, I shared how to set up the Interactive Brokers API connection through the">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/tws_connection.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/ibeam_logo.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/postman_test.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/ib_gateway_docker_logo.png">
+<meta property="article:published_time" content="2024-04-23T04:37:41.000Z">
+<meta property="article:modified_time" content="2024-04-24T09:52:06.150Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="How2">
+<meta property="article:tag" content="Python3">
+<meta property="article:tag" content="Interactive Broker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【How 2】Breaking Free! Use Docker to Create Hands-Off Interactive Broker TWS Managing Experience | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【How 2】Breaking Free! Use Docker to Create Hands-Off Interactive Broker TWS Managing Experience
+        </h1>
+
+        
+          <h2 class="post-title" itemprop="name headline" style="font-size: 1em;color: grey;font-style: italic;padding: 0px 50px 0px 50px;">
+            Eliminating the Burden of Daily Auto Restarts and Weekly Log-Outs
+          </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-04-23 12:37:41" itemprop="dateCreated datePublished" datetime="2024-04-23T12:37:41+08:00">2024-04-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-04-24 17:52:06" itemprop="dateModified" datetime="2024-04-24T17:52:06+08:00">2024-04-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/How2/" itemprop="url" rel="index"><span itemprop="name">How2</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/" class="post-meta-item leancloud_visitors" data-flag-title="【How 2】Breaking Free! Use Docker to Create Hands-Off Interactive Broker TWS Managing Experience" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/cover.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Cover image created through <a target="_blank" rel="noopener" href='https://https://copilot.microsoft.com/'>Copilot</a></i>
+</p>
+
+<p>In my previous <strong>How2</strong> column <a href="https://mikelhsia.github.io/2022/12/07/2022-12-10-IBKR-Broker/">Connecting My Trading Strategies To Interactive Brokers</a>, I shared how to set up the Interactive Brokers API connection through the Trader Workstation (TWS) on the local machine. However, the enforced rules like daily auto restart and weekly log-out can be a hassle if you are away from your local machine for many days. In this article, we’ll leverage the power of <a target="_blank" rel="noopener" href="https://www.docker.com/">docker</a> to free you from managing your locally-run TWS attentively.</p>
+<a id="more"></a>
+<hr>
+<p><strong><em>Previous readings</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2022/12/12/2022-12-16-IBKR-broker-2/">【How 2】 Set Up Trading API Template In Python - Placing orders with Interactive Brokers</a></li>
+<li><a href="https://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/">【How 2】 Set Up Trading API Template In Python - Connecting My Trading Strategies To Interactive Brokers</a></li>
+<li><a href="https://mikelhsia.github.io/2020/10/19/2020-10-19-get-all-tradable-tickers/">【How 2】 Vol. 1. How 2 get all tradable tickers in US markets</a></li>
+<li><a href="https://mikelhsia.github.io/2020/11/10/2020-11-08-macd-strategy-implementation/">【How 2】 Vol. 2. How to build an automated stock trading script</a></li>
+</ul>
+<hr>
+<h1 id="Recap-how-to-connect-to-Interactive-Brokers-API-service"><a href="#Recap-how-to-connect-to-Interactive-Brokers-API-service" class="headerlink" title="Recap how to connect to Interactive Brokers API service"></a>Recap how to connect to Interactive Brokers API service</h1><p>To connect to the broker’s API service, IBKR APIs are connected to the API service through its proprietary software called Trader Workstation (TWS). The TWS software runs on the local machine and provides a secure connection to the IBKR API.</p>
+<img data-src="/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/tws_connection.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>How does your API call reach the IBKR API service</i>
+</p>
+
+<h1 id="The-challenge-faced"><a href="#The-challenge-faced" class="headerlink" title="The challenge faced"></a>The challenge faced</h1><p>Even though we have set up the TWS connection on the local machine, there are enforced rules that prohibit us from leaving the TWS running for an extended period of time. The TWS software requires a daily auto-restart and a weekly log-out. Plus, logging back into the TWS or IB gateway requires two-factor authentication through your mobile device, which can be a hassle if you are away from the local machine for multiple days. If you are traveling or on vacation, you may not want to carry your laptop just to keep the TWS connection alive. Also, suppose the TWS application is down when you’re away. In that case, you won’t be able to monitor your trading strategies and adjust them whenever there’s an issue with your connection between your trading script and your TWS application running locally.</p>
+<h1 id="Potential-solution"><a href="#Potential-solution" class="headerlink" title="Potential solution"></a>Potential solution</h1><p>Therefore, we need a tool that can monitor the status of the application and automatically restart it if it goes down. This will free us from the burden of manually managing the TWS connection and allow us to focus on our trading strategies. In this context, Docker indeed seems to be the most appropriate technology to help us achieve our goals. <a target="_blank" rel="noopener" href="https://hub.docker.com/">Docker Hub</a>, an open platform to store and share your Docker images, provides a wide range of pre-built Docker images that can be used to run the TWS software in a containerized environment. Here we’re going to explore a few potential options and compare the pros and cons of these pre-built Docker images.</p>
+<h1 id="Choices-of-Interactive-Brokers-Docker-Images"><a href="#Choices-of-Interactive-Brokers-Docker-Images" class="headerlink" title="Choices of Interactive Brokers Docker Images"></a>Choices of Interactive Brokers Docker Images</h1><h2 id="1-IBEAM"><a href="#1-IBEAM" class="headerlink" title="1. IBEAM"></a>1. <a target="_blank" rel="noopener" href="https://github.com/Voyz/ibeam?tab=readme-ov-file">IBEAM</a></h2><img data-src="/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/ibeam_logo.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+  <i><a target="_blank" rel="noopener" href='https://github.com/Voyz/ibeam'>IBEAM</a></i>
+</p>
+
+<p>IBEAM is a Docker image that provides a containerized version of the Trader Workstation (TWS) software, exposing the <a target="_blank" rel="noopener" href="https://interactivebrokers.github.io/cpwebapi/endpoints">TWS Web API</a> to call remotely. It has the following advantages compared to running TWS on your local machine:</p>
+<ol>
+<li>Headless run of the Gateway.</li>
+<li>No physical display is required.</li>
+<li>No user interaction such as login or 2FA required</li>
+</ol>
+<h3 id="How-to-spin-up-an-IBEAM-container"><a href="#How-to-spin-up-an-IBEAM-container" class="headerlink" title="How to spin up an IBEAM container"></a>How to spin up an IBEAM container</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --env IBEAM_ACCOUNT&#x3D;[tws_account]--env IBEAM_PASSWORD&#x3D;[tws_password] --env IBEAM_PAGE_LOAD_TIMEOUT&#x3D;120 -p 5000:5000 voyz&#x2F;ibeam</span><br></pre></td></tr></table></figure>
+<p>It’s just that simple.</p>
+<blockquote>
+<p>PS: Use 5001 port on your local machine if you’re using Mac devices.</p>
+</blockquote>
+<h3 id="How-to-test-the-IBEAM-API"><a href="#How-to-test-the-IBEAM-API" class="headerlink" title="How to test the IBEAM API"></a>How to test the IBEAM API</h3><p>You can use the APIs used are available in <a target="_blank" rel="noopener" href="https://interactivebrokers.github.io/cpwebapi/endpoints">TWS Web API Doc</a>. For example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -X GET &quot;https:&#x2F;&#x2F;localhost:5001&#x2F;v1&#x2F;api&#x2F;one&#x2F;user&quot; -k</span><br><span class="line"></span><br><span class="line">curl -X GET &quot;https:&#x2F;&#x2F;localhost:5001&#x2F;v1&#x2F;api&#x2F;portfolio&#x2F;accounts&quot; -k</span><br><span class="line"></span><br><span class="line">curl -X GET &quot;https:&#x2F;&#x2F;localhost:5001&#x2F;v1&#x2F;api&#x2F;trsrv&#x2F;stocks?symbols&#x3D;AAPL,WDC&quot; -k</span><br></pre></td></tr></table></figure>
+<p style="text-align:center; color: grey;">
+  <i>API call examples</i>
+</p>
+
+<h3 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h3><p>One thing that you need to pay additional attention to is that, since you’re using the TWS Web API services, the APIs are asynchronous. This means that you’ll need to handle the asynchronous responses properly in your own trading scripts instead of utilizing the existing library like <code>ib_insync</code>. Also, you’ll need to handle the extra SSL certification validation when making API calls. For example, if you’re testing API calls, you’ll need to disable the SSL certification validation, as shown in the following screenshot.</p>
+<img data-src="/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/postman_test.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>PS: If you want to test it through Postman, you need to switch off the SSL certification exam</i>
+</p>
+
+<h2 id="2-ib-gateway-docker"><a href="#2-ib-gateway-docker" class="headerlink" title="2. ib-gateway-docker"></a>2. <a target="_blank" rel="noopener" href="https://github.com/UnusualAlpha/ib-gateway-docker">ib-gateway-docker</a></h2><img data-src="/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/ib_gateway_docker_logo.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+  <i><a target="_blank" rel="noopener" href='https://github.com/UnusualAlpha/ib-gateway-docker'>ib-gateway-docker</a></i>
+</p>
+
+<p>The principle of the <a target="_blank" rel="noopener" href="https://github.com/UnusualAlpha/ib-gateway-docker">ib-gateway-docker</a> image is to use a GUI framework called <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=zjaqmfP28QE">X11</a> to simulate a virtual desktop environment and run the IB Gateway software inside a docker. In this docker image, <a target="_blank" rel="noopener" href="https://github.com/IbcAlpha/IBC">IBC application</a> are pre-installed to construct the pre-defined interactions between remote access and IB Gateway inside these docker images. This docker image is capable of:</p>
+<ul>
+<li>Auto-login with username and password provided.</li>
+<li>Keep the application alive</li>
+<li>Support 2FA login</li>
+<li>Support auto-restarted each day during the week, without the user having to re-authenticate</li>
+<li>Remote access the IB Gateway inside the docker container</li>
+</ul>
+<p>The benefit of using <a target="_blank" rel="noopener" href="https://github.com/UnusualAlpha/ib-gateway-docker">ib-gateway-docker</a> compared to using <a target="_blank" rel="noopener" href="https://github.com/Voyz/ibeam?tab=readme-ov-file">IBEAM</a> is that you can still use the existing async library like <code>ib_insync</code> in your trading script to communicate with IB Gateway. This saves the effort of reinventing the wheel from scratch.</p>
+<h2 id="3-ibkr-docker"><a href="#3-ibkr-docker" class="headerlink" title="3. ibkr-docker"></a>3. <a target="_blank" rel="noopener" href="https://github.com/extrange/ibkr-docker?tab=readme-ov-file">ibkr-docker</a></h2><p>I consider <a target="_blank" rel="noopener" href="https://github.com/extrange/ibkr-docker?tab=readme-ov-file">ibkr-docker</a> to be the advanced version of the <a target="_blank" rel="noopener" href="https://github.com/UnusualAlpha/ib-gateway-docker">ib-gateway-docker</a>. Both docker images use a similar approach to containerize the <a target="_blank" rel="noopener" href="https://github.com/IbcAlpha/IBC">IBC application</a>. In addition, <a target="_blank" rel="noopener" href="https://github.com/extrange/ibkr-docker?tab=readme-ov-file">ibkr-docker</a> contains much more features and possibilities to be extended and explored. See the below table for the major differences in features:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>-</th>
+<th>ib-gateway-docker</th>
+<th>ibkr-docker</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Github Maintainer</td>
+<td>UnusualAlpha</td>
+<td>extrange</td>
+</tr>
+<tr>
+<td>Based on</td>
+<td>Alpine Linux</td>
+<td>Alpine Linux</td>
+</tr>
+<tr>
+<td>Purpose</td>
+<td>Focused on running the IB Gateway Application</td>
+<td>Designed for running both TWS and IB Gateway, with additional features like noVNC access</td>
+</tr>
+<tr>
+<td>GUI</td>
+<td>Minimal GUI (primarily for API access)</td>
+<td>Fully featured TWS platform accessible via noVNC</td>
+</tr>
+<tr>
+<td>Components</td>
+<td>Includes IB Gateway, IBC, Xvfb, and optional X11vnc</td>
+<td>Provides a fully containerized TWS/IB Gateway setup</td>
+</tr>
+<tr>
+<td>Use Case</td>
+<td>Ideal for automated trading and API access</td>
+<td>Suitable for both manual trading (via TWS) and automated tasks (via IB Gateway)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="4-Others"><a href="#4-Others" class="headerlink" title="4. Others"></a>4. Others</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/ryankennedyio/ib-docker?tab=readme-ov-file">ib-docker</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/robolyst/ibportal">ibportal</a></li>
+<li>…</li>
+</ul>
+<h1 id="How-to-address-the-challenges-we-faced"><a href="#How-to-address-the-challenges-we-faced" class="headerlink" title="How to address the challenges we faced"></a>How to address the challenges we faced</h1><p>To resolve the challenges we’re facing right now, I choose <a target="_blank" rel="noopener" href="https://github.com/extrange/ibkr-docker?tab=readme-ov-file">ibkr-docker</a> over the other options because: 1. It provides a fully containerized TWS/IB Gateway setup with more features, 2. The maintainer still actively updates this Github repo, and 3. In the workflow that I’m adopting (see <a href="https://mikelhsia.github.io/2022/12/07/2022-12-10-IBKR-Broker/">Connecting My Trading Strategies To Interactive Brokers</a>), I barely need to change anything in my trading script but spin up a docker container instead. So, let’s get to it.</p>
+<h2 id="1-Spin-up-a-default-docker-container"><a href="#1-Spin-up-a-default-docker-container" class="headerlink" title="1. Spin up a default docker container"></a>1. Spin up a default docker container</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Download the ibkr-docker image with the proper tag/version</span></span><br><span class="line">docker pull ghcr.io/extrange/ibkr:10.19.2h</span><br><span class="line"></span><br><span class="line"><span class="comment"># Spin up the container</span></span><br><span class="line">docker run -d -p <span class="string">&quot;127.0.0.1:6080:6080&quot;</span> -p <span class="string">&quot;127.0.0.1:8888:8888&quot;</span> \</span><br><span class="line">-e USERNAME=&#123;username&#125; -e PASSWORD=&#123;password&#125; \</span><br><span class="line">ghcr.io/extrange/ibkr:10.19.2h</span><br></pre></td></tr></table></figure>
+<p>This command will spin up a default docker container and expose two external ports: <code>6080</code> is used for accessing the GUI via noVNC, and <code>8888</code> is used for the TWS/IB Gateway API calls.</p>
+<h2 id="2-Ensure-the-software-restarts-properly"><a href="#2-Ensure-the-software-restarts-properly" class="headerlink" title="2. Ensure the software restarts properly"></a>2. Ensure the software restarts properly</h2><p>To ensure the TWS/IB Gateway software restarts properly, you need to set the environment variable <code>autoRestartTime</code>. It is an <a target="_blank" rel="noopener" href="https://github.com/IbcAlpha/IBC">IBC</a> setting that instructs IBC to handle the restart of the TWS/IB Gateway Application. I would recommend you check out the <a target="_blank" rel="noopener" href="https://github.com/IbcAlpha/IBC/blob/master/resources/config.ini"><code>config.ini</code> file</a>. As stated in the section of <a target="_blank" rel="noopener" href="https://github.com/extrange/ibkr-docker?tab=readme-ov-file#environment-variables">Environment Variables</a> the variables inside <code>config.ini</code> can be accessed by putting prefix <code>IBC_</code> in front of it. Therefore, the command to spin up the container would be:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p <span class="string">&quot;127.0.0.1:6080:6080&quot;</span> -p <span class="string">&quot;127.0.0.1:8888:8888&quot;</span> \</span><br><span class="line">-e USERNAME=&#123;username&#125; -e PASSWORD=&#123;password&#125; \</span><br><span class="line">-e IBC_AutoRestartTime=<span class="string">&quot;03:00 AM&quot;</span> \</span><br><span class="line">ghcr.io/extrange/ibkr:10.19.2h</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-Wait…-It-didn’t-restart-as-the-time-I-instructed-to"><a href="#2-1-Wait…-It-didn’t-restart-as-the-time-I-instructed-to" class="headerlink" title="2.1. Wait… It didn’t restart as the time I instructed to."></a>2.1. Wait… It didn’t restart as the time I instructed to.</h3><p>I asked this question to myself while I was waiting for the application to restart. I was very confused. I double-checked the setting in TWS through noVNC and it was correctly set to the restart time that I wanted it to. Then something struck me: I saw the time on the top right corner of TWS is still in the UTC timezone, not the local timezone that I expected. Therefore, <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/57607381/how-do-i-change-timezone-in-a-docker-container">one more environment variable</a> needs to be added.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p <span class="string">&quot;127.0.0.1:6080:6080&quot;</span> -p <span class="string">&quot;127.0.0.1:8888:8888&quot;</span> \</span><br><span class="line">-e USERNAME=&#123;username&#125; -e PASSWORD=&#123;password&#125; \</span><br><span class="line">-e IBC_AutoRestartTime=<span class="string">&quot;03:00 AM&quot;</span> \</span><br><span class="line">-e TZ=<span class="string">&quot;US/Eastern&quot;</span> \</span><br><span class="line">ghcr.io/extrange/ibkr:10.19.2h</span><br></pre></td></tr></table></figure>
+<h2 id="3-Tackle-the-2FA-failure"><a href="#3-Tackle-the-2FA-failure" class="headerlink" title="3. Tackle the 2FA failure"></a>3. Tackle the 2FA failure</h2><p>There are two more environment variables to be added to tell the application to handle the 2FA login failure.</p>
+<p>In some circumstances, even though you acknowledge the alert, login doesn’t complete successfully. IBC can deal with this situation automatically by shutting down and restarting by setting the <code>TWOFA_TIMEOUT_ACTION=&quot;restart&quot;</code>.</p>
+<p>If you use the IBKR Mobile app for two-factor authentication, and you fail to complete the process before the time limit imposed by IBKR, <code>ReloginAfterSecondFactorAuthenticationTimeout</code> tells IBC whether to automatically restart the login sequence, giving you another opportunity to complete two-factor authentication.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p <span class="string">&quot;127.0.0.1:6080:6080&quot;</span> -p <span class="string">&quot;127.0.0.1:8888:8888&quot;</span> \</span><br><span class="line">-e USERNAME=&#123;username&#125; -e PASSWORD=&#123;password&#125; \</span><br><span class="line">-e IBC_AutoRestartTime=<span class="string">&quot;03:00 AM&quot;</span> -e IBC_TWOFA_TIMEOUT_ACTION=<span class="string">&#x27;restart&#x27;</span> \</span><br><span class="line">-e IBC_ReloginAfterSecondFactorAuthenticationTimeout=<span class="string">&#x27;yes&#x27;</span> \</span><br><span class="line">-e TZ=<span class="string">&quot;US/Eastern&quot;</span> \</span><br><span class="line">ghcr.io/extrange/ibkr:10.19.2h</span><br></pre></td></tr></table></figure>
+<h2 id="4-Handle-the-weekly-restart"><a href="#4-Handle-the-weekly-restart" class="headerlink" title="4. Handle the weekly restart"></a>4. Handle the weekly restart</h2><p>This may be the most crucial step to free us from the predicament of periodically checking our desktop/laptop to ensure the TWS/IB Gateway software is running. There are two ways of doing this.</p>
+<h3 id="4-1-Using-the-existing-docker-command-to-restart-the-container-every-week"><a href="#4-1-Using-the-existing-docker-command-to-restart-the-container-every-week" class="headerlink" title="4.1. Using the existing docker command to restart the container every week"></a>4.1. Using the existing docker command to restart the container every week</h3><p>We can use the <code>docker restart</code> command to restart the container. By doing this, we need to:</p>
+<ol>
+<li>Name the docker container using the <code>--name</code> parameter when running the initial <code>docker run</code> command.</li>
+<li>Use the <code>docker restart [docker_name]</code> command to restart the container and complete the following 2FA in time.</li>
+<li>Set up a cron job on your laptop to run the second step every week at a specific time.</li>
+</ol>
+<p>The above solution seems plausible, but it still requires an additional tool to schedule the restart task. To make this process fully automated, I prefer to use the tools that we’re already using. Also, I noticed a few things while experimenting various parameters of the <a target="_blank" rel="noopener" href="https://github.com/extrange/ibkr-docker?tab=readme-ov-file">ibkr-docker</a>. Assigning the environment variable <code>ClosedownAt</code> would not only shutdown the TWS/IB Gateway Application, but also terminate the docker container. In the meantime, docker has the capability to keep the container alive when the container was shuted down unexpectedly. With these two characteristics discovered, I’ve formulated the following approach:</p>
+<ol>
+<li>Use <code>ClosedownAt</code> parameter to force shutting down the TWS application and the docker container</li>
+<li>Use docker parameter <code>--restart unless-stopped</code> to instruct docker container to restart once the container is not up.</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p <span class="string">&quot;127.0.0.1:6080:6080&quot;</span> -p <span class="string">&quot;127.0.0.1:8888:8888&quot;</span> \</span><br><span class="line">-e USERNAME=&#123;username&#125; -e PASSWORD=&#123;password&#125; \</span><br><span class="line">-e IBC_AutoRestartTime=<span class="string">&quot;03:17 AM&quot;</span> -e IBC_TWOFA_TIMEOUT_ACTION=<span class="string">&#x27;restart&#x27;</span> \</span><br><span class="line">-e IBC_ReloginAfterSecondFactorAuthenticationTimeout=<span class="string">&#x27;yes&#x27;</span> -e IBC_ClosedownAt=<span class="string">&#x27;Monday 03:00&#x27;</span>\</span><br><span class="line">-e TZ=<span class="string">&quot;US/Eastern&quot;</span> \</span><br><span class="line">--restart unless-stopped \</span><br><span class="line">ghcr.io/extrange/ibkr:10.19.2h</span><br></pre></td></tr></table></figure>
+<p>With the command above, the <code>ClosedownAt</code> will shutdown the container. Then the <code>--restart</code> will notice the container is shuted down and restart the container again.</p>
+<p>Voilà! We tackled all the challenges listed! Now we can go on to vacation without worrying about the TWS application stopping or login session expiring.</p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>In this article, we have talked about the different challenges encountered when running IBKR TWS/IB Gateway in a local environment. Then we introduced a few popular docker images available in the Docker hub and explained the pros and cons. Finally, we came to the conclusion that with the proper configuration and automation tools, the container now will handle restarting itself and re-establishing the login session automatically every week.</p>
+<p>See you next time.</p>
+<blockquote>
+<p>If you enjoy reading this and my other articles, come check out my <a src='https://medium.com/@mikelhsia'>Medium page</a> to read more about Quantitative Trading Strategy.</p>
+</blockquote>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/Voyz/ibeam?tab=readme-ov-file">IBEAM github</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ryankennedyio/ib-docker?tab=readme-ov-file">ib-docker github</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/extrange/ibkr-docker?tab=readme-ov-file">ibkr-docker github</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/UnusualAlpha/ib-gateway-docker">ib-gateway-docker github</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/robolyst/ibportal">ibportal github</a> and <a target="_blank" rel="noopener" href="https://github.com/robolyst/ibportal">here2</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/IbcAlpha/IBC">IbcAlpha/IBC github</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/IbcAlpha/IBC/blob/master/resources/config.ini">IbcAlpha/IBC configuration.ini file</a></li>
+</ul>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/How2/" rel="tag"># How2</a>
+              <a href="/tags/Python3/" rel="tag"># Python3</a>
+              <a href="/tags/Interactive-Broker/" rel="tag"># Interactive Broker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/04/09/2024-03-25-hybrid-asset-allocation/" rel="prev" title="Testing the Waters - Backtesting HAA and Its Variations Towards Success">
+      <i class="fa fa-chevron-left"></i> Testing the Waters - Backtesting HAA and Its Variations Towards Success
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Recap-how-to-connect-to-Interactive-Brokers-API-service"><span class="nav-number">1.</span> <span class="nav-text">Recap how to connect to Interactive Brokers API service</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-challenge-faced"><span class="nav-number">2.</span> <span class="nav-text">The challenge faced</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Potential-solution"><span class="nav-number">3.</span> <span class="nav-text">Potential solution</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Choices-of-Interactive-Brokers-Docker-Images"><span class="nav-number">4.</span> <span class="nav-text">Choices of Interactive Brokers Docker Images</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-IBEAM"><span class="nav-number">4.1.</span> <span class="nav-text">1. IBEAM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#How-to-spin-up-an-IBEAM-container"><span class="nav-number">4.1.1.</span> <span class="nav-text">How to spin up an IBEAM container</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-to-test-the-IBEAM-API"><span class="nav-number">4.1.2.</span> <span class="nav-text">How to test the IBEAM API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Notes"><span class="nav-number">4.1.3.</span> <span class="nav-text">Notes</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-ib-gateway-docker"><span class="nav-number">4.2.</span> <span class="nav-text">2. ib-gateway-docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-ibkr-docker"><span class="nav-number">4.3.</span> <span class="nav-text">3. ibkr-docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Others"><span class="nav-number">4.4.</span> <span class="nav-text">4. Others</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-to-address-the-challenges-we-faced"><span class="nav-number">5.</span> <span class="nav-text">How to address the challenges we faced</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Spin-up-a-default-docker-container"><span class="nav-number">5.1.</span> <span class="nav-text">1. Spin up a default docker container</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Ensure-the-software-restarts-properly"><span class="nav-number">5.2.</span> <span class="nav-text">2. Ensure the software restarts properly</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Wait%E2%80%A6-It-didn%E2%80%99t-restart-as-the-time-I-instructed-to"><span class="nav-number">5.2.1.</span> <span class="nav-text">2.1. Wait… It didn’t restart as the time I instructed to.</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Tackle-the-2FA-failure"><span class="nav-number">5.3.</span> <span class="nav-text">3. Tackle the 2FA failure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Handle-the-weekly-restart"><span class="nav-number">5.4.</span> <span class="nav-text">4. Handle the weekly restart</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Using-the-existing-docker-command-to-restart-the-container-every-week"><span class="nav-number">5.4.1.</span> <span class="nav-text">4.1. Using the existing docker command to restart the container every week</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">6.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
