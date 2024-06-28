@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Cover image created through Copilot   Testing APIs with OAuth 2.0 authentication can be a complex task, but Postman simplifies the process by providing built-in support for various OAuth 2.0 flows">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【How 2】A Productive Way to Manage OAuth 2.0 Tokens">
+<meta property="og:url" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Cover image created through Copilot   Testing APIs with OAuth 2.0 authentication can be a complex task, but Postman simplifies the process by providing built-in support for various OAuth 2.0 flows">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/oauth_2_0.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/postman_logo.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/postman_interface.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/postman_collection.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/postman_authentication.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/postman_access_token.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/postman_apply_token.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/postman_refresh.png">
+<meta property="article:published_time" content="2024-06-24T06:35:11.000Z">
+<meta property="article:modified_time" content="2024-06-28T06:25:26.344Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="How2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【How 2】A Productive Way to Manage OAuth 2.0 Tokens | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【How 2】A Productive Way to Manage OAuth 2.0 Tokens
+        </h1>
+
+        
+          <h2 class="post-title" itemprop="name headline" style="font-size: 1em;color: grey;font-style: italic;padding: 0px 50px 0px 50px;">
+            Using Postman to Streamline the OAuth 2.0 Authorization Code Grant Flow
+          </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-06-24 14:35:11" itemprop="dateCreated datePublished" datetime="2024-06-24T14:35:11+08:00">2024-06-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-06-28 14:25:26" itemprop="dateModified" datetime="2024-06-28T14:25:26+08:00">2024-06-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/How2/" itemprop="url" rel="index"><span itemprop="name">How2</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2024/06/24/2024-06-24-test-oauth-via-postman/" class="post-meta-item leancloud_visitors" data-flag-title="【How 2】A Productive Way to Manage OAuth 2.0 Tokens" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/06/24/2024-06-24-test-oauth-via-postman/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/06/24/2024-06-24-test-oauth-via-postman/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2024/06/24/2024-06-24-test-oauth-via-postman/cover.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+  <i>Cover image created through <a target="_blank" rel="noopener" href='https://https://copilot.microsoft.com/'>Copilot</a></i>
+</p>
+
+<p>Testing APIs with OAuth 2.0 authentication can be a complex task, but Postman simplifies the process by providing built-in support for various OAuth 2.0 flows. Postman seamlessly complements OAuth 2.0 authentication, allowing developers to easily configure settings, obtain access tokens, and manage token lifecycle. In this post, we will quickly go through this process by utilizing the Postman software.</p>
+<a id="more"></a>
+<hr>
+<h3 id="Previous-readings"><a href="#Previous-readings" class="headerlink" title="Previous readings"></a>Previous readings</h3><ul>
+<li><a href="https://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/">【How 2】Breaking Free! Use Docker to Create Hands-Off Interactive Broker TWS Managing Experience</a></li>
+<li><a href="https://mikelhsia.github.io/2022/12/12/2022-12-16-IBKR-broker-2/">【How 2】 Set Up Trading API Template In Python - Placing orders with Interactive Brokers</a></li>
+<li><a href="https://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/">【How 2】 Set Up Trading API Template In Python - Connecting My Trading Strategies To Interactive Brokers</a></li>
+<li><a href="https://mikelhsia.github.io/2020/10/19/2020-10-19-get-all-tradable-tickers/">【How 2】 Vol. 1. How 2 get all tradable tickers in US markets</a></li>
+<li><a href="https://mikelhsia.github.io/2020/11/10/2020-11-08-macd-strategy-implementation/">【How 2】 Vol. 2. How to build an automated stock trading script</a></li>
+</ul>
+<hr>
+<h1 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h1><p>As most of the self-employed quant traders know, <a target="_blank" rel="noopener" href="https://www.investors.com/news/charles-schwab-boosts-online-brokerage-with-td-ameritrade-deal/#:~:text=In%20November%202019%2C%20Charles%20Schwab,deal%20closed%20a%20year%20later.&amp;text=So%2C%20for%20the%20past%20three,well%2Dregarded%20Thinkorswim%20trading%20platform.">Charles Schwab acquired TD Ameritrade in 2018</a>. Charles Schwab, as a major player among all the broker platforms, has recently released its API interface for trading using <a target="_blank" rel="noopener" href="https://auth0.com/intro-to-iam/what-is-oauth-2">OAuth 2.0</a> as a means to authenticate users. As a quant trader/developer, I found that it’s quite troublesome to probe the API using OAuth 2.0 authentication as you need to manage the refresh and access token constantly. Therefore, I will quickly go through this process by using the OAuth 2.0 authorization code grant flow in this post.</p>
+<h1 id="What-is-OAuth"><a href="#What-is-OAuth" class="headerlink" title="What is OAuth"></a>What is OAuth</h1><p>OAuth 2.0 is a popular web security protocol that allows an end user to grant a third-party application access to the proprietary data of a web service. The third-party application will issue the client ID and the client secret, which the end user can use to request the authorization code. The application can then use the authorization code to request an access token from the service provider. Finally, the users will be allowed to use the access token to access protected resources. There are many articles and details about OAuth 2.0 that I will not go into detail here. You can see below for the graphical reference, or see <a target="_blank" rel="noopener" href="https://auth0.com/intro-to-iam/what-is-oauth-2">here</a> to further understand the detail.</p>
+<img data-src="/2024/06/24/2024-06-24-test-oauth-via-postman/oauth_2_0.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>OAuth 2.0 authentication process</a></i>
+</p>
+
+<p>To access the server resources, you need to first make sure your access token is not expired. If the access token has expired, then you are required to use your refresh token to request a new access token in order to request the resource you need. The expiration time of the refresh token is usually around 7~30 days depends on the OAuth 2.0 service provider, and the expiration time of the access token is around 5 minutes (300 seconds) in industry convention. Therefore, keeping track of the state of the refresh and access tokens is very inconvenient as you need to constantly validate the state of both tokens. It’ll be efficient enough to have an automation tool to streamline the process and the test of interaction between the API and the client.</p>
+<h1 id="What-is-Postman"><a href="#What-is-Postman" class="headerlink" title="What is Postman"></a>What is Postman</h1><img data-src="/2024/06/24/2024-06-24-test-oauth-via-postman/postman_logo.png" class="" width="100">
+<img data-src="/2024/06/24/2024-06-24-test-oauth-via-postman/postman_interface.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Postman software user interface</a></i>
+</p>
+
+<p>Postman is a productivity software for developers to facilitate the work of building, testing, and developing APIs. To achieve this purpose, abundant authentication methods have been integrated into the software itself. Needless to say, it includes the OAuth 2.0. In this post, we will go through the steps of enabling OAuth 2.0 capability in Postman.</p>
+<h1 id="Enabling-OAuth-2-0-capability-in-Postman"><a href="#Enabling-OAuth-2-0-capability-in-Postman" class="headerlink" title="Enabling OAuth 2.0 capability in Postman"></a>Enabling OAuth 2.0 capability in Postman</h1><h2 id="1-Build-an-API-collection"><a href="#1-Build-an-API-collection" class="headerlink" title="1. Build an API collection"></a>1. Build an API collection</h2><p>Our ultimate purpose is to create one setting to retrieve the request and refresh the token and then apply it to all APIs instead of managing the state of the token for every single API. Therefore, we need to create a collection to contain all the APIs we need to test so that we can apply the same OAuth 2.0 authentication setting to all APIs.</p>
+<img data-src="/2024/06/24/2024-06-24-test-oauth-via-postman/postman_collection.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Postman software user interface - API collection</a></i>
+</p>
+
+<h2 id="2-Set-up-Authorization-for-OAuth-2-0-for-every-API-in-the-collection"><a href="#2-Set-up-Authorization-for-OAuth-2-0-for-every-API-in-the-collection" class="headerlink" title="2. Set up Authorization for OAuth 2.0 for every API in the collection"></a>2. Set up Authorization for OAuth 2.0 for every API in the collection</h2><p>Next, we need to configure the parameters for our OAuth 2.0 authentication which later will be applied to all the underlying APIs.</p>
+<img data-src="/2024/06/24/2024-06-24-test-oauth-via-postman/postman_authentication.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Postman software user interface - Authentication</a></i>
+</p>
+
+<p>See below for all the parameters that we need to set up:</p>
+<ul>
+<li><strong>Auth</strong><ul>
+<li>Auth Type =&gt; OAuth 2.0</li>
+<li>Add auth data to =&gt; Request Headers</li>
+</ul>
+</li>
+<li><strong>Configure New Token</strong><ul>
+<li>Token Name =&gt; [Name of the token as you prefer]</li>
+<li>Grant type =&gt; Authorization Code</li>
+<li>Callback URL =&gt; <a target="_blank" rel="noopener" href="https://127.0.0.1">https://127.0.0.1</a></li>
+<li>Auth URL =&gt; [Look it up from your service provider]</li>
+<li>Access Token URL =&gt; [Look it up from your service provider]</li>
+<li>Client ID =&gt; [Your App Key]</li>
+<li>Client Secret =&gt; [Your App Secret]</li>
+</ul>
+</li>
+</ul>
+<p>After you have completed the above steps, you should be able to successfully request a new access token. You can find the <code>Get New Access Token</code> at the bottom of the <code>Authorization</code> tab.</p>
+<img data-src="/2024/06/24/2024-06-24-test-oauth-via-postman/postman_access_token.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Postman software user interface - Get new access token</a></i>
+</p>
+
+<p>Once you click that button, you’ll be redirected to the OAuth login page of your service provider. After you complete the proprietary login process, the refresh token and the access token should be saved in the Postman if you have successfully walked through the login process.</p>
+<h2 id="3-Apply-the-access-token-for-all-APIs"><a href="#3-Apply-the-access-token-for-all-APIs" class="headerlink" title="3. Apply the access token for all APIs"></a>3. Apply the access token for all APIs</h2><p>Now let’s apply the requested access token to all the APIs under the collection we created. Create an API or pick any API that you have created under the collection you just created. In the configuration window of this picked API, you choose <code>OAuth 2.0</code> as the Auth Type and choose the token that was just created as the current token under the <code>Authentication</code> tab.</p>
+<img data-src="/2024/06/24/2024-06-24-test-oauth-via-postman/postman_apply_token.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Postman software user interface - Apply access token to every API</a></i>
+</p>
+
+<p>If every step above is done correctly, you should be able to successfully request the API you have created.</p>
+<h2 id="4-Refresh-access-token-for-all-APIs"><a href="#4-Refresh-access-token-for-all-APIs" class="headerlink" title="4. Refresh access token for all APIs"></a>4. Refresh access token for all APIs</h2><p>As mentioned above, the access token expires every 5 minutes. Therefore, you’ll find that there are messages displayed below the token string as long as the access token has expired. Postman provides this tool to easily refresh the access token.</p>
+<img data-src="/2024/06/24/2024-06-24-test-oauth-via-postman/postman_refresh.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Postman software user interface - Refresh access token</a></i>
+</p>
+
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>In this post, we have gone through the steps of enabling OAuth 2.0 capability in Postman. We have also demonstrated how to apply the access token to all APIs in the collection and how to refresh the access token. Hope this post helps.</p>
+<p>Cheers</p>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/How2/" rel="tag"># How2</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/" rel="prev" title="【How 2】Breaking Free! Use Docker to Create Hands-Off Interactive Broker TWS Managing Experience">
+      <i class="fa fa-chevron-left"></i> 【How 2】Breaking Free! Use Docker to Create Hands-Off Interactive Broker TWS Managing Experience
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Previous-readings"><span class="nav-number">1.</span> <span class="nav-text">Previous readings</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Context"><span class="nav-number"></span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-OAuth"><span class="nav-number"></span> <span class="nav-text">What is OAuth</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-Postman"><span class="nav-number"></span> <span class="nav-text">What is Postman</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Enabling-OAuth-2-0-capability-in-Postman"><span class="nav-number"></span> <span class="nav-text">Enabling OAuth 2.0 capability in Postman</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Build-an-API-collection"><span class="nav-number"></span> <span class="nav-text">1. Build an API collection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Set-up-Authorization-for-OAuth-2-0-for-every-API-in-the-collection"><span class="nav-number"></span> <span class="nav-text">2. Set up Authorization for OAuth 2.0 for every API in the collection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Apply-the-access-token-for-all-APIs"><span class="nav-number"></span> <span class="nav-text">3. Apply the access token for all APIs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Refresh-access-token-for-all-APIs"><span class="nav-number"></span> <span class="nav-text">4. Refresh access token for all APIs</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number"></span> <span class="nav-text">Conclusion</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
