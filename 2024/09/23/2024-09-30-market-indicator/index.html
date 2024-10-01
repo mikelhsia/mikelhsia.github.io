@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Cover image created through Copilot   Ever wondered how to tell if the market is roaring like a bull or growling like a bear? This article will dive deep into how these indicators perform in diffe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Supercharge Your Trading Strategy - Bull? Bear? Here’s How to Profit">
+<meta property="og:url" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Cover image created through Copilot   Ever wondered how to tell if the market is roaring like a bull or growling like a bear? This article will dive deep into how these indicators perform in diffe">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/cover.jpeg">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/benchmark_return.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/benchmark_return_manual.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/strategy_correlation.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/benchmark_strategy_return.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/spy_market_filter.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/adx_market_filter_rule_1.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/adx_market_filter_rule_2.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/vix_history_price.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/vix_market_filter.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/yield_curve_3m_10y.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/yield_curve_3m_2y.png">
+<meta property="article:published_time" content="2024-09-23T04:13:13.000Z">
+<meta property="article:modified_time" content="2024-10-01T04:51:38.846Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Technical Analysis">
+<meta property="article:tag" content="Backtesting">
+<meta property="article:tag" content="QuantConnect">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/cover.jpeg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Supercharge Your Trading Strategy - Bull? Bear? Here’s How to Profit | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Supercharge Your Trading Strategy - Bull? Bear? Here’s How to Profit
+        </h1>
+
+        
+          <h2 class="post-title" itemprop="name headline" style="font-size: 1em;color: grey;font-style: italic;padding: 0px 50px 0px 50px;">
+            Practical Analysis of Market Signals, Backtest, and Key Performance Metrics
+          </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-09-23 12:13:13" itemprop="dateCreated datePublished" datetime="2024-09-23T12:13:13+08:00">2024-09-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-10-01 12:51:38" itemprop="dateModified" datetime="2024-10-01T12:51:38+08:00">2024-10-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2024/09/23/2024-09-30-market-indicator/" class="post-meta-item leancloud_visitors" data-flag-title="Supercharge Your Trading Strategy - Bull? Bear? Here’s How to Profit" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/09/23/2024-09-30-market-indicator/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/09/23/2024-09-30-market-indicator/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2024/09/23/2024-09-30-market-indicator/cover.jpeg" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Cover image created through <a target="_blank" rel="noopener" href='https://copilot.microsoft.com/'>Copilot</a></i>
+</p>
+
+<p>Ever wondered how to tell if the market is roaring like a bull or growling like a bear? This article will dive deep into how these indicators perform in different market conditions, comparing manual identification with indicator-based methods. By adding this market indicator, you’ll see how momentum strategies shine in bull markets, while mean reversion and pair trading strategies come into play during bear markets. Plus, we’ll uncover some insights that you might never have considered while applying market indicators in your own algorithm trading script. Now, let’s dive in and uncover the secrets of the market together!</p>
+<a id="more"></a>
+<p><strong><em>Previous researches</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2024/06/28/2024-06-28-why-fit-and-transform/">【ML algo trading】One Pitfall You Definitely Need to Avoid in Feature Engineering</a></li>
+<li><a href="https://mikelhsia.github.io/2024/06/24/2024-06-24-test-oauth-via-postman/">【How 2】A Productive Way to Manage OAuth 2.0 Tokens</a></li>
+<li><a href="https://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/">【How 2】Breaking Free! Use Docker to Create Hands-Off Interactive Broker TWS Managing Experience</a></li>
+</ul>
+<hr>
+<h1 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h1><p>Various quantitative trading strategies are currently executed in the market, and each strategy has its own characteristics and advantages. For example, <strong>momentum trading strategies</strong> are often used to profit from the trend of the bull/bear market, while <strong>mean reversion strategies</strong> are often used to profit from the fluctuation of the market; <strong>machine learning algorithms</strong> can be used to discover the hidden pattern in the market and to profit from it accordingly; <strong>pair trading strategies</strong> aim to exploit the short-term turmoil in the market and to make profit from the pricing adjustment movement among multiple correlated assets.</p>
+<p>However, the market is not always in the same stable state, and various influences, macro or micro, could affect and change the market conditions. Therefore, executing one single trading strategy throughout the entire market cycle is not always the best choice. Hence, inventing a method to constantly detect and monitor market conditions has become an important topic in the quantitative trading field.</p>
+<h1 id="What-is-the-Market-Indicator"><a href="#What-is-the-Market-Indicator" class="headerlink" title="What is the Market Indicator?"></a>What is the Market Indicator?</h1><p>Before we dive into the details of the market indicator, let’s first understand what the market looks like. Below is the SPY index market return n from <strong>2020-01-03</strong> to <strong>2024-09-16</strong>:</p>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/benchmark_return.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>The SPY market return from 2020-01-03 to 2024-09-16</i>
+</p>
+
+<p>As the first step to decide what kind of trading strategy we’re using, we would need to visually identify what is the market condition now. I believe most of the investors like me would classify the market as below:</p>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/benchmark_return_manual.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Identified bull/bear market conditions</i>
+</p>
+
+<p>What is the purpose of a market indicator? In essence, it is a quantitative, mathematical, and analytical tool that allows algorithms to assess current market conditions without the need for human intervention. By accurately identifying the existing market situation, investors can implement trading strategies that are best suited to the current climate, maximizing the performance of their strategies.</p>
+<p>In this post, I’m going to introduce the following four basic market indicators that help the investor to identify the market condition and to make the trading strategy more robust.</p>
+<ul>
+<li><p>Using SPY daily close price and its history data</p>
+<ul>
+<li>SPY index stands for the S&amp;P 500 index, which is a market-weighted index of 500 large-cap U.S. stocks. Therefore, we can use the 200-day Simple Moving Average of SPY close price as a threshold. When the SPY daily close price is above the 200-day Simple Moving Average, the market is considered to be bullish; otherwise, it is considered to be bearish.</li>
+</ul>
+</li>
+<li><p>The Average Directional Indicator (ADX)</p>
+<ul>
+<li>The ADX is a technical indicator that measures the strength of a trend. It is calculated by comparing the difference between the current high and low prices with the previous high and low prices. To see more details of ADX, you can refer to <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/a/adx.asp">this</a> and <a target="_blank" rel="noopener" href="https://www.investopedia.com/articles/trading/07/adx-trend-indicator.asp">this</a> article.</li>
+<li>In the book <a target="_blank" rel="noopener" href="https://www.amazon.com/Quantitative-Trading-Strategies-Harnessing-McGraw-Hill/dp/0071412395/">Quantitative Trading Strategy</a> (<em>by LARS KESTNER</em>), he mentioned that the 14-day ADX is a good indicator to identify the market condition, and recommends the following frameworks to identify the market condition:</li>
+</ul>
+</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Regime</th>
+<th>Trend</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADX &lt; 15</td>
+<td>Mean reverting prices</td>
+<td>RSI oscillator to take counter-trend signals</td>
+</tr>
+<tr>
+<td>15 &lt; ADX &lt; 25</td>
+<td>Random walk, no trend, no mean reversion in prices</td>
+<td>No trading</td>
+</tr>
+<tr>
+<td>ADX &gt; 25</td>
+<td>Trending prices</td>
+<td>40-day/20-day channel breakout</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Regime switching rule I</i>
+</p>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Regime</th>
+<th>Trend</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADX &lt; 20</td>
+<td>Trend to begin soon</td>
+<td>40-day/20-day channel breakout</td>
+</tr>
+<tr>
+<td>20 &lt; ADX &lt; 30</td>
+<td>Mean reversion in prices</td>
+<td>14 day RSI strategy</td>
+</tr>
+<tr>
+<td>ADX &gt; 30</td>
+<td>Trending prices</td>
+<td>40-day/20-day channel breakout</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Regime switching rule II</i>
+</p>
+
+<ul>
+<li><p>CBOE VIX Index</p>
+<ul>
+<li>The VIX index is a measure of the market’s expectation of future volatility based on S&amp;P 500 index options. The VIX index goes high when the market is volatile and low when the market is stable. So we will use the 15-day VIX SMA plus 15% of it as a threshold. When the VIX index close price is above the threshold, the market is considered to be volatile/bearish; otherwise, it is considered to be stable/bullish.</li>
+</ul>
+</li>
+<li><p>Yield Curve Inversion</p>
+<ul>
+<li>I assume most of you have been quite familiar with this indicator. The yield curve inversion is a situation where long-term interest rates are lower than short-term interest rates. This situation is considered to be a sign of an impending recession. Therefore, we will use the 10-year Treasury yield and the 2-year Treasury yield as indicators. When the short-term yield curve is above the long-term yield curve, we consider the yield curve inversion is happening, and the market is considered to be bearish and vice versa. <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/i/invertedyieldcurve.asp">Here</a> is the definition of the yield curve inversion if you want to know more.</li>
+</ul>
+</li>
+</ul>
+<h1 id="Backtest-Results"><a href="#Backtest-Results" class="headerlink" title="Backtest Results"></a>Backtest Results</h1><h2 id="Platform"><a href="#Platform" class="headerlink" title="Platform"></a>Platform</h2><p><a target="_blank" rel="noopener" href="https://quantconnect.com/">QuantConnect</a></p>
+<h2 id="Backtest-Period"><a href="#Backtest-Period" class="headerlink" title="Backtest Period"></a>Backtest Period</h2><p><code>2020-01-03</code> to <code>2024-09-16</code></p>
+<h2 id="Trading-Framework"><a href="#Trading-Framework" class="headerlink" title="Trading Framework"></a>Trading Framework</h2><h3 id="Universe"><a href="#Universe" class="headerlink" title="Universe"></a>Universe</h3><p>The constituents of the SPDR S&amp;P 500 ETF Trust (SPY)</p>
+<h3 id="Strategy-Benchmark"><a href="#Strategy-Benchmark" class="headerlink" title="Strategy Benchmark"></a>Strategy Benchmark</h3><p>SPDR S&amp;P 500 ETF Trust (SPY)</p>
+<h3 id="Trading-Rules"><a href="#Trading-Rules" class="headerlink" title="Trading Rules"></a>Trading Rules</h3><ul>
+<li>First of all, we need to prepare two strategies: one is the momentum trading strategy that can capture the momentum when the market is bullish, and the other is the mean reversion trading strategy that can capture the momentum when the market is bearish. I’ve created a weekly rebalancing momentum strategy and a RSI reverse trading strategy to be executed when the market is bearish. Unfortunately, my bullish and bearish trading strategies are highly correlated, which makes it less likely to compensate when the momentum is diminished. Therefore, I’ve decided to use the cash strategy to hold cash only when the market is bearish. You can replace it with investing in other fixed-income securities.</li>
+</ul>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/strategy_correlation.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Strategy performance correlation heatmap</i>
+</p>
+
+<ul>
+<li>For each trading strategy, we design the capacity to hold ten stocks maximum.</li>
+<li>All the positions are created or closed right after the market opens.</li>
+<li>Strategy-specific trading rules<ul>
+<li>Momentum trading strategy<ul>
+<li>Calculate the momentum of each stock by averaging the one-month, three-month, six-month, and one-year returns evenly.</li>
+<li>Rebalance the portfolio by holding the top 10 stocks that have the highest momentum scores.</li>
+</ul>
+</li>
+<li>Cash holding strategy<ul>
+<li>Liquidate all the positions and hold cash only.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>According to the market condition detected by the market indicator, we will switch the trading strategy to momentum trading strategy when bullish, while switching to the cash holding strategy when bearish.</li>
+</ul>
+<p>One thing that I’ve noticed while conducting this backtest and would like to share with you is that there’s a situation that you need to be aware of. You might encounter the scene where you will need to switch to another trading strategy while having positions open in your portfolio. To further manage your assets, you could do the following to make sure the trading strategy executes the exact instructions you expected:</p>
+<ol>
+<li>Liquidate all the opening positions before you long the new assets from another trading strategy.</li>
+<li>Hold the current positions and apply the exit rules of the new trading strategy.</li>
+<li>Use the market indicator that is more robust to minimize the number of times you need to switch the trading strategy.</li>
+</ol>
+<p>Let me know if you have any other better ideas to handle this situation.</p>
+<h2 id="Benchmark-performance-of-the-strategy-momentum-only"><a href="#Benchmark-performance-of-the-strategy-momentum-only" class="headerlink" title="Benchmark performance of the strategy (momentum only)"></a>Benchmark performance of the strategy (momentum only)</h2><p>Below is the backtest result of the momentum strategy performance. As you can see, the strategy performance dropped significantly during February 2020 and stayed relatively flat from November 2021 until 2023 September. We expect to increase the return in these periods by incorporating the market indicator and to switch to the cash holding strategy to reduce the loss and increase the overall return.</p>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/benchmark_strategy_return.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Momentum strategy performance backtest results</i>
+</p>
+
+<h2 id="Results-attached-with-the-strategy-switching-plot"><a href="#Results-attached-with-the-strategy-switching-plot" class="headerlink" title="Results (attached with the strategy switching plot)"></a>Results (attached with the strategy switching plot)</h2><h3 id="Using-SPY-daily-close-price-and-its-history-data"><a href="#Using-SPY-daily-close-price-and-its-history-data" class="headerlink" title="Using SPY daily close price and its history data"></a>Using SPY daily close price and its history data</h3><img data-src="/2024/09/23/2024-09-30-market-indicator/spy_market_filter.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Strategy performance when adopting SPY as a market indicator</i>
+</p>
+
+<p>The first plot above shows the performance of the strategy. The second plot indicates what strategy was used according to the SPY market indicator. The bottom plot is to plot the SPY daily close price and its 200-day moving average. As said when the daily close price soar above the 200-day moving average, the momentum strategy is used. Otherwise, the cash holding strategy is used.</p>
+<p>Now let’s go back to the first plot. The red line marked the clear bear market seems pretty conforming to the grey dotted line, which indicates the perceived bear market. However, once you look closely and compare it to the original benchmark strategy performance, you will find out that this strategy missed the comeback of the market from the bottom. Even though the SPY market indicator did help us cap the loss, missing the comeback of the market greatly damaged the profitability of the strategy. If the SPY indicator can increase the sensitivity on the part to detect the market recovery earlier, the strategy could be more profitable.</p>
+<p>The SPY market indicator results in <strong>32 changes</strong> between trading strategies. This high frequency of changes leads to frequent trading, incurring significant transaction costs and very short holding periods. Both these outcomes are often not beneficial and could be toxic if you can’t manage them well in the trading strategy. By smoothing the market indicator and reducing the frequency of strategy adjustments, we can minimize friction. This approach will decrease the incidence of short-term, unnecessary trades, thereby lowering transaction costs and enhancing the overall performance of the strategy.</p>
+<h3 id="Average-Directional-Indicator-ADX"><a href="#Average-Directional-Indicator-ADX" class="headerlink" title="Average Directional Indicator (ADX)"></a>Average Directional Indicator (ADX)</h3><p>Let’s recap the trading rules of the strategies using ADX as the market indicator.</p>
+<h4 id="ADX-Trading-Rule-One"><a href="#ADX-Trading-Rule-One" class="headerlink" title="ADX Trading Rule One"></a>ADX Trading Rule One</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Regime</th>
+<th>Trend</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADX &lt; 15</td>
+<td>Mean reverting prices</td>
+<td>RSI oscillator to take counter-trend signals</td>
+</tr>
+<tr>
+<td>15 &lt; ADX &lt; 25</td>
+<td>Random walk, no trend, no mean reversion in prices</td>
+<td>No trading</td>
+</tr>
+<tr>
+<td>ADX &gt; 25</td>
+<td>Trending prices</td>
+<td>40-day/20-day channel breakout</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Regime switching rule I</i>
+</p>
+
+<p>The basic idea of this is to execute the momentum strategy when the ADX market indicator detect the bull market, execute the cash holding strategy when the fluctuating market is detected, and execute the mean reversion strategy to capture the reversion of the market during the bear market. At first hearing, the core method of the trading strategy sounds legit. However, you see the different strategies got switched as many as <strong>73 times</strong> from the second plot in the strategy backtest results below. The idea to introduce the market indicator is to identify not just the current market state but also the beginning of the future market trend. Given the volatile market state predicted, switching the trading strategy too frequently diminished the effectiveness of all trading strategies.</p>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/adx_market_filter_rule_1.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Strategy performance when adopting ADX rule 1 as a market indicator</i>
+</p>
+
+
+<h4 id="ADX-Trading-Rule-Two"><a href="#ADX-Trading-Rule-Two" class="headerlink" title="ADX Trading Rule Two"></a>ADX Trading Rule Two</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Regime</th>
+<th>Trend</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADX &lt; 20</td>
+<td>Trend to begin soon</td>
+<td>40-day/20-day channel breakout</td>
+</tr>
+<tr>
+<td>20 &lt; ADX &lt; 30</td>
+<td>Mean reversion in prices</td>
+<td>14 day RSI strategy</td>
+</tr>
+<tr>
+<td>ADX &gt; 30</td>
+<td>Trending prices</td>
+<td>40-day/20-day channel breakout</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Regime switching rule II</i>
+</p>
+
+<p>To improve the previous trading strategy, <em>LARS KESTNER</em> in his book <a target="_blank" rel="noopener" href="https://www.amazon.com/Quantitative-Trading-Strategies-Harnessing-McGraw-Hill/dp/0071412395/">Quantitative Trading Strategy</a> recommended a different regime switching rule. In this new rule, he proposed treating the bull and bear market in the same condition and leaving the fluctuating market as a separate condition. We execute a momentum trading strategy not only during bull but also bear market, while executing the mean reversion strategy during the fluctuating market.</p>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/adx_market_filter_rule_2.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Strategy performance when adopting ADX rule 1 as a market indicator</i>
+</p>
+
+<p>Surprisingly, even though the backtest results were not as satisfactory, there are a few noteworthy points:</p>
+<ul>
+<li>We expected fewer strategy switches. However, the strategy still switched <strong>83 times</strong>, which is more than the previous rule.</li>
+<li>Despite the increased frequency of strategy switches, the actual number of trades was significantly lower than with the previous rule.</li>
+<li>Upon cross-checking the order history and the timing of strategy changes, I discovered that when the strategy switched from a bull to a bear market, the signals from both trading strategies pointed to the same stock symbols. This indicates that <strong><em>the stocks with the greatest momentum in a bull market tend to be the same stocks that experience the greatest dip when the market turns bearish</em></strong>. This could be an interesting finding to explore further.</li>
+</ul>
+<p>Anyway, in general, the ADX indicator seems too volatile to be used as a market indicator and needs more investigation.</p>
+<h3 id="CBOE-VIX-Index"><a href="#CBOE-VIX-Index" class="headerlink" title="CBOE VIX Index"></a>CBOE VIX Index</h3><p>Compared to other market indicators, the CBOE VIX Index behaves somewhat differently. As a measure of the implied volatility of S&amp;P 500 index options, the VIX can spike dramatically in a short period. When the market and investors recognize heightened volatility, the VIX tends to decrease swiftly as the negative sentiment has been absorbed by the market and other financial institutions.</p>
+<p>As illustrated in the chart below, the frequent spikes indicate that the VIX primarily measures market sentiment and tends to return to a stable state quickly.</p>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/vix_history_price.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>VIX daily price captured from <a target="_blank" rel="noopener" href='https://finance.yahoo.com/quote/%5EVIX/chart/'>Yahoo! Finance</a></i>
+</p>
+
+<p>The chart below shows that the strategy adopting VIX as market indicator has a very nice performance close to the benchmark trading strategy. The performance of the strategy has nearly no growth from February 2021 to January 2024, meaning this strategy took around three years to recover from the bottom. On the other hand, if you look at this from another perspective, adding the VIX market indicator to the trading strategy has helped reduce the volatility, and also the max drawdown, from 42% to 26%, giving a similar profitability, 20.193% vs 17.137% annually. Therefore, it’s quite clear that VIX does help detect the beginning of the bear market and further avoid the significant loss effectively.</p>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/vix_market_filter.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Strategy performance while adopting VIX as a market indicator</i>
+</p>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Sharpe Ratio</th>
+<th>Total Return</th>
+<th>Annual Return</th>
+<th>Max Drawdown</th>
+<th>Annual Variance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Benchmark</td>
+<td>20.012</td>
+<td>137.07%</td>
+<td>20.193%</td>
+<td>41.9%</td>
+<td>0.051</td>
+</tr>
+<tr>
+<td>VIX</td>
+<td><font color ='red'>16.462</font></td>
+<td><font color ='red'>110.81%</font></td>
+<td><font color ='red'>17.137%</font></td>
+<td><font color ='green'>26.00%</font></td>
+<td><font color ='green'>0.042</font></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Comparison of the performance between VIX market indicator strategy and benchmark strategy</i>
+</p>
+
+<h3 id="Yield-Curve-Inversion"><a href="#Yield-Curve-Inversion" class="headerlink" title="Yield Curve Inversion"></a>Yield Curve Inversion</h3><p>As known, the inversion of the yield curve is widely regarded as a signal confirming a recession of the macroeconomics. The primary indicators used are usually focusing on the spread between 3-month and 10-year treasury yield. The backtest result is as below:</p>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/yield_curve_3m_10y.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Strategy performance using 3-month and 10-year yield curve as indicators</i>
+</p>
+
+<p>Surprisingly, unlike previous market indicators, the yield curve inversion using the <strong>3-month</strong> and <strong>10-year</strong> treasury yields marks the market into two distinct states. The first half of the backtest period shows a bull market until early 2022, while the second half indicates a bear market. However, when comparing the strategy performance plots with the trading strategy used, the stock market trend doesn’t positively correlate with our bear market prediction. We stopped investing during the market turmoil around November 2022, but the market indicator didn’t turn bullish during the subsequent stock market rise. So, to increase the sensitivity of the yield curve market indicator, let’s try using <strong>3-month</strong> and <strong>2-year</strong> treasury yields to mark the market.</p>
+<img data-src="/2024/09/23/2024-09-30-market-indicator/yield_curve_3m_2y.png" class="" width="1000">
+<p style="text-align:center; color: grey;">
+  <i>Strategy performance using 3-month and 2-year yield curve as indicators</i>
+</p>
+
+<p>The movement of both the 3-month and 2-year treasury yields is more pronounced and clearer than in our previous backtest. However, the new backtest doesn’t reveal any advantage of using the more sensitive market indicator. While the strategy’s performance does improve, there is no evidence of improvement in the max drawdown, annual variance, or standard deviation.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Sharpe Ratio</th>
+<th>Total Return</th>
+<th>Annual Return</th>
+<th>Max Drawdown</th>
+<th>Annual Variance</th>
+<th>Standard Deviation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3-month vs. 10-year</td>
+<td>0.424</td>
+<td>77.30%</td>
+<td>12.899%</td>
+<td>28.40%</td>
+<td>0.039</td>
+<td>0.197</td>
+</tr>
+<tr>
+<td>3-month vs. 2-year</td>
+<td><font color ='green'>0.473</font></td>
+<td><font color ='green'>89.69%</font></td>
+<td><font color ='green'>14.466%</font></td>
+<td><font color ='red'>30.40%</font></td>
+<td><font color ='red'>0.04</font></td>
+<td><font color ='red'>0.201</font></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: grey;">
+  <i>Comparison of the performance between strategies 3m-10y and 3m-26 yield curve</i>
+</p>
+
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>After all the backtests and their plots clearly illustrated above, we can briefly summarize the following conclusion of these four market indicators:</p>
+<ol>
+<li>SPY market indicator does seem to possess the capability to mark the bullish/bearish market. Even though the timing wouldn’t 100% overlap between the market state predicted and the market state we visually marked, the SPY market indicator helps separate the market into a clear bullish and bearish market.</li>
+<li>ADX market indicator seems to be too volatile to distinguish the bullish market from the bearish market. This approach would need a method to smooth the fluctuations before applying to any strategy.</li>
+<li>VIX market indicator doesn’t seem to belong to the same arena as other market indicators. Given the characteristics of short-term fluctuations of the CBOE VIX, it could be used as a stop gain/loss signal rather than a market indicator.</li>
+<li>Yield curve inversion market indicator is the most stable market indicator that separates the bullish from the bearish. However, it wouldn’t be able to reflect the coming back of the stock market swiftly.</li>
+</ol>
+<p>I guess finding an ultimate market indicator would be the topic that all individual and institutional investors are trying to discover. It’s like a hidden holy grail that everyone craves. So understanding these four basic market indicators, it would just be the start of the long journey to the holy grail.</p>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Technical-Analysis/" rel="tag"># Technical Analysis</a>
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+              <a href="/tags/QuantConnect/" rel="tag"># QuantConnect</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/06/28/2024-06-28-why-fit-and-transform/" rel="prev" title="【ML algo trading】One Pitfall You Definitely Need to Avoid in Feature Engineering">
+      <i class="fa fa-chevron-left"></i> 【ML algo trading】One Pitfall You Definitely Need to Avoid in Feature Engineering
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Context"><span class="nav-number">1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-the-Market-Indicator"><span class="nav-number">2.</span> <span class="nav-text">What is the Market Indicator?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Backtest-Results"><span class="nav-number">3.</span> <span class="nav-text">Backtest Results</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Platform"><span class="nav-number">3.1.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-Period"><span class="nav-number">3.2.</span> <span class="nav-text">Backtest Period</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Trading-Framework"><span class="nav-number">3.3.</span> <span class="nav-text">Trading Framework</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Universe"><span class="nav-number">3.3.1.</span> <span class="nav-text">Universe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Strategy-Benchmark"><span class="nav-number">3.3.2.</span> <span class="nav-text">Strategy Benchmark</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trading-Rules"><span class="nav-number">3.3.3.</span> <span class="nav-text">Trading Rules</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Benchmark-performance-of-the-strategy-momentum-only"><span class="nav-number">3.4.</span> <span class="nav-text">Benchmark performance of the strategy (momentum only)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Results-attached-with-the-strategy-switching-plot"><span class="nav-number">3.5.</span> <span class="nav-text">Results (attached with the strategy switching plot)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-SPY-daily-close-price-and-its-history-data"><span class="nav-number">3.5.1.</span> <span class="nav-text">Using SPY daily close price and its history data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Average-Directional-Indicator-ADX"><span class="nav-number">3.5.2.</span> <span class="nav-text">Average Directional Indicator (ADX)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ADX-Trading-Rule-One"><span class="nav-number">3.5.2.1.</span> <span class="nav-text">ADX Trading Rule One</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ADX-Trading-Rule-Two"><span class="nav-number">3.5.2.2.</span> <span class="nav-text">ADX Trading Rule Two</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CBOE-VIX-Index"><span class="nav-number">3.5.3.</span> <span class="nav-text">CBOE VIX Index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Yield-Curve-Inversion"><span class="nav-number">3.5.4.</span> <span class="nav-text">Yield Curve Inversion</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
