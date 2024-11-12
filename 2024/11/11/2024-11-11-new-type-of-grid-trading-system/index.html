@@ -35,7 +35,7 @@
 <meta property="og:image" content="http://mikelhsia.github.io/2024/11/11/2024-11-11-new-type-of-grid-trading-system/validation.png">
 <meta property="og:image" content="http://mikelhsia.github.io/2024/11/11/2024-11-11-new-type-of-grid-trading-system/grid_trading_strategy_performance.png">
 <meta property="article:published_time" content="2024-11-11T05:45:20.000Z">
-<meta property="article:modified_time" content="2024-11-12T07:57:19.394Z">
+<meta property="article:modified_time" content="2024-11-12T07:59:29.025Z">
 <meta property="article:author" content="Michael Hsia">
 <meta property="article:tag" content="Backtesting">
 <meta property="article:tag" content="Grid trading">
@@ -222,7 +222,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-11-12 15:57:19" itemprop="dateModified" datetime="2024-11-12T15:57:19+08:00">2024-11-12</time>
+                <time title="Modified: 2024-11-12 15:59:29" itemprop="dateModified" datetime="2024-11-12T15:59:29+08:00">2024-11-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -353,7 +353,7 @@
 
 <h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>The strategy seems to be very profitable in the beginning half a year. However, as we all know that this strategy lacks the proper stop-loss point for each trade, so these trades get stuck in the market for a long time at one point. This results leaves us a lot of room to further improve this strategy:</p>
 <ol>
-<li>Instead of simply adding a stop-loss point, we can adopt the <strong>Triple Barrier Method</strong> technique mentioned in [<a href="https://mikelhsia.github.io/2022/10/21/2022-10-15-meta-label/">https://mikelhsia.github.io/2022/10/21/2022-10-15-meta-label/</a>] to confine the risk of each trade.</li>
+<li>Instead of simply adding a stop-loss point, we can adopt the <strong>Triple Barrier Method</strong> technique mentioned in <a href="https://mikelhsia.github.io/2022/10/21/2022-10-15-meta-label/">this post</a> to confine the risk of each trade.</li>
 <li>You can’t place both long and short order on <a target="_blank" rel="noopener" href="https://www.quantconnect.com/">QuantConnect</a> system as the forex trades will net themselves off. Due to this reason, we can’t use QuantConnect to further backtest this strategy.</li>
 <li>You CAN place both long and short order via FXCM. However, it doesn’t provide a simulation platform to conduct backtest against the price history.</li>
 <li><a target="_blank" rel="noopener" href="https://www.fxcm.com/markets/algorithmic-trading/api-trading/">FXCM</a> provides the API and DEMO account so that you can build a simulation backtest in paper trading. Yet building this tool takes a lot of effort</li>
