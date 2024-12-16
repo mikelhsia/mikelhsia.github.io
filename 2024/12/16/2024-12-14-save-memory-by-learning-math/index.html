@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Cover image created through Copilot   Calculating the arithmetic mean and the variance (or the standard deviation) of a dataset is a fundamental task in statistics. These calculations provide valu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【How 2】Save Your Valuable Memory and Time by Knowing These Math Formulas">
+<meta property="og:url" content="http://mikelhsia.github.io/2024/12/16/2024-12-14-save-memory-by-learning-math/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Cover image created through Copilot   Calculating the arithmetic mean and the variance (or the standard deviation) of a dataset is a fundamental task in statistics. These calculations provide valu">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/12/16/2024-12-14-save-memory-by-learning-math/cover.jpg">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/12/16/2024-12-14-save-memory-by-learning-math/rolling_window_illustration.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/12/16/2024-12-14-save-memory-by-learning-math/compare_mean.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2024/12/16/2024-12-14-save-memory-by-learning-math/compare_std.png">
+<meta property="article:published_time" content="2024-12-16T15:37:29.000Z">
+<meta property="article:modified_time" content="2024-12-16T17:27:02.039Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="How2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2024/12/16/2024-12-14-save-memory-by-learning-math/cover.jpg">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2024/12/16/2024-12-14-save-memory-by-learning-math/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【How 2】Save Your Valuable Memory and Time by Knowing These Math Formulas | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2024/12/16/2024-12-14-save-memory-by-learning-math/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【How 2】Save Your Valuable Memory and Time by Knowing These Math Formulas
+        </h1>
+
+        
+          <h2 class="post-title" itemprop="name headline" style="font-size: 1em;color: grey;font-style: italic;padding: 0px 50px 0px 50px;">
+            Applying Incremental Approaches to Calculate Mean and Variance in Large Datasets
+          </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-12-16 23:37:29" itemprop="dateCreated datePublished" datetime="2024-12-16T23:37:29+08:00">2024-12-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-12-17 01:27:02" itemprop="dateModified" datetime="2024-12-17T01:27:02+08:00">2024-12-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/How2/" itemprop="url" rel="index"><span itemprop="name">How2</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2024/12/16/2024-12-14-save-memory-by-learning-math/" class="post-meta-item leancloud_visitors" data-flag-title="【How 2】Save Your Valuable Memory and Time by Knowing These Math Formulas" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2024/12/16/2024-12-14-save-memory-by-learning-math/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/12/16/2024-12-14-save-memory-by-learning-math/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2024/12/16/2024-12-14-save-memory-by-learning-math/cover.jpg" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Cover image created through <a target="_blank" rel="noopener" href='https://https://copilot.microsoft.com/'>Copilot</a></i>
+</p>
+
+<p>Calculating the arithmetic mean and the variance (or the standard deviation) of a dataset is a fundamental task in statistics. These calculations provide valuable insights into the central tendency and distribution of the data in the linear space. However, it’s going to be a resource-intensive operation if you do these calculations repeatedly, especially when dealing with large datasets. To save you time and the memory on your computer, we’re going to explore an incremental approach to calculate the arithmetic mean and the variance (or the standard deviation) of a dataset.</p>
+<a id="more"></a>
+<hr>
+<h3 id="Previous-readings"><a href="#Previous-readings" class="headerlink" title="Previous readings"></a>Previous readings</h3><ul>
+<li><a href="https://mikelhsia.github.io/2024/10/04/2024-10-07-explain-bayes-theorm-without-using-big-words/">【How 2】Explain Bayes’ Theorem Without Using Big Words</a></li>
+<li><a href="https://mikelhsia.github.io/2024/04/23/2024-04-24-spin-up-docker-container-for-your-tws/">【How 2】Breaking Free! Use Docker to Create Hands-Off Interactive Broker TWS Managing Experience</a></li>
+<li><a href="https://mikelhsia.github.io/2022/12/12/2022-12-10-IBKR-Broker/">【How 2】 Set Up Trading API Template In Python - Connecting My Trading Strategies To Interactive Brokers</a></li>
+<li><a href="https://mikelhsia.github.io/2020/10/19/2020-10-19-get-all-tradable-tickers/">【How 2】 Vol. 1. How 2 get all tradable tickers in US markets</a></li>
+</ul>
+<hr>
+<h1 id="Let’s-talk-about-the-problems"><a href="#Let’s-talk-about-the-problems" class="headerlink" title="Let’s talk about the problems"></a>Let’s talk about the problems</h1><p>In quantitative Trading, we often need to calculate the mean and variance of a dataset. For example, we may want to calculate the mean and variance of the returns of a stock over a certain period of time. The formula to calculate the mean is:</p>
+<script type="math/tex; mode=display">\text{arithmetic mean} = \frac{\sum\limits_{i=1}^{n} x_i}{n}</script><p>And to calculate standard deviation, we use the following formula:</p>
+<script type="math/tex; mode=display">\begin{aligned}&\text{variance} = \frac{\sum\limits_{i=1}^{n} (x_i - \bar{x})^2}{n}\\&\text{standard deviation} = \sqrt{\text{variance}}\end{aligned}</script><p>It’s quite straightforward to calculate the mean and variance of a dataset. However, when the scenario gets more complicated, the calculation becomes more complex and consumes much more resources than we expected. Let’s say in your trading strategy that uses 22-day Simple Moving Average of the close price of a stock to evaluate the trend of the stock on the minute-basis over two-day period. Using 22-day Simple Moving Average means you have to calculate the mean of 22 <em> 24 (hours) </em> 60 (minutes) = 31,680 data points for 2 <em> 24(hours) </em> 60 (minutes) = 2880 times.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np <span class="comment"># To generate random numbers</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd <span class="comment"># To plot the results</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> deque <span class="comment"># To simulate the operation of a rolling window array</span></span><br><span class="line"><span class="keyword">from</span> statistics <span class="keyword">import</span> mean, stdev, sqrt <span class="comment"># To calculate the mean and the standard deviation</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Generate random minute-bar 22 days</span></span><br><span class="line">array = np.random.randn(<span class="number">22</span>*<span class="number">24</span>*<span class="number">60</span>)</span><br><span class="line"><span class="comment"># This is the rolling window array with mex len = 22 * 24 * 60</span></span><br><span class="line">queue = deque([], maxlen=<span class="number">22</span>*<span class="number">24</span>*<span class="number">60</span>)</span><br><span class="line"><span class="comment"># New data generate for simulate the following 2 days new minute-bar data</span></span><br><span class="line">new_dataset = np.random.randn(<span class="number">2</span>*<span class="number">24</span>*<span class="number">60</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize the queue by injecting the first 22 days data into the queue</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">init_queue</span>():</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> array:</span><br><span class="line">        queue.append(_)</span><br><span class="line">    <span class="keyword">return</span> queue</span><br></pre></td></tr></table></figure>
+<h1 id="Let’s-get-started-with-the-experiments"><a href="#Let’s-get-started-with-the-experiments" class="headerlink" title="Let’s get started with the experiments"></a>Let’s get started with the experiments</h1><h2 id="Arithmetic-mean"><a href="#Arithmetic-mean" class="headerlink" title="Arithmetic mean"></a>Arithmetic mean</h2><p>Let’s recap the formula to calculate the arithmetic mean:</p>
+<script type="math/tex; mode=display">\text{arithmetic mean} = \frac{\sum\limits_{i=1}^{n} x_i}{n}</script><p>We use the following code to initialize the queue and the lists that are needed to start the experiments:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m_queue = m_queue_2 = list()</span><br><span class="line">queue = init_queue()</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-traditional-Approach"><a href="#The-traditional-Approach" class="headerlink" title="The traditional Approach"></a>The traditional Approach</h3><p>This is relatively easy to everyone. We do the following steps to simulate the scenario of calculating the mean of a dataset repeatedly:</p>
+<ol>
+<li>Iterate the new dataset to get the new minute-bar data point</li>
+<li>Append the new minute-bar data point to the queue</li>
+<li>Calculate the mean by using the que directly</li>
+<li>Store the mean into a list for later comparison<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> new_dataset:</span><br><span class="line">    new_value = _</span><br><span class="line">    queue.append(new_value)</span><br><span class="line">    m_queue.append(mean(queue))</span><br><span class="line"></span><br><span class="line"><span class="comment"># =&gt; Last executed at 2024-12-16 12:12:20 in 54.55s</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>It took <strong>54.55s</strong> to finish calculating 2880 times. Let’s see what would happen if we apply the incremental approach to this scenario.</p>
+<h3 id="The-Incremental-Approach"><a href="#The-Incremental-Approach" class="headerlink" title="The Incremental Approach"></a>The Incremental Approach</h3><p>Start with the same step, we initialize the queue with the same value to make sure we can compare the results from two different approaches. In this approach, we need to keep track of the summation of the queue.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">queue = init_queue()</span><br><span class="line">summation = sum(queue)</span><br></pre></td></tr></table></figure>
+<p>The idea of the incremental approach is relevantly easy to understand. Let’s have a look at the below illustration:</p>
+<img data-src="/2024/12/16/2024-12-14-save-memory-by-learning-math/rolling_window_illustration.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>Illustration of appending new value into a rolling window.</i>
+</p>
+
+<p>When it comes to calculating the mean, we sum up all the elements in the queue and divide it by the length of the queue. As you can see, once you adding new value into the 22-day SMA rolling window, the numbers in the queue will mostly remain the same except the oldest value and the newest value. Therefore, all we need to do is take these two values into account and update the summation accordingly instead of looping through all the numbers in the queue.</p>
+<script type="math/tex; mode=display">\text{New mean} = \frac{\text{summation} + \text{new value} - \text{old value}}{\text{length of queue}}</script><p>Simply by applying this formula, we reduce the execution time down to <strong>13ms</strong>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> new_dataset:</span><br><span class="line">    new_value = _</span><br><span class="line">    old_value = queue[<span class="number">0</span>]</span><br><span class="line">    queue.append(new_value)</span><br><span class="line">    summation = summation + new_value - old_value</span><br><span class="line">    m_queue_2.append(summation/len(queue))</span><br><span class="line"></span><br><span class="line"><span class="comment"># =&gt; Last executed at 2024-12-16 12:12:20 in 13ms</span></span><br></pre></td></tr></table></figure>
+<p>Now let’s use the below code to compare the results from both approaches.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame([m_queue, m_queue_2]).T.rename(columns=&#123;<span class="number">0</span>:<span class="string">&#x27;traditional&#x27;</span>, <span class="number">1</span>:<span class="string">&#x27;incremental&#x27;</span>&#125;).plot()</span><br></pre></td></tr></table></figure>
+<img data-src="/2024/12/16/2024-12-14-save-memory-by-learning-math/compare_mean.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>The mean values calculated with both traditional and incremental approaches</i>
+</p>
+
+<p>See! The incremental approach is giving the same results as the traditional approach, but use less time than the traditional approach does.</p>
+<h2 id="Variance-amp-Standard-Deviation"><a href="#Variance-amp-Standard-Deviation" class="headerlink" title="Variance &amp; Standard Deviation"></a>Variance &amp; Standard Deviation</h2><p>Now comes to the variance and standard deviation. The formula is as follows:</p>
+<script type="math/tex; mode=display">\begin{aligned}&\text{variance} &= \frac{\sum\limits_{i=1}^{n} (x_i - \bar{x})^2}{n}\\&\text{standard deviation} &= \sqrt{\text{variance}}\end{aligned}</script><p>Again, let’s start with initializing the queue and the lists that are needed to start the experiments:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">queue = init_queue()</span><br><span class="line">m_queue = m_queue_2 = list()</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-traditional-Approach-1"><a href="#The-traditional-Approach-1" class="headerlink" title="The traditional Approach"></a>The traditional Approach</h3><p>Below is the approach that everyone would do to calculate the variance and standard deviation:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> new_dataset:</span><br><span class="line">    new_value = _</span><br><span class="line">    queue.append(new_value)</span><br><span class="line">    m_queue.append(stdev(queue))</span><br><span class="line"></span><br><span class="line"><span class="comment"># =&gt; Last executed at 2024-12-17 00:50:27 in 2m 26.64s</span></span><br></pre></td></tr></table></figure><br>This time, it cost <strong>2m 26.64s</strong> to finish calculating 2880 times. It is apparently way slower than the mean calculation. As we all know, to calculate the variance and the standard deviation, we need to calculate the mean and then calculate the summation of the square of the difference between each data point and the mean. So the time complexity of calculating the variance and standard deviation is $O(n^2)$, meaning costing more time than the mean calculation.</p>
+<h3 id="The-Incremental-Approach-1"><a href="#The-Incremental-Approach-1" class="headerlink" title="The Incremental Approach"></a>The Incremental Approach</h3><p>The incremental approach is a little bit more complicated than the mean calculation. We need to keep track of the summation of the queue, the mean of the queue, and the variance of the queue. This method is called the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance">Welford’s Weighted incremental algorithm</a>. You can also refer to <a target="_blank" rel="noopener" href="https://changyaochen.github.io/welford/">this post</a> for how to derive the formula using the very basic algebra. According to the formula, we can easily reduce the complexity from $O(n^2)$ to $O(n)$.</p>
+<p>Again, let’s start with the initialization of the queue and the lists that are needed to start the experiments. But this time, we will calculate the summation, mean, and variance of the queue to conduct the following calculation.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">queue = init_queue()</span><br><span class="line">summation = sum(queue)</span><br><span class="line">mean = summation / len(queue)</span><br><span class="line">variance = sum([(x-mean)**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> queue]) / len(queue)</span><br></pre></td></tr></table></figure>
+<p>Now, according to <a target="_blank" rel="noopener" href="https://changyaochen.github.io/welford/">this post</a>, we will simplify the formula to</p>
+<script type="math/tex; mode=display">\text{new variance} = \frac{\text{length of the queue} * \text{old variance} + (\text{new value}-\text{old value}) * (\text{new value} - \text{new mean} + \text{old value} - \text{old mean})}{\text{len of the queue}}</script><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> new_dataset:</span><br><span class="line">    old_value = queue[<span class="number">0</span>]</span><br><span class="line">    new_value = _</span><br><span class="line"></span><br><span class="line">    old_sum = summation</span><br><span class="line">    new_sum = summation + new_value - old_value</span><br><span class="line"></span><br><span class="line">    old_mean = summation/len(queue)</span><br><span class="line">    new_mean = (summation + new_value - old_value)/len(queue)</span><br><span class="line"></span><br><span class="line">    old_variance = variance</span><br><span class="line">    new_variance = (len(queue)*old_variance + (new_value - old_value) * (new_value - new_mean + old_value - old_mean))/len(queue)</span><br><span class="line"></span><br><span class="line">    queue.append(new_value)</span><br><span class="line">    m_queue_2.append(sqrt(new_variance))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Update the summation,</span></span><br><span class="line">    summation = new_sum</span><br><span class="line">    variance = new_variance</span><br><span class="line"></span><br><span class="line"><span class="comment"># =&gt; Last executed at 2024-12-17 01:00:10 in 14ms</span></span><br></pre></td></tr></table></figure>
+<p>Hey, we greatly reduce the execution time needed from 2m 26.64s to <strong>14ms</strong>. Last thing we need to do, is to examine the results from both approaches.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame([m_queue, m_queue_2]).T.rename(columns=&#123;<span class="number">0</span>:<span class="string">&#x27;traditional&#x27;</span>, <span class="number">1</span>:<span class="string">&#x27;incremental&#x27;</span>&#125;).plot()</span><br></pre></td></tr></table></figure>
+<img data-src="/2024/12/16/2024-12-14-save-memory-by-learning-math/compare_std.png" class="" width="600">
+<p><p style="text-align:center; color: grey;">
+  <i>The mean values calculated with both traditional and incremental approaches</i>
+</p><br>Great! The incremental approach is giving the same results as the traditional approach, but use less time than the traditional approach does. This is the power of incremental approach!</p>
+<h1 id="Take-away"><a href="#Take-away" class="headerlink" title="Take away"></a>Take away</h1><p>This is the power of math! If you follow the steps in <a target="_blank" rel="noopener" href="https://changyaochen.github.io/welford/">the post</a> to derive the formula, you will find that the formula is quite simple. However, by simply applying the formulas to the calculation, you’ll find out it saves you not just the time to calculate the variance and standard deviation, but also the memory space when you want to deploy the algorithm in a production environment. Hence, when you are working on a project, always try to think about the math behind the algorithm.</p>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/How2/" rel="tag"># How2</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/11/11/2024-11-11-new-type-of-grid-trading-system/" rel="prev" title="Beyond Traditional Grid Trading - Introducing A New Type of Grid Trading System">
+      <i class="fa fa-chevron-left"></i> Beyond Traditional Grid Trading - Introducing A New Type of Grid Trading System
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Previous-readings"><span class="nav-number">1.</span> <span class="nav-text">Previous readings</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Let%E2%80%99s-talk-about-the-problems"><span class="nav-number"></span> <span class="nav-text">Let’s talk about the problems</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Let%E2%80%99s-get-started-with-the-experiments"><span class="nav-number"></span> <span class="nav-text">Let’s get started with the experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Arithmetic-mean"><span class="nav-number"></span> <span class="nav-text">Arithmetic mean</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-traditional-Approach"><span class="nav-number">1.</span> <span class="nav-text">The traditional Approach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Incremental-Approach"><span class="nav-number">2.</span> <span class="nav-text">The Incremental Approach</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Variance-amp-Standard-Deviation"><span class="nav-number"></span> <span class="nav-text">Variance &amp; Standard Deviation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-traditional-Approach-1"><span class="nav-number">1.</span> <span class="nav-text">The traditional Approach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Incremental-Approach-1"><span class="nav-number">2.</span> <span class="nav-text">The Incremental Approach</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Take-away"><span class="nav-number"></span> <span class="nav-text">Take away</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
