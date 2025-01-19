@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Extracted from Website: SteadyOptions   Stock option has always been a popular way to trade due to its high leverage, which allows traders to control a large amount of assets with a small amount o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【The Wheel Strategy】 Turn Options Into Monthly Income">
+<meta property="og:url" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Extracted from Website: SteadyOptions   Stock option has always been a popular way to trade due to its high leverage, which allows traders to control a large amount of assets with a small amount o">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/cover.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/plain_vanilla_wheel_perf.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/plain_vanilla_wheel_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/take_profit_wheel_perf.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/take_profit_wheel_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/roll_wheel_perf.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/roll_wheel_dist.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/wheel_roll_recover_perf.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/wheel_roll_recover_dist.png">
+<meta property="article:published_time" content="2025-01-16T03:05:54.000Z">
+<meta property="article:modified_time" content="2025-01-19T08:17:31.911Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Option">
+<meta property="article:tag" content="Quantitative Trading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/cover.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【The Wheel Strategy】 Turn Options Into Monthly Income | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【The Wheel Strategy】 Turn Options Into Monthly Income
+        </h1>
+
+        
+          <h2 class="post-title" itemprop="name headline" style="font-size: 1em;color: grey;font-style: italic;padding: 0px 50px 0px 50px;">
+            Data-driven analysis of the most profitable wheel variants
+          </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-01-16 11:05:54" itemprop="dateCreated datePublished" datetime="2025-01-16T11:05:54+08:00">2025-01-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-01-19 16:17:31" itemprop="dateModified" datetime="2025-01-19T16:17:31+08:00">2025-01-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Wheel-Trading-Strategy/" itemprop="url" rel="index"><span itemprop="name">Wheel Trading Strategy</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2025/01/16/2025-01-18-wheel-trading-strategy/" class="post-meta-item leancloud_visitors" data-flag-title="【The Wheel Strategy】 Turn Options Into Monthly Income" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2025/01/16/2025-01-18-wheel-trading-strategy/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2025/01/16/2025-01-18-wheel-trading-strategy/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/cover.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Extracted from Website: <a target="_blank" rel="noopener" href='https://steadyoptions.com/articles/the-options-wheel-strategy-wheel-trade-explained-r632/'>SteadyOptions</a></i>
+</p>
+
+<p>Stock option has always been a popular way to trade due to its high leverage, which allows traders to control a large amount of assets with a small amount of capital. However, the complexity of stock options can be overwhelming for many traders. For those who are the beginners of the stock option, today we’re going to introduce a simple trading strategy that can help you to get started with stock options trading without much effort.</p>
+<a id="more"></a>
+<hr>
+<h3 id="Previous-readings"><a href="#Previous-readings" class="headerlink" title="Previous readings"></a>Previous readings</h3><ul>
+<li><a href="https://mikelhsia.github.io/2024/12/16/2024-12-14-save-memory-by-learning-math/">【How 2】Save Your Valuable Memory and Time by Knowing These Math Formulas</a></li>
+<li><a href="https://mikelhsia.github.io/2024/11/11/2024-11-11-new-type-of-grid-trading-system/">Beyond Traditional Grid Trading - Introducing A New Type of Grid Trading System</a></li>
+<li><a href="https://mikelhsia.github.io/2024/06/28/2024-06-28-why-fit-and-transform/">【ML algo trading】One Pitfall You Definitely Need to Avoid in Feature Engineering</a></li>
+</ul>
+<hr>
+<h1 id="Introduction-to-the-Wheel-Trading-Strategy"><a href="#Introduction-to-the-Wheel-Trading-Strategy" class="headerlink" title="Introduction to the Wheel Trading Strategy"></a>Introduction to the Wheel Trading Strategy</h1><img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/cover.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Extracted from Website: <a target="_blank" rel="noopener" href='https://steadyoptions.com/articles/the-options-wheel-strategy-wheel-trade-explained-r632/'>SteadyOptions</a></i>
+</p>
+
+<p>The wheel trading strategy is essentially selling either put or call options to collect the premium upfront in order to create a stable income stream. As illustrated in the picture above, this trading strategy consists of the following steps:</p>
+<ol>
+<li>Selling a <code>Cash-Secured Put</code> to collect the premium.</li>
+<li>If the stock price drops below the strike price, you’ll get assigned the underlying stock shares.</li>
+<li>Selling a <code>Call Option</code> to collect the premium. Together with the stock shares you received from the previous step, you are actually selling a <code>Covered Call</code>.</li>
+<li>If the stock price rises above the strike price, the stock shares you own will get called away.</li>
+<li>Then go back to step 1 and repeat.</li>
+</ol>
+<p>The above steps would form a cycle that the investors can repeat over and over again to create a stable income stream. The wheel trading strategy is also known as the “Triple Income Strategy”, where:</p>
+<ol>
+<li>The premium collected from selling the put option is the $1_{st}$ income source.</li>
+<li>If the stock price goes way down and we were assigned the stock shares, we could sell the <code>Covered Call</code> to create the $2_{nd}$ income by collecting premium.</li>
+<li>The $3_{rd}$ source of income comes from the potential dividends paid by the underlying stock if it is assigned to us.</li>
+</ol>
+<h1 id="The-Wheel-Trading-Strategy-in-Real-World"><a href="#The-Wheel-Trading-Strategy-in-Real-World" class="headerlink" title="The Wheel Trading Strategy in Real-World"></a>The Wheel Trading Strategy in Real-World</h1><p>This trading strategy seems way too good to be true, doesn’t it? How could any trading strategy that can generate a stable income stream without any risk? However, there are a few drawbacks that deter many investing organizations and funds from adopting this strategy:</p>
+<ol>
+<li><strong>Capital Intensive</strong>: In order to execute the first step to sell the <code>Cash Secured Put Option</code>, you need to have enough capital to cover the cost when the stock shares are assigned to you.</li>
+<li><strong>Limited Upside</strong>: The maximum gain at a specific point in time would be the premium collected from selling options. Neither a strong bull nor bear market would do you any good.</li>
+<li><strong>Potential Assignment</strong>: If the stock price rises or falls significantly, you might get assigned the stock shares, which can lead to further loss if the stock price continues the previous momentum.</li>
+</ol>
+<p>Therefore, for those who are seeking a stable income stream instead of speculating on the market, the wheel trading strategy would be a better choice for you to collect dimes and dollars from the floor.</p>
+<h1 id="More-Details-to-Manipulate-the-Strategy"><a href="#More-Details-to-Manipulate-the-Strategy" class="headerlink" title="More Details to Manipulate the Strategy"></a>More Details to Manipulate the Strategy</h1><p>With the above being said, the wheel trading strategy still demands special attention to a lot of details. By manipulating the details and the timing, we can make the strategy more robust and less risky. I really benefited a lot after reading <a target="_blank" rel="noopener" href="https://www.reddit.com/r/options/comments/a36k4j/the_wheel_aka_triple_income_strategy_explained/">this Reddit post</a>, therefore I do suggest you do the same to read through this Reddit post to gain your own insights. Here are a few ideas of strategy variations that I’ve extracted from the post:</p>
+<ul>
+<li>Collect 50% of premium before it expires<br>Instead of collecting the full premium and waiting until the option expires, you could actually collect 50% of the premium upfront by closing the current short put position. The initial premium you receive less the cost to close the current position would give you the net credit you will earn. If the net credit reaches 50% of the original premium received, then why don’t we close it before reaching the expiration date and create a new position to avoid further fluctuation of the stock price?</li>
+<li>Roll over when the put option is ATM<br>When the stock price approaches or reaches the strike price (At The Money or ATM), the likelihood of option exercise and share assignment increases significantly. Since our primary income source comes from collecting premiums through put and call option sales rather than stock price appreciation, rolling over the position to a new option with a higher strike price becomes a strategic choice. This approach helps minimize assignment risk while creating opportunities to collect additional premium income.</li>
+<li>Choose the right strike price when selling call option<br>When selling puts, stock assignment becomes inevitable if the share price drops substantially. However, by selecting high-quality blue-chip stocks with strong business fundamentals, any price decline is likely to be temporary, with recovery expected within a reasonable timeframe. Rather than selling covered calls at arbitrary strike prices, a more strategic approach would be to set the strike price equal to our cost basis (the price at which we were assigned the shares). This method prevents our shares from being called away at unfavorable prices and helps avoid realizing losses during adverse market movements.<br>And now, let’s try to implement the above ideas and see whether they actually work in terms of performance.</li>
+</ul>
+<h1 id="Performance-Analysis-of-Each-Variation"><a href="#Performance-Analysis-of-Each-Variation" class="headerlink" title="Performance Analysis of Each Variation"></a>Performance Analysis of Each Variation</h1><h2 id="Platform"><a href="#Platform" class="headerlink" title="Platform"></a>Platform</h2><p><a target="_blank" rel="noopener" href="https://www.quantconnect.com">QuantConnect</a></p>
+<h2 id="Benchmark"><a href="#Benchmark" class="headerlink" title="Benchmark"></a>Benchmark</h2><p>SPDR S&amp;P 500 ETF Trust (SPY)</p>
+<h2 id="Underlying-Stock-of-the-Put-and-Call-Option"><a href="#Underlying-Stock-of-the-Put-and-Call-Option" class="headerlink" title="Underlying Stock of the Put and Call Option"></a>Underlying Stock of the Put and Call Option</h2><p>SPDR S&amp;P 500 ETF Trust (SPY)</p>
+<h2 id="Backtest-Period"><a href="#Backtest-Period" class="headerlink" title="Backtest Period"></a>Backtest Period</h2><p>2020-01-01 to 2025-01-06</p>
+<h2 id="Performance-Analysis"><a href="#Performance-Analysis" class="headerlink" title="Performance Analysis"></a>Performance Analysis</h2><h3 id="Plain-Vanilla-Wheel-Trading-Strategy"><a href="#Plain-Vanilla-Wheel-Trading-Strategy" class="headerlink" title="Plain Vanilla Wheel Trading Strategy"></a>Plain Vanilla Wheel Trading Strategy</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Total Trades</th>
+<th>Net Profit</th>
+<th>Annualized Return</th>
+<th>Max Drawdown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>79</td>
+<td>45.53%</td>
+<td>7.729%</td>
+<td>28.00%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/plain_vanilla_wheel_perf.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>Backtest result of the plain vanilla wheel trading strategy</i>
+</p>
+
+<img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/plain_vanilla_wheel_dist.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+  <i>Distribution of each income stream</i>
+</p>
+
+<p>In the first diagram, the red rectangles represent the period when the stock shares were assigned to us. Except for these periods and the 2020 March when COVID hit the market, the strategy has been consistently profitable, regardless of the bear or bull market trends. In the second histogram chart, you’ll also see that the majority of the income is from the put option premiums, and the call option premium somewhat offset the loss on the stock assignment. This strategy gave us ~7% annual return, which is slightly higher than the US 10-year Bond Yield.</p>
+<h3 id="Take-profit-when-reaching-50-of-the-initial-premium"><a href="#Take-profit-when-reaching-50-of-the-initial-premium" class="headerlink" title="Take profit when reaching 50% of the initial premium"></a>Take profit when reaching 50% of the initial premium</h3><p>This variation of the wheel trading strategy</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Total Trades</th>
+<th>Net Profit</th>
+<th>Annualized Return</th>
+<th>Max Drawdown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>175</td>
+<td>43.84%</td>
+<td>7.475%</td>
+<td>29.20%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/take_profit_wheel_perf.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>Backtest result of the wheel trading strategy that has 50% take-profit rule</i>
+</p>
+
+<img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/take_profit_wheel_dist.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+  <i>Distribution of each income stream</i>
+</p>
+
+<p>In comparison to the traditional wheel strategy, this variant demonstrates mixed results. While the implementation of take-profit rules successfully generated a 45% increase in put premium revenue, it simultaneously led to substantial drawdowns in underlying asset transactions, effectively neutralizing the premium gains.</p>
+<p>The aggressive nature of the profit-taking parameters triggered more than twice the number of standard transactions, resulting in two key disadvantages: elevated transaction costs and an increased frequency of stock entries at unfavorable price points relative to market value.</p>
+<h3 id="Roll-over-when-it’s-ATM-old-and-now"><a href="#Roll-over-when-it’s-ATM-old-and-now" class="headerlink" title="Roll over when it’s ATM old and now"></a>Roll over when it’s ATM old and now</h3><p>So, from the previous variant, we noticed that the take-profit rule is not a good idea because you could either lose more when the downward momentum is strong or enter a new position that is unfavorable to your position. But what if, instead of measuring the profit gain as the timing to find the exit point of your current short put position, measuring the spread between the current strike price and the current stock price could be a more beneficial method to time the exit point? This is why we roll over our short put option when it is <strong>At The Money (ATM)</strong>.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Total Trades</th>
+<th>Net Profit</th>
+<th>Annualized Return</th>
+<th>Max Drawdown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>79</td>
+<td>48.32%</td>
+<td>8.134%</td>
+<td>28.00%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/roll_wheel_perf.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>Backtest result of the wheel trading strategy that rolls over when it's ATM</i>
+</p>
+
+<img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/roll_wheel_dist.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+  <i>Distribution of each income stream</i>
+</p>
+
+<p>Astonishing enough, we greatly reduce the chances of stock assignment by rolling over the position when it’s ATM. The strategy has a 8% annual return, which is higher than the US 10-year Bond Yield. On top of that, we lost less on trading the underlying stock and reduced the variance of our strategy performance.</p>
+<h3 id="Recover-to-where-it-drops"><a href="#Recover-to-where-it-drops" class="headerlink" title="Recover to where it drops"></a>Recover to where it drops</h3><p>To minimize assignment risk and potential losses, we can strategically set the covered call strike price equal to our assigned stock cost basis. This approach serves dual purposes: reducing assignment probability and protecting against downside risk. This strike selection methodology aligns with our cost basis, creating a more controlled risk-reward profile. Even though we will still get assigned, we still gain premium from selling covered call options compared to holding the underlying stock.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Total Trades</th>
+<th>Net Profit</th>
+<th>Annualized Return</th>
+<th>Max Drawdown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>79</td>
+<td>64.362%</td>
+<td>10.359%</td>
+<td>28.00%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/wheel_roll_recover_perf.png" class="" width="800">
+<p style="text-align:center; color: grey;">
+  <i>Backtest result of the wheel trading strategy that rolls over when it's ATM</i>
+</p>
+
+<img data-src="/2025/01/16/2025-01-18-wheel-trading-strategy/wheel_roll_recover_dist.png" class="" width="400">
+<p style="text-align:center; color: grey;">
+  <i>Distribution of each income stream</i>
+</p>
+
+<p>Hey! We have a 10% annual return and the max drawdown is still only 28%! Also when looking at the profit distribution histogram, we didn’t lose any capital on trading the underlying stock at all.</p>
+<h1 id="Take-away"><a href="#Take-away" class="headerlink" title="Take away"></a>Take away</h1><p>I’ve tried this strategy on AAPL, TSLA, and also QQQ ETF. All these underlying stocks perform similarly to the SPY ETF. These strategies share the same traits: they don’t have strong momentum in both bull or bear markets, but they create stable income throughout the backtest period. Therefore, if you want to find another trading strategy to compensate for the fluctuation of your main trading strategy, the wheel trading strategy could be a good choice.</p>
+<hr>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.quantconnect.com/research/17871/automating-the-wheel-strategy/p1">Automating the Wheel Strategy</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.datadriveninvestor.com/the-wheel-strategy-99e16b9540b2">The Wheel Options Strategy</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/mastering-options/how-to-use-the-options-wheel-strategy-5013c9938f4b">The Wheel Options Strategy for Begineers</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/mastering-options/is-the-wheel-strategy-profitable-1861cb52c3eb">Is the Wheel Strategy Profitable?</a></li>
+<li><a target="_blank" rel="noopener" href="https://ali-muhammadimran.medium.com/wheel-strategy-is-the-ultimate-trading-cheat-code-e21b369ab31e">Wheel Strategy is the Ultimate Trading Cheat Code</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.bybit.com/options/wheel-strategy/">Wheel Strategy: A Long-Term Strategy For Consistent Income</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/options/comments/a36k4j/the_wheel_aka_triple_income_strategy_explained/">The Wheel (aka Triple Income) Strategy Explained</a> <strong><em>Recommended</em></strong></li>
+</ul>
+
+    </div>
+    
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Option/" rel="tag"># Option</a>
+              <a href="/tags/Quantitative-Trading/" rel="tag"># Quantitative Trading</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/12/16/2024-12-14-save-memory-by-learning-math/" rel="prev" title="【How 2】Save Your Valuable Memory and Time by Knowing These Math Formulas">
+      <i class="fa fa-chevron-left"></i> 【How 2】Save Your Valuable Memory and Time by Knowing These Math Formulas
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Previous-readings"><span class="nav-number">1.</span> <span class="nav-text">Previous readings</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction-to-the-Wheel-Trading-Strategy"><span class="nav-number"></span> <span class="nav-text">Introduction to the Wheel Trading Strategy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-Wheel-Trading-Strategy-in-Real-World"><span class="nav-number"></span> <span class="nav-text">The Wheel Trading Strategy in Real-World</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#More-Details-to-Manipulate-the-Strategy"><span class="nav-number"></span> <span class="nav-text">More Details to Manipulate the Strategy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Performance-Analysis-of-Each-Variation"><span class="nav-number"></span> <span class="nav-text">Performance Analysis of Each Variation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Platform"><span class="nav-number"></span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Benchmark"><span class="nav-number"></span> <span class="nav-text">Benchmark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Underlying-Stock-of-the-Put-and-Call-Option"><span class="nav-number"></span> <span class="nav-text">Underlying Stock of the Put and Call Option</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtest-Period"><span class="nav-number"></span> <span class="nav-text">Backtest Period</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Performance-Analysis"><span class="nav-number"></span> <span class="nav-text">Performance Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Plain-Vanilla-Wheel-Trading-Strategy"><span class="nav-number">1.</span> <span class="nav-text">Plain Vanilla Wheel Trading Strategy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Take-profit-when-reaching-50-of-the-initial-premium"><span class="nav-number">2.</span> <span class="nav-text">Take profit when reaching 50% of the initial premium</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Roll-over-when-it%E2%80%99s-ATM-old-and-now"><span class="nav-number">3.</span> <span class="nav-text">Roll over when it’s ATM old and now</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Recover-to-where-it-drops"><span class="nav-number">4.</span> <span class="nav-text">Recover to where it drops</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Take-away"><span class="nav-number"></span> <span class="nav-text">Take away</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number"></span> <span class="nav-text">References</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
