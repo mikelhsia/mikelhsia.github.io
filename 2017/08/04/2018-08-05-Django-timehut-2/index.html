@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -258,8 +258,8 @@
 
       
         <img data-src="/2017/08/04/2018-08-05-Django-timehut-2/python-django.png" class="" width="600">
-<p><code>timehut</code> is a django website that display my kiddos’ images and videos and text. This is a blog that notes why I’m building this and what other things that I’m still looking into in order to add more features to this website.<br><a id="more"></a></p>
-<p>Here’s a small story why I’m building this website _(Not launched yet)_. My wife has been putting a lot of effort in storing our kids’ photos and videos in an mobile app called <code>Peekaboo (Time Hut)</code>, which I believe it’s a great place to preserve all the memories. The app also make it very user-friendly for user to view those images and videos via time-stamped catalog.</p>
+<p><code>timehut</code> is a django website that display my kiddos’ images and videos and text. This is a blog that notes why I’m building this and what other things that I’m still looking into in order to add more features to this website.<br><span id="more"></span></p>
+<p>Here’s a small story why I’m building this website <em>(Not launched yet)</em>. My wife has been putting a lot of effort in storing our kids’ photos and videos in an mobile app called <code>Peekaboo (Time Hut)</code>, which I believe it’s a great place to preserve all the memories. The app also make it very user-friendly for user to view those images and videos via time-stamped catalog.</p>
 <p>Even though it’s fairly easy to upload the images and videos plus inputting the text to describe the context of the images, there’s no way for parents to backup those assets to local machine. So that inspired and motivate me to make a scraper to do so.</p>
 <p>Those assets are saved in the database. In order to provide a way for me or my wife to browse the assets, that’s why we have this <code>timehut</code> website using django website.</p>
 <p>Now, below is more of a memorandum regarding what other features can be added to the existing one.</p>
@@ -302,7 +302,7 @@
 <li>Using the message framework</li>
 </ul>
 <h4 id="Using-a-custom-User-model"><a href="#Using-a-custom-User-model" class="headerlink" title="Using a custom User model"></a>Using a custom User model</h4><p>Django also offers a way to substitute the whole User model with your own custom model. Your user class should inherit from Django’s AbstractUser class, which provides the full implementation of the default user as an abstract model.</p>
-<h4 id="Using-the-messages-framework-middleware"><a href="#Using-the-messages-framework-middleware" class="headerlink" title="Using the messages framework/middleware"></a>Using the messages framework/middleware</h4><p>messages is default Django middleware, and can be imported by using:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from django.contrib import messages</span><br><span class="line">messages.error(request, &#39;Something went wrong&#39;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="Using-the-messages-framework-middleware"><a href="#Using-the-messages-framework-middleware" class="headerlink" title="Using the messages framework/middleware"></a>Using the messages framework/middleware</h4><p>messages is default Django middleware, and can be imported by using:<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from django.contrib import messages</span><br><span class="line">messages.error(request, &#x27;Something went wrong&#x27;)</span><br></pre></td></tr></table></figure></p>
 <ul>
 <li><code>success()</code>: Success messages to display after an action was successful</li>
 <li><code>info()</code>: Informational messages</li>
@@ -445,20 +445,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -504,7 +504,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -295,7 +295,7 @@ width: 30%;
 </style>
 
 <p><br><br>In the post <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/">How to save your silver bullets with MACD strategy?</a>, we have backtested the strategy of MACD and the other six different momentum indicators. In the end, the combination of MACD and the awesome oscillator is the better and seemingly profitable one among all six combinations. But, we won’t stop right there. In order to raise our portfolio win rate and return, we will discuss a few variants of MACD and Awesome Oscillator to derive different buy and sell signals.</p>
-<a id="more"></a>
+<span id="more"></span>
 <hr>
 
 <h1 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h1><p>How to calculate the MACD and awesome oscillator and the others have been introduced in <a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/">How to save your silver bullets with MACD strategy?</a>, so we’re skipping all the entry-level knowledge. Instead, we’re going to touch on how to utilize the generated indicators to put together the strategies that are profitable.</p>
@@ -326,7 +326,7 @@ width: 30%;
 <blockquote>
 <p>I. Simple MACD: We set our MACD trading signal to <code>True</code> when MACD is greater than 0, and to <code>False</code> when MACD is lower than 0.</p>
 </blockquote>
-<p>By the definition of <code>Talib</code> python package, MACD indicates $EMA_{short\ term} - EMA_{long\ term}$. So the <code>True</code> trading signal essentially telling you that the target stock price rising speed is faster than before.</p>
+<p>By the definition of <code>Talib</code> python package, MACD indicates $EMA<em>{short\ term} - EMA</em>{long\ term}$. So the <code>True</code> trading signal essentially telling you that the target stock price rising speed is faster than before.</p>
 <blockquote>
 <p>II. Signal MACD: We set our MACD trading signal to <code>True</code> when our MACD signal is over MACD, and set to <code>False</code> when MACD signal is below MACD.</p>
 </blockquote>
@@ -931,20 +931,20 @@ width: 30%;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -990,7 +990,7 @@ width: 30%;
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

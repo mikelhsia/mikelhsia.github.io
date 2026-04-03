@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Extracted from Website: SteadyOptions">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2025-07-01-updated-boilertemplate-ml-project">
+<meta property="og:url" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Extracted from Website: SteadyOptions">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/0.raw_data.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/1.cleaned_data.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/2.inteporation.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/3.log_rtn_distribution.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/4.Classification.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/5.missinginfo.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/6.decreasing_weights.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/7.normDistPlots.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/8.featureScoresOnANOVA.png">
+<meta property="og:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/9.featureScoresOnMuInfo.png">
+<meta property="article:published_time" content="2025-07-01T06:13:37.000Z">
+<meta property="article:modified_time" content="2025-07-02T04:57:56.070Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Backtesting">
+<meta property="article:tag" content="Python3">
+<meta property="article:tag" content="Quantitative Trading">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/0.raw_data.png">
+
+<link rel="canonical" href="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>2025-07-01-updated-boilertemplate-ml-project | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2025-07-01-updated-boilertemplate-ml-project
+        </h1>
+
+        
+          <h2 class="post-title" itemprop="name headline" style="font-size: 1em;color: grey;font-style: italic;padding: 0px 50px 0px 50px;">
+            Data-driven analysis of the most profitable wheel variants
+          </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-01 14:13:37" itemprop="dateCreated datePublished" datetime="2025-07-01T14:13:37+08:00">2025-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-02 12:57:56" itemprop="dateModified" datetime="2025-07-02T12:57:56+08:00">2025-07-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Trading-Strategy/" itemprop="url" rel="index"><span itemprop="name">Trading Strategy</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Trading-Strategy/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/" class="post-meta-item leancloud_visitors" data-flag-title="2025-07-01-updated-boilertemplate-ml-project" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        
+<p style="text-align:center; color: grey;">
+  <i>Extracted from Website: <a target="_blank" rel="noopener" href='https://steadyoptions.com/articles/the-options-wheel-strategy-wheel-trade-explained-r632/'>SteadyOptions</a></i>
+</p>
+
+<!--Introduction-->
+<span id="more"></span>
+<!-- toc -->
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>This report is meant to document the process of building the machine learning model and to predict the short-term next-day return of <strong>SPY</strong>. The report will be separated into three major sections as instructed:</p>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#libraries-used-in-this-template">Libraries Used in this Template</a><ul>
+<li><a href="#helper-functions">Helper functions</a></li>
+</ul>
+</li>
+<li><a href="#b-feature-selection-using-the-funnelling-approach">B. Feature Selection Using the Funnelling Approach</a><ul>
+<li><a href="#b1-data-collection">B.1 Data Collection</a></li>
+<li><a href="#b2-organizing-and-examining-the-raw-data">B.2 Organizing and Examining the Raw Data</a></li>
+<li><a href="#b3-featuring-engineering">B.3 Featuring Engineering</a><ul>
+<li><a href="#b31-labeling-the-sample-data">B.3.1 Labeling the Sample Data</a></li>
+<li><a href="#b32-creating-new-features-and-imputation">B.3.2 Creating New Features and Imputation</a></li>
+<li><a href="#b33-exploratory-data-analysis-eda">B.3.3. Exploratory Data Analysis (EDA)</a><ul>
+<li><a href="#b331-splitting-training-and-testing-data">B.3.3.1. Splitting Training and Testing Data</a></li>
+<li><a href="#b332-drop-high-correlated-samples">B.3.3.2 Drop High Correlated Samples</a></li>
+<li><a href="#b333-handling-near-zero-returns">B.3.3.3 Handling Near-Zero Returns</a><ul>
+<li><a href="#b3331-define-near-zero-returns">B.3.3.3.1 Define Near-Zero Returns</a></li>
+<li><a href="#b3332-design-decreasing-weights-for-near-zero-returns">B.3.3.3.2 Design Decreasing Weights for Near-Zero Returns</a></li>
+</ul>
+</li>
+<li><a href="#b334-logarithmic-transformation-and-standardization">B.3.3.4 Logarithmic Transformation and Standardization</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#b4-feature-selection">B.4 Feature Selection</a><ul>
+<li><a href="#b-justify-the-selection-of-features-retained-at-each-step">(b) Justify the selection of features retained at each step</a><ul>
+<li><a href="#b1-filter">b.1. Filter</a></li>
+<li><a href="#b2-wrapper">b.2. Wrapper</a><ul>
+<li><a href="#b21-forward">b.2.1 Forward</a></li>
+<li><a href="#b22-backward">b.2.2 Backward</a></li>
+</ul>
+</li>
+<li><a href="#b3-embedded">b.3. Embedded</a></li>
+</ul>
+</li>
+<li><a href="#c-provide-the-final-list-of-selected-features">(c) Provide the final list of selected features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#c-model-building-tuning-and-evaluation">C. Model Building, Tuning, and Evaluation</a><ul>
+<li><a href="#a-build-a-model-to-predict-positive-market-moves-uptrend-using-the-feature-subset-derived-above">(a) Build a model to predict positive market moves (uptrend) using the feature subset derived above.</a></li>
+<li><a href="#b-tune-the-hyperparameters-of-the-estimator-to-obtain-an-optimal-model">(b) Tune the hyperparameters of the estimator to obtain an optimal model</a></li>
+<li><a href="#c-evaluate-the-models-prediction-quality">(c) Evaluate the Model’s Prediction Quality</a><ul>
+<li><a href="#c1-log-loss-progress">(c.1) Log Loss Progress</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>To answer these questions, additional steps are involved, such as data collection, data processing, data imputation, .etc. These additional steps will also be addressed while answering these questions.</p>
+<p>The goal of this assignment is to increase the possibility of predicting when the SPY will go up, hence to maximize the portfolio return by investing in the SPY when the positive signal is revealed.</p>
+<h1 id="Libraries-Used-in-this-Template"><a href="#Libraries-Used-in-this-Template" class="headerlink" title="Libraries Used in this Template"></a>Libraries Used in this Template</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Libraries for holding the data</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> talib <span class="keyword">as</span> ta</span><br><span class="line"></span><br><span class="line"><span class="comment"># Libraries for plotting</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"></span><br><span class="line"><span class="comment"># Libraries for training the model</span></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler, PowerTransformer</span><br><span class="line"><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> SelectKBest, f_classif, mutual_info_classif, RFECV, RFE</span><br><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> SequentialFeatureSelector <span class="keyword">as</span> SFS</span><br><span class="line"><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> SelectFromModel</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> confusion_matrix, ConfusionMatrixDisplay, classification_report, roc_auc_score, roc_curve, RocCurveDisplay</span><br><span class="line"><span class="keyword">import</span> xgboost <span class="keyword">as</span> xgb</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Libraries for other purposes</span></span><br><span class="line"><span class="keyword">from</span> scipy.stats <span class="keyword">import</span> shapiro, boxcox, yeojohnson, skew</span><br><span class="line"><span class="keyword">import</span> missingno <span class="keyword">as</span> msno</span><br><span class="line"><span class="keyword">from</span> prettytable <span class="keyword">import</span> PrettyTable</span><br></pre></td></tr></table></figure>
+<h2 id="Helper-functions"><a href="#Helper-functions" class="headerlink" title="Helper functions"></a>Helper functions</h2><p>This is a customize class to adjust skewness of the data set by mimicing the behavior of standard scaler</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SkewnessAdjustor</span>:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, multiplier=<span class="number">1.5</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.dont_transform_fields = []</span><br><span class="line">        <span class="variable language_">self</span>.np_log_transform_fields = []</span><br><span class="line">        <span class="variable language_">self</span>.yeo_johnson_transform_fields = []</span><br><span class="line">        <span class="variable language_">self</span>.box_cox_transform_fields = []</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.yj_transformer = PowerTransformer(</span><br><span class="line">            method=<span class="string">&#x27;yeo-johnson&#x27;</span>,</span><br><span class="line">            standardize=<span class="literal">False</span>,</span><br><span class="line">            copy=<span class="literal">True</span>  <span class="comment"># Set to False to perform inplace computation during transformation.</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.bc_transformer = PowerTransformer(</span><br><span class="line">            method=<span class="string">&#x27;box-cox&#x27;</span>,</span><br><span class="line">            standardize=<span class="literal">False</span>,</span><br><span class="line">            copy=<span class="literal">True</span>  <span class="comment"># Set to False to perform inplace computation during transformation.</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">fit_transform</span>(<span class="params">self, data:pd.DataFrame, factor_names:<span class="built_in">list</span>, inplace=<span class="literal">False</span></span>):</span><br><span class="line">        tmp = data.copy() <span class="keyword">if</span> <span class="keyword">not</span> inplace <span class="keyword">else</span> data</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> factor <span class="keyword">in</span> factor_names:</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(tmp[factor].unique()) == <span class="number">2</span>:</span><br><span class="line">                <span class="variable language_">self</span>.dont_transform_fields.append(factor)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">elif</span> <span class="built_in">abs</span>(tmp[factor].skew()) &lt; <span class="number">0.5</span>:</span><br><span class="line">                <span class="variable language_">self</span>.dont_transform_fields.append(factor)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                original_skewness = tmp[factor].skew()</span><br><span class="line">                np_log_skewness = <span class="literal">None</span></span><br><span class="line">                yeo_skewness = <span class="literal">None</span></span><br><span class="line">                boxcox_skewness = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (tmp[factor] &gt; <span class="number">0</span>).<span class="built_in">all</span>():</span><br><span class="line">                    np_log_skewness = np.log(tmp[factor]).skew()</span><br><span class="line">                    box_cox_skewness = pd.DataFrame(boxcox(tmp[factor])[<span class="number">0</span>]).skew().values[<span class="number">0</span>]</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    np_log_skewness = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">                    box_cox_skewness = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">                yeo_skewness = pd.DataFrame(yeojohnson(tmp[factor].astype(np.float64))[<span class="number">0</span>]).skew().values[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">                method, _ = <span class="built_in">min</span>(</span><br><span class="line">                    (<span class="string">&#x27;original&#x27;</span>, <span class="built_in">abs</span>(original_skewness)),</span><br><span class="line">                    (<span class="string">&quot;np&quot;</span>, <span class="built_in">abs</span>(np_log_skewness)),</span><br><span class="line">                    (<span class="string">&quot;yeo&quot;</span>, <span class="built_in">abs</span>(yeo_skewness)),</span><br><span class="line">                    (<span class="string">&quot;box_cox&quot;</span>, <span class="built_in">abs</span>(box_cox_skewness)),</span><br><span class="line">                    key=<span class="keyword">lambda</span> x:x[<span class="number">1</span>]</span><br><span class="line">                )</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> method == <span class="string">&#x27;original&#x27;</span>:</span><br><span class="line">                    <span class="variable language_">self</span>.dont_transform_fields.append(factor)</span><br><span class="line">                <span class="keyword">elif</span> method == <span class="string">&#x27;np&#x27;</span>:</span><br><span class="line">                    <span class="variable language_">self</span>.np_log_transform_fields.append(factor)</span><br><span class="line">                <span class="keyword">elif</span> method == <span class="string">&#x27;yeo&#x27;</span>:</span><br><span class="line">                    <span class="variable language_">self</span>.yeo_johnson_transform_fields.append(factor)</span><br><span class="line">                <span class="keyword">elif</span> method == <span class="string">&#x27;box_cox&#x27;</span>:</span><br><span class="line">                    <span class="variable language_">self</span>.box_cox_transform_fields.append(factor)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">raise</span> ValueError(<span class="string">f&#x27;Wrong skewness&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.np_log_transform_fields:</span><br><span class="line">            tmp.loc[:, <span class="variable language_">self</span>.np_log_transform_fields] = np.log(tmp.loc[:, <span class="variable language_">self</span>.np_log_transform_fields])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.yeo_johnson_transform_fields:</span><br><span class="line">            tmp.loc[:, <span class="variable language_">self</span>.yeo_johnson_transform_fields] = <span class="variable language_">self</span>.yj_transformer.fit_transform(tmp.loc[:, <span class="variable language_">self</span>.yeo_johnson_transform_fields])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.box_cox_transform_fields:</span><br><span class="line">            tmp.loc[:, <span class="variable language_">self</span>.box_cox_transform_fields] = <span class="variable language_">self</span>.bc_transformer.fit_transform(tmp.loc[:, <span class="variable language_">self</span>.box_cox_transform_fields])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> tmp <span class="keyword">if</span> <span class="keyword">not</span> inplace <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">transform</span>(<span class="params">self, data:pd.DataFrame, factor_names:<span class="built_in">list</span>, inplace=<span class="literal">False</span></span>):</span><br><span class="line">        tmp = data.copy() <span class="keyword">if</span> <span class="keyword">not</span> inplace <span class="keyword">else</span> data</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.np_log_transform_fields <span class="keyword">and</span> <span class="keyword">not</span> <span class="variable language_">self</span>.yeo_johnson_transform_fields <span class="keyword">and</span> <span class="keyword">not</span> <span class="variable language_">self</span>.box_cox_transform_fields:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">f&#x27;This class not yet been fitted.&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.np_log_transform_fields:</span><br><span class="line">            tmp.loc[:, <span class="variable language_">self</span>.np_log_transform_fields] = np.log(tmp.loc[:, <span class="variable language_">self</span>.np_log_transform_fields])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.yeo_johnson_transform_fields:</span><br><span class="line">            tmp.loc[:, <span class="variable language_">self</span>.yeo_johnson_transform_fields] = <span class="variable language_">self</span>.yj_transformer.transform(tmp.loc[:, <span class="variable language_">self</span>.yeo_johnson_transform_fields])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.box_cox_transform_fields:</span><br><span class="line">            tmp.loc[:, <span class="variable language_">self</span>.box_cox_transform_fields] = <span class="variable language_">self</span>.bc_transformer.transform(tmp.loc[:, <span class="variable language_">self</span>.box_cox_transform_fields])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> tmp <span class="keyword">if</span> <span class="keyword">not</span> inplace <span class="keyword">else</span> <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<h1 id="B-Feature-Selection-Using-the-Funnelling-Approach"><a href="#B-Feature-Selection-Using-the-Funnelling-Approach" class="headerlink" title="B. Feature Selection Using the Funnelling Approach"></a>B. Feature Selection Using the Funnelling Approach</h1><p>Features represent the characteristics of the data and are inputs as variables to the machine learning model. To create features to train the model, the fundamental step is to collect and process the data. Once we have the raw data from the market, we’re able to further process the data and even produce new features to train our machine learning model. However, we can’t just dump everything we have into the model. Therefore, selecting the more important and relevant features would be a crucial step before building and training the model.</p>
+<h2 id="B-1-Data-Collection"><a href="#B-1-Data-Collection" class="headerlink" title="B.1 Data Collection"></a>B.1 Data Collection</h2><p>The objective of this ML model is to predict the SPY next-day return. To do that, we need raw data from the broker or data warehouse. I have downloaded the 10-year SPY end-of-day market data since 2014-01-01 from the data service provider Tiingo (spy_asof_20140101.csv).</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.read_csv(<span class="string">&#x27;./spy_asof_20140101.csv&#x27;</span>, index_col=<span class="number">0</span>)</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/0.raw_data.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Raw data</i>
+</p>
+
+<h2 id="B-2-Organizing-and-Examining-the-Raw-Data"><a href="#B-2-Organizing-and-Examining-the-Raw-Data" class="headerlink" title="B.2 Organizing and Examining the Raw Data"></a>B.2 Organizing and Examining the Raw Data</h2><p>The ‘close’, ‘high’, ‘low’, ‘open’, and ‘volume’ are the raw prices from the market. However, to analyze the growth from 2014 until today, these prices might have high jumps due to dividend and split events. Therefore, we need to switch to the Forward Adjusted Price to make sure we can track the trend of the stock price.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">df = df.drop(</span><br><span class="line">    columns = [<span class="string">&#x27;close&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;low&#x27;</span>, <span class="string">&#x27;open&#x27;</span>, <span class="string">&#x27;volume&#x27;</span>, <span class="string">&#x27;splitFactor&#x27;</span>]</span><br><span class="line">).rename(</span><br><span class="line">    columns=&#123;</span><br><span class="line">        <span class="string">&#x27;adjClose&#x27;</span>: <span class="string">&#x27;close&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;adjHigh&#x27;</span>: <span class="string">&#x27;high&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;adjLow&#x27;</span>: <span class="string">&#x27;low&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;adjOpen&#x27;</span>: <span class="string">&#x27;open&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;adjVolume&#x27;</span>: <span class="string">&#x27;volume&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/1.cleaned_data.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Raw data</i>
+</p>
+
+<p>Now, let’s check whether anything was missing from the data we pulled from the data warehouse.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.isnull().<span class="built_in">sum</span>().to_frame().T</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/2.inteporation.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Missing Values</i>
+</p>
+
+<h2 id="B-3-Featuring-Engineering"><a href="#B-3-Featuring-Engineering" class="headerlink" title="B.3 Featuring Engineering"></a>B.3 Featuring Engineering</h2><p>Feature engineering is the process of transforming raw data into meaningful and informative features for the ML model to digest, thereby improving the performance of machine learning models.</p>
+<p>It usually involves but not limited to the following processes:</p>
+<ul>
+<li>Creating New Features</li>
+<li>Transforming Features</li>
+<li>Selecting/Removing Features</li>
+<li>Handling Missing/Noisy Data</li>
+<li>…</li>
+</ul>
+<h3 id="B-3-1-Labeling-the-Sample-Data"><a href="#B-3-1-Labeling-the-Sample-Data" class="headerlink" title="B.3.1 Labeling the Sample Data"></a>B.3.1 Labeling the Sample Data</h3><p>To be able to train and test the ML model, we need to label each sample as either positive (uptrend) or negative (downtrend) so that the model would realize how to recognize the pattern and predict the positive sample.</p>
+<p>In this research, we define the binary target variable (<em>bool</em>) to be:</p>
+<ul>
+<li>1 (Uptrend): Return &gt; 0</li>
+<li>0 (Downtrend or Flat): Return ≤ 0.</li>
+</ul>
+<p>Here are a few rules considered while we produce the daily return:</p>
+<ol>
+<li>To waive the factor of the overnight jump from impacting our desired predictability, we use $\text{close} - \text{open}$ instead of $\text{close} - \text{previous close}$ to simulate the daily return.</li>
+<li>We use log return instead of the arithmetic price change as the daily return ($\text{intraday return} = \log\left(\frac{\text{close}}{\text{open}}\right)$).</li>
+<li>We also need to produce another column called “<strong>predict_log_return</strong>“ by <code>.shift(-1)</code> the “<strong>daily_log_return</strong>“ as the y-label for the training/testing dataset.</li>
+<li>Lastly, we label each sample to <strong>[0,1]</strong> according to the rule we designed above.<ul>
+<li><strong><em>Note</em></strong> <em>: Here we label the entire dataset, including the test set, for the purpose of ML model performance evaluation.</em></li>
+</ul>
+</li>
+</ol>
+<p>‘’’python<br>123df[‘asd’]<br>‘’’</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">fig, (ax1, ax2) = plt.subplots(<span class="number">1</span>, <span class="number">2</span>, figsize=(<span class="number">10</span>, <span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">df[<span class="string">&#x27;daily_log_return&#x27;</span>].plot(ax=ax1, color=<span class="string">&#x27;coral&#x27;</span>)</span><br><span class="line">ax1.set_title(<span class="string">&#x27;Daily o-c Log SPY Return&#x27;</span>)</span><br><span class="line">ax1.set_xlabel(<span class="string">&#x27;Date&#x27;</span>)</span><br><span class="line">ax1.set_ylabel(<span class="string">&#x27;log return&#x27;</span>)</span><br><span class="line">ax1.tick_params(axis=<span class="string">&#x27;x&#x27;</span>, rotation=<span class="number">45</span>)</span><br><span class="line"></span><br><span class="line">df[<span class="string">&#x27;daily_log_return&#x27;</span>].plot(kind=<span class="string">&#x27;box&#x27;</span>, ax=ax2, vert=<span class="literal">False</span>, color=<span class="string">&#x27;skyblue&#x27;</span>)</span><br><span class="line">ax2.set_title(<span class="string">&#x27;Daily o-c Log SPY Return (Box plot)&#x27;</span>)</span><br><span class="line">ax2.set_xlabel(<span class="string">&#x27;Value&#x27;</span>)</span><br><span class="line">ax2.tick_params(axis=<span class="string">&#x27;x&#x27;</span>, rotation=<span class="number">45</span>)</span><br><span class="line"></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/3.log_rtn_distribution.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Missing Values</i>
+</p>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">value_counts = df.loc[:, [<span class="string">&#x27;y_label&#x27;</span>]].value_counts()</span><br><span class="line"></span><br><span class="line">ax = value_counts.plot.pie(</span><br><span class="line">    subplots=<span class="literal">True</span>, legend=<span class="literal">True</span>,</span><br><span class="line">    autopct=<span class="string">&#x27;%1.2f%%&#x27;</span>,  <span class="comment"># Show percentages</span></span><br><span class="line">    startangle=<span class="number">90</span>,</span><br><span class="line">    wedgeprops=&#123;<span class="string">&#x27;linewidth&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;edgecolor&#x27;</span>: <span class="string">&#x27;white&#x27;</span>&#125;,</span><br><span class="line">    textprops=&#123;<span class="string">&#x27;fontsize&#x27;</span>: <span class="number">8</span>&#125;,</span><br><span class="line">    figsize=(<span class="number">6</span>,<span class="number">3</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">isinstance</span>(ax, np.ndarray):</span><br><span class="line">    ax = ax[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, (count, pct) <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="built_in">zip</span>(value_counts, value_counts/<span class="built_in">sum</span>(value_counts)*<span class="number">100</span>)):</span><br><span class="line">    ax.text(<span class="number">0</span>, -<span class="number">0.1</span> - i*<span class="number">0.1</span>, <span class="string">f&quot;Count: <span class="subst">&#123;count&#125;</span>&quot;</span>,</span><br><span class="line">           transform=ax.transAxes, ha=<span class="string">&#x27;center&#x27;</span>, fontsize=<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">plt.title(<span class="string">&#x27;Binary Category Distribution with Counts&#x27;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/4.Classification.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Missing Values</i>
+</p>
+
+<p>We can say tell that this is a relatively balanced dataset.</p>
+<h3 id="B-3-2-Creating-New-Features-and-Imputation"><a href="#B-3-2-Creating-New-Features-and-Imputation" class="headerlink" title="B.3.2 Creating New Features and Imputation"></a>B.3.2 Creating New Features and Imputation</h3><p>It is not enough to use only <strong>ohlc</strong> (open, high, low, close) prices while predicting the expected return of the next day. We need to derive the factors that are potentially related to the growth of the future stock price. These factors might include technical indicators, momentum, trend strength, and others.</p>
+<p>The factors we derived include:</p>
+<ul>
+<li>Moving Averages (SMA, EMA).</li>
+<li>RSI, MACD, Bollinger Bands.</li>
+<li>Momentum, Volatility measures.</li>
+<li>Lag Features: Past returns (ROC - Rate of Change).</li>
+<li>Volume-based Features: Volume SMA.</li>
+<li>Over night changes: $\text{Open}-\text{Close}_{\text{previous day}}$, …</li>
+</ul>
+<p>It is important to note that indicators, like SMA, EMA, and Bollinger Bands, are more of smoothed lines. These values by themselves don’t represent any trend, momentum, or signal. Therefore, I further processed them into features that might actually be meaningful while predicting the outcome.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> [<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">25</span>]:</span><br><span class="line">    df[<span class="string">f&#x27;sma<span class="subst">&#123;n&#125;</span>&#x27;</span>] = ta.SMA(df[<span class="string">&#x27;close&#x27;</span>], n)</span><br><span class="line">    df[<span class="string">f&#x27;ema<span class="subst">&#123;n&#125;</span>&#x27;</span>] = ta.EMA(df[<span class="string">&#x27;close&#x27;</span>], n)</span><br><span class="line">    df[<span class="string">f&#x27;roc<span class="subst">&#123;n&#125;</span>&#x27;</span>] = np.log(df[<span class="string">&#x27;close&#x27;</span>]/(df[<span class="string">&#x27;close&#x27;</span>].shift(n)))</span><br><span class="line">    df[<span class="string">f&#x27;volume<span class="subst">&#123;n&#125;</span>&#x27;</span>] = ta.SMA(df[<span class="string">&#x27;volume&#x27;</span>], n)</span><br><span class="line">    df[<span class="string">f&#x27;adx<span class="subst">&#123;n&#125;</span>&#x27;</span>] = ta.ADX(df[<span class="string">&#x27;high&#x27;</span>], df[<span class="string">&#x27;low&#x27;</span>], df[<span class="string">&#x27;close&#x27;</span>], timeperiod=n)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> [<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">25</span>]:</span><br><span class="line">    df[<span class="string">f&#x27;sma<span class="subst">&#123;n&#125;</span>_diff_close&#x27;</span>] = df[<span class="string">f&#x27;sma<span class="subst">&#123;n&#125;</span>&#x27;</span>] - df[<span class="string">&#x27;close&#x27;</span>]</span><br><span class="line">    df[<span class="string">f&#x27;ema<span class="subst">&#123;n&#125;</span>_diff_close&#x27;</span>] = df[<span class="string">f&#x27;ema<span class="subst">&#123;n&#125;</span>&#x27;</span>] - df[<span class="string">&#x27;close&#x27;</span>]</span><br><span class="line">    df[<span class="string">f&#x27;volume<span class="subst">&#123;n&#125;</span>_diff_vol&#x27;</span>] = df[<span class="string">f&#x27;volume<span class="subst">&#123;n&#125;</span>&#x27;</span>] - df[<span class="string">&#x27;volume&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> [<span class="number">10</span>, <span class="number">15</span>, <span class="number">25</span>]:</span><br><span class="line">    df[<span class="string">f&#x27;sma<span class="subst">&#123;n&#125;</span>_diff_5&#x27;</span>] = df[<span class="string">f&#x27;sma<span class="subst">&#123;n&#125;</span>&#x27;</span>]-df[<span class="string">&#x27;sma5&#x27;</span>]</span><br><span class="line">    df[<span class="string">f&#x27;ema<span class="subst">&#123;n&#125;</span>_diff_5&#x27;</span>] = df[<span class="string">f&#x27;ema<span class="subst">&#123;n&#125;</span>&#x27;</span>]-df[<span class="string">&#x27;sma5&#x27;</span>]</span><br><span class="line">    df[<span class="string">f&#x27;volume<span class="subst">&#123;n&#125;</span>_diff_volume5&#x27;</span>] = df[<span class="string">f&#x27;volume<span class="subst">&#123;n&#125;</span>&#x27;</span>] - df[<span class="string">&#x27;volume5&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> [<span class="number">7</span>, <span class="number">14</span>]:</span><br><span class="line">    df[<span class="string">f&#x27;mfi<span class="subst">&#123;n&#125;</span>&#x27;</span>] = ta.MFI(df[<span class="string">&#x27;high&#x27;</span>], df[<span class="string">&#x27;low&#x27;</span>], df[<span class="string">&#x27;close&#x27;</span>], df[<span class="string">&#x27;volume&#x27;</span>], timeperiod=n)</span><br><span class="line">    df[<span class="string">f&#x27;rsi<span class="subst">&#123;n&#125;</span>&#x27;</span>] = ta.RSI(df[<span class="string">&#x27;close&#x27;</span>], n)</span><br><span class="line">    df[<span class="string">f&#x27;vol<span class="subst">&#123;n&#125;</span>&#x27;</span>] = df[<span class="string">&#x27;daily_log_return&#x27;</span>].rolling(n).std() * np.sqrt(<span class="number">252</span>) <span class="comment"># Annualized</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The overnight changes could also be an indicator of the next day change</span></span><br><span class="line">df[<span class="string">&#x27;o_m_c_return&#x27;</span>] = np.log(df[<span class="string">&#x27;open&#x27;</span>]/df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>))</span><br><span class="line">df[<span class="string">&#x27;o_m_c_return_lag1&#x27;</span>] = df[<span class="string">&#x27;o_m_c_return&#x27;</span>].shift(<span class="number">1</span>)</span><br><span class="line">_, _, df[<span class="string">&#x27;macd&#x27;</span>] = ta.MACD(df[<span class="string">&#x27;close&#x27;</span>], fastperiod=<span class="number">12</span>, slowperiod=<span class="number">26</span>, signalperiod=<span class="number">9</span>)</span><br><span class="line"></span><br><span class="line">upperband, middleband, lowerband = ta.BBANDS(df[<span class="string">&#x27;close&#x27;</span>], timeperiod=<span class="number">5</span>, nbdevup=<span class="number">1.5</span>, nbdevdn=<span class="number">1.5</span>, matype=<span class="number">0</span>)</span><br><span class="line">df[<span class="string">&#x27;bband_uptrend&#x27;</span>] = np.where(df[<span class="string">&#x27;close&#x27;</span>] - upperband &gt; <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">df[<span class="string">&#x27;bband_downtrend&#x27;</span>] = np.where(lowerband - df[<span class="string">&#x27;close&#x27;</span>] &gt; <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">df[<span class="string">&#x27;bband_midtrend&#x27;</span>] = np.where((df[<span class="string">&#x27;close&#x27;</span>] - upperband &lt;= <span class="number">0</span>) &amp; (lowerband - df[<span class="string">&#x27;close&#x27;</span>] &lt;= <span class="number">0</span>), <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">df[<span class="string">&#x27;MF_Multiplier&#x27;</span>] = ((df[<span class="string">&#x27;close&#x27;</span>] - df[<span class="string">&#x27;low&#x27;</span>]) - (df[<span class="string">&#x27;high&#x27;</span>] - df[<span class="string">&#x27;close&#x27;</span>])) / (df[<span class="string">&#x27;high&#x27;</span>] - df[<span class="string">&#x27;low&#x27;</span>])</span><br><span class="line">df[<span class="string">&#x27;MF_Multiplier&#x27;</span>] = df[<span class="string">&#x27;MF_Multiplier&#x27;</span>].fillna(<span class="number">0</span>)</span><br><span class="line">df[<span class="string">&#x27;MF_Volume&#x27;</span>] = df[<span class="string">&#x27;MF_Multiplier&#x27;</span>] * df[<span class="string">&#x27;volume&#x27;</span>]</span><br><span class="line">df[<span class="string">&#x27;ADL&#x27;</span>] = df[<span class="string">&#x27;MF_Volume&#x27;</span>].cumsum()  <span class="comment"># Cumulative sum</span></span><br><span class="line">df[<span class="string">&#x27;ADL_EMA3&#x27;</span>] = df[<span class="string">&#x27;ADL&#x27;</span>].ewm(span=<span class="number">3</span>, adjust=<span class="literal">False</span>).mean()</span><br><span class="line">df[<span class="string">&#x27;ADL_EMA10&#x27;</span>] = df[<span class="string">&#x27;ADL&#x27;</span>].ewm(span=<span class="number">10</span>, adjust=<span class="literal">False</span>).mean()</span><br><span class="line">df[<span class="string">&#x27;Chaikin_Oscillator&#x27;</span>] = df[<span class="string">&#x27;ADL_EMA3&#x27;</span>] - df[<span class="string">&#x27;ADL_EMA10&#x27;</span>]</span><br><span class="line"></span><br><span class="line">df = df.drop(columns=[<span class="string">&#x27;MF_Multiplier&#x27;</span>, <span class="string">&#x27;MF_Volume&#x27;</span>, <span class="string">&#x27;ADL&#x27;</span>, <span class="string">&#x27;ADL_EMA3&#x27;</span>, <span class="string">&#x27;ADL_EMA10&#x27;</span>])</span><br><span class="line"></span><br><span class="line">df[<span class="string">&#x27;intra_momentum&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>] - df[<span class="string">&#x27;open&#x27;</span>])/(df[<span class="string">&#x27;high&#x27;</span>] - df[<span class="string">&#x27;close&#x27;</span>])</span><br><span class="line"></span><br><span class="line">df[<span class="string">&#x27;divInfluence&#x27;</span>] = df[<span class="string">&#x27;divCash&#x27;</span>].ewm(span=<span class="number">5</span>).mean()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># We don&#x27;t need these anymore since they are more of the smoothed data.</span></span><br><span class="line">data = df.drop(columns=[</span><br><span class="line">    <span class="string">&#x27;close&#x27;</span>, <span class="string">&#x27;high&#x27;</span>, <span class="string">&#x27;low&#x27;</span>, <span class="string">&#x27;open&#x27;</span>, <span class="string">&#x27;volume&#x27;</span>, <span class="string">&#x27;divCash&#x27;</span>, <span class="string">&#x27;sma5&#x27;</span>, <span class="string">&#x27;sma10&#x27;</span>, <span class="string">&#x27;sma15&#x27;</span>, <span class="string">&#x27;sma25&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;ema5&#x27;</span>, <span class="string">&#x27;ema10&#x27;</span>, <span class="string">&#x27;ema15&#x27;</span>, <span class="string">&#x27;ema25&#x27;</span>, <span class="string">&#x27;volume5&#x27;</span>, <span class="string">&#x27;volume10&#x27;</span>, <span class="string">&#x27;volume15&#x27;</span>, <span class="string">&#x27;volume25&#x27;</span>,</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">fig, (ax1, ax2) = plt.subplots(<span class="number">1</span>, <span class="number">2</span>, figsize=(<span class="number">14</span>, <span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">np.isnan(data).<span class="built_in">sum</span>().plot.bar(ax=ax1, color=<span class="string">&#x27;coral&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">msno.matrix(data, ax=ax1, color=(<span class="number">0.2</span>, <span class="number">0.4</span>, <span class="number">0.6</span>), sparkline=<span class="literal">False</span>)</span><br><span class="line">ax1.set_title(<span class="string">&#x27;NaN Values per Column&#x27;</span>)</span><br><span class="line">ax1.set_ylabel(<span class="string">&#x27;Count&#x27;</span>)</span><br><span class="line"><span class="comment"># ax1.tick_params(axis=&#x27;x&#x27;, rotation=45)</span></span><br><span class="line">ax1.set_xticks([])</span><br><span class="line">ax1.set_title(<span class="string">&#x27;Missing Data Matrix&#x27;</span>)</span><br><span class="line"></span><br><span class="line">np.isinf(data).<span class="built_in">sum</span>().plot.bar(ax=ax2, color=<span class="string">&#x27;skyblue&#x27;</span>)</span><br><span class="line">ax2.set_title(<span class="string">&#x27;Inf Values per Column&#x27;</span>)</span><br><span class="line">ax2.set_ylabel(<span class="string">&#x27;Count&#x27;</span>)</span><br><span class="line">ax2.tick_params(axis=<span class="string">&#x27;x&#x27;</span>, rotation=<span class="number">45</span>)</span><br><span class="line"></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/5.missinginfo.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Missing Values</i>
+</p>
+
+
+<p>For the first diagram “Missing Data Matrix”, we get to see that the orange spots, representing the missing data, are located at the beginning of the data. This indicates that these missing values are generated while we creating the new features. We can simply discard them. As for the second diagram, we see that the feature “intra_momentum” has a lot of <strong>np.inf</strong>. This is due to the fact that the $\text{high}-\text{close}$ is either 0 or close to 0, indicating the intraday momentum is huge at the end to the trading hour. Therefore, we can simply replace them with the biggest number in that feature to represent the momentum is huge.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Drop the row that has missing values</span></span><br><span class="line">data.dropna(axis=<span class="number">0</span>, inplace=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Replace the inf value with biggest number in that feature</span></span><br><span class="line">data[<span class="string">&#x27;intra_momentum&#x27;</span>] = np.where(np.isinf(data[<span class="string">&#x27;intra_momentum&#x27;</span>]), data[<span class="string">&#x27;intra_momentum&#x27;</span>].replace([np.inf, -np.inf], np.nan).<span class="built_in">max</span>(), data[<span class="string">&#x27;intra_momentum&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="B-3-3-Exploratory-Data-Analysis-EDA"><a href="#B-3-3-Exploratory-Data-Analysis-EDA" class="headerlink" title="B.3.3. Exploratory Data Analysis (EDA)"></a>B.3.3. Exploratory Data Analysis (EDA)</h3><p>The purpose of the Exploratory Data Analysis (EDA) is to examine, visualize, and summarize the dataset in order to recognize a hidden pattern. It combines various statistical techniques and visual tools to transform raw data into actionable insights for the viewer to further understand the data structure.</p>
+<p>One rule of thumb that requires extra attention is that you always train your scalers and transformers with training data, then apply the changes to testing data. This practice is highly encouraged in order to avoid data leakage.</p>
+<p>In this research, we’ve conducted the EDA from the following aspects:</p>
+<h4 id="B-3-3-1-Splitting-Training-and-Testing-Data"><a href="#B-3-3-1-Splitting-Training-and-Testing-Data" class="headerlink" title="B.3.3.1. Splitting Training and Testing Data"></a>B.3.3.1. Splitting Training and Testing Data</h4><p>Before starting further processing of the data, we need to split the training/testing data before any data adjustment has happened. This prevents data leakage, where information from the test set influences the training process (e.g., during log transformation, feature scaling, or handling missing values). By splitting first, we ensure the test set remains a completely independent benchmark to evaluate the model’s generalization performance on unseen data, mimicking real-world deployment scenarios.</p>
+<p>Also, don’t forget to add a gap between the training and testing datasets as it also prevents data leakage.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">X = data.drop(columns=[<span class="string">&#x27;daily_log_return&#x27;</span>, <span class="string">&#x27;predict_log_return&#x27;</span>, <span class="string">&#x27;y_label&#x27;</span>])</span><br><span class="line">y = data.loc[:, [<span class="string">&#x27;daily_log_return&#x27;</span>, <span class="string">&#x27;predict_log_return&#x27;</span>, <span class="string">&#x27;y_label&#x27;</span>]]</span><br><span class="line"></span><br><span class="line">split_rate = <span class="number">0.8</span></span><br><span class="line"></span><br><span class="line">training_set_size = <span class="built_in">int</span>(df.shape[<span class="number">0</span>]*split_rate)</span><br><span class="line"></span><br><span class="line">X_train = X.iloc[:training_set_size, :]</span><br><span class="line">y_train = y.iloc[:training_set_size, :]</span><br><span class="line">X_test = X.iloc[training_set_size + <span class="number">1</span>:, :]</span><br><span class="line">y_test = y.iloc[training_set_size + <span class="number">1</span>:, :]</span><br></pre></td></tr></table></figure></p>
+<h4 id="B-3-3-2-Drop-High-Correlated-Samples"><a href="#B-3-3-2-Drop-High-Correlated-Samples" class="headerlink" title="B.3.3.2 Drop High Correlated Samples"></a>B.3.3.2 Drop High Correlated Samples</h4><p>We have produced a lot of features from the raw data, though they are yet to be examined. We need to screen out those features that are too closely correlated. <strong>Categorical</strong> features are usually excluded from the correlation test in this case. <strong>Remember</strong>, we use the training dataset to examine the correlation, avoiding data leakage.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">categorical_features = [<span class="string">&#x27;bband_uptrend&#x27;</span>, <span class="string">&#x27;bband_downtrend&#x27;</span>, <span class="string">&#x27;bband_midtrend&#x27;</span>]</span><br><span class="line">numerical_features = [x <span class="keyword">for</span> x <span class="keyword">in</span> X_train.columns <span class="keyword">if</span> x <span class="keyword">not</span> <span class="keyword">in</span> categorical_features]</span><br><span class="line"></span><br><span class="line">corr_matrix = X_train[numerical_features].corr().<span class="built_in">abs</span>()</span><br><span class="line">tria = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=<span class="number">1</span>).astype(<span class="built_in">bool</span>))</span><br><span class="line">cols_to_drop = [column <span class="keyword">for</span> column <span class="keyword">in</span> tria.columns <span class="keyword">if</span> <span class="built_in">any</span>(tria[column] &gt; <span class="number">0.9</span>)]</span><br></pre></td></tr></table></figure>
+<p>Once we have obtained the columns that have too high correlation with one another, we will transform the training dataset and testing dataset to have the same features.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X_train = X_train.drop(columns=cols_to_drop)</span><br><span class="line">X_test = X_test.drop(columns=cols_to_drop)</span><br></pre></td></tr></table></figure>
+<h4 id="B-3-3-3-Handling-Near-Zero-Returns"><a href="#B-3-3-3-Handling-Near-Zero-Returns" class="headerlink" title="B.3.3.3 Handling Near-Zero Returns"></a>B.3.3.3 Handling Near-Zero Returns</h4><p>For those samples that have relatively low daily log returns, we see them as the <strong><em>noise</em></strong> and would like to mitigate their impact on our machine learning model. There are several ways of pulling it off.</p>
+<ol>
+<li>We delete those samples from our dataset.</li>
+<li>We decrease their weights while training the machine learning model.</li>
+</ol>
+<p>Here, we employ a method to combine both methods mentioned above. As the winsorization technique that usually used to standardize the feature values, what we do here is to exponentially decrease the weights of the values that sit between the upper- and lower-bound of the predicted log returns. The list of weights derived will be preserved and fed to the model when we start training the model.</p>
+<h5 id="B-3-3-3-1-Define-Near-Zero-Returns"><a href="#B-3-3-3-1-Define-Near-Zero-Returns" class="headerlink" title="B.3.3.3.1 Define Near-Zero Returns"></a>B.3.3.3.1 Define Near-Zero Returns</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lower_bound = y_train[<span class="string">&#x27;predict_log_return&#x27;</span>].quantile(<span class="number">0.25</span>)</span><br><span class="line">upper_bound = y_train[<span class="string">&#x27;predict_log_return&#x27;</span>].quantile(<span class="number">0.75</span>)</span><br><span class="line"><span class="built_in">print</span>(upper_bound, lower_bound)</span><br><span class="line"><span class="comment"># --&gt; (np.float64(0.004149227614119242), np.float64(-0.0031685340375708798))</span></span><br></pre></td></tr></table></figure>
+<h5 id="B-3-3-3-2-Design-Decreasing-Weights-for-Near-Zero-Returns"><a href="#B-3-3-3-2-Design-Decreasing-Weights-for-Near-Zero-Returns" class="headerlink" title="B.3.3.3.2 Design Decreasing Weights for Near-Zero Returns"></a>B.3.3.3.2 Design Decreasing Weights for Near-Zero Returns</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">epsilon = <span class="number">0.0025</span></span><br><span class="line">abs_returns = np.<span class="built_in">abs</span>(y_train[<span class="string">&#x27;predict_log_return&#x27;</span>])</span><br><span class="line">weights = np.ones_like(y_train[<span class="string">&#x27;predict_log_return&#x27;</span>])</span><br><span class="line"></span><br><span class="line">mask = (y_train[<span class="string">&#x27;predict_log_return&#x27;</span>] &gt;= lower_bound) &amp; (y_train[<span class="string">&#x27;predict_log_return&#x27;</span>] &lt;= upper_bound)</span><br><span class="line"></span><br><span class="line">weights[mask] = <span class="number">1</span> - np.exp(-abs_returns[mask] / epsilon)</span><br><span class="line"></span><br><span class="line">y_train.loc[:, <span class="string">&#x27;weight&#x27;</span>] = weights</span><br><span class="line">y_train.head()</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/6.decreasing_weights.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Decreasing weights</i>
+</p>
+
+<h4 id="B-3-3-4-Logarithmic-Transformation-and-Standardization"><a href="#B-3-3-4-Logarithmic-Transformation-and-Standardization" class="headerlink" title="B.3.3.4 Logarithmic Transformation and Standardization"></a>B.3.3.4 Logarithmic Transformation and Standardization</h4><p>Many ML algorithms (e.g., linear regression, logistic regression, neural networks) assume features are approximately normally distributed. Skewed data violates this assumption, leading to biased estimates. Therefore, one important step is to define whether a feature is normally distributed and then conduct log transformation accordingly.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">numerical_features = [x <span class="keyword">for</span> x <span class="keyword">in</span> X_train.columns <span class="keyword">if</span> x <span class="keyword">not</span> <span class="keyword">in</span> categorical_features]</span><br><span class="line"></span><br><span class="line">n_cols = <span class="number">5</span></span><br><span class="line">n_rows = (<span class="built_in">len</span>(numerical_features) + n_cols - <span class="number">1</span>) // n_cols  <span class="comment"># Round up division</span></span><br><span class="line"></span><br><span class="line">fig, axes = plt.subplots(n_rows, n_cols, figsize=(<span class="number">15</span>, n_rows * <span class="number">2</span>))</span><br><span class="line">axes = axes.flatten()  <span class="comment"># Flatten to 1D array for easy iteration</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, col <span class="keyword">in</span> <span class="built_in">enumerate</span>(numerical_features):</span><br><span class="line">    sns.histplot(df[col], kde=<span class="literal">True</span>, bins=<span class="number">30</span>, ax=axes[i])</span><br><span class="line">    axes[i].set_title(<span class="string">f&#x27;Distribution of <span class="subst">&#123;col&#125;</span>&#x27;</span>, fontsize=<span class="number">10</span>)</span><br><span class="line">    axes[i].set_xlabel(col)</span><br><span class="line">    axes[i].set_ylabel(<span class="string">&#x27;Frequency&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i + <span class="number">1</span>, <span class="built_in">len</span>(axes)):</span><br><span class="line">    axes[j].set_visible(<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">plt.suptitle(<span class="string">&#x27;Distribution Plots of All Features&#x27;</span>)</span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/7.normDistPlots.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Distributions of all features</i>
+</p>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">skewness_adjuster = SkewnessAdjustor()</span><br><span class="line">X_train = skewness_adjuster.fit_transform(X_train, numerical_features)</span><br></pre></td></tr></table></figure>
+<p>After finishing adjusting the skewness of the skewed features, we standardize all the featrues in our training dataset.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">standard_scaler = StandardScaler()</span><br><span class="line">X_train.loc[:, numerical_features] = standard_scaler.fit_transform(X_train.loc[:, numerical_features])</span><br></pre></td></tr></table></figure>
+<p>Lastly, remember to transform the test data using the scalers we just trained.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X_test = skewness_adjuster.transform(X_test, numerical_features)</span><br><span class="line">X_test.loc[:, numerical_features] = standard_scaler.transform(X_test.loc[:, numerical_features])</span><br></pre></td></tr></table></figure>
+<h2 id="B-4-Feature-Selection"><a href="#B-4-Feature-Selection" class="headerlink" title="B.4 Feature Selection"></a>B.4 Feature Selection</h2><p>This used to be included in the process of EDA. We now separate it from the EDA so that we can focus on more details of the feature selection methods. Let’s walk through the entire process while answering the question 2.</p>
+<p>The three methods mentioned are 1. Filter, 2. Wrapper, and 3. Embedded Methods. Each method has a different idea to select the most important features from the ones that we just created.</p>
+<ol>
+<li><strong>Filter Method (top-down)</strong>: The main idea of the filter method is that we compare the features side by side to select the features that are most relevant to the desired outcome (<code>y-label</code>) before training the ML model. The steps are as follows:<ol>
+<li>First, we remove highly correlated features to avoid feature duplication. (It’s done above)</li>
+<li>Using univariate feature selection, such as information gain, Chi-square test, and others, to select the most relevant features against the y-label.</li>
+<li>Remove features that are not suitable.</li>
+</ol>
+</li>
+<li><strong>Wrapper Method (bottom-up)</strong>: It aims to find out the rank of the feature importance iteratively by adding or removing features one by one. There are three different options to conduct the Recursive Feature Elimination with Cross-Validation (RFECV):<ol>
+<li>Forward Selection:<ul>
+<li>Train the model with one feature only, and find out the most important feature.</li>
+<li>Given the most important feature, you add another feature and train the model to find out the next important feature among the rest.</li>
+<li>Repeat the above step until you reach the number of features required.</li>
+</ul>
+</li>
+<li>Backward Selection:<ul>
+<li>Similar to Forward Selection. Instead, you start with all features and leave one feature out to find out the least important feature.</li>
+<li>You remove the least important feature, and then repeat the above step to find out the next least important feature. Remove that feature accordingly.</li>
+</ul>
+</li>
+<li>Exhaustive Selection<ul>
+<li>You evaluate all the possible combinations of different features and find the best feature set that perform the best</li>
+<li>The Exhaustive Selection method is usually not recommended when the number of features is large. (consumes a lot of resources)</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong>Embedded Method</strong>: The name <em>embedded</em> by itself, meaning that you integrate the feature selection directly into the ML model training process. The most common embedded strategies are the Lasso regularization for linear regression models and information gain for decision tree models.<ol>
+<li>Build a basic model with L1 Regularization.</li>
+<li>Train the model with all the features.</li>
+<li>Check the importance rank after the model is trained.</li>
+</ol>
+</li>
+</ol>
+<h3 id="b-Justify-the-selection-of-features-retained-at-each-step"><a href="#b-Justify-the-selection-of-features-retained-at-each-step" class="headerlink" title="(b) Justify the selection of features retained at each step"></a>(b) Justify the selection of features retained at each step</h3><h4 id="b-1-Filter"><a href="#b-1-Filter" class="headerlink" title="b.1. Filter"></a>b.1. Filter</h4><p>The <code>SelectKBest</code> API in the sklearn package can be used to achieve the purpose of using the filter method to find the features we want. We first use <code>f_classif</code> to conduct the ANOVA test to select the top 60% of the numerical features. Then we use <code>mutual_info_classif</code> to classify the features by their information gain, picking the top 60% of the features as well. Finally, we concatenate these two sets of features to create a pool of features that is worth further investigation.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">k_best_selector = SelectKBest(f_classif, k=<span class="built_in">int</span>(X_train.columns.shape[<span class="number">0</span>]*<span class="number">0.6</span>))</span><br><span class="line">anova_scores = k_best_selector.fit(X_train, y_train[<span class="string">&#x27;y_label&#x27;</span>].values.flatten())</span><br><span class="line"></span><br><span class="line">feature_scores = pd.DataFrame(&#123;<span class="string">&#x27;Feature&#x27;</span>: X_train.columns, <span class="string">&#x27;Score&#x27;</span>: anova_scores.scores_&#125;).set_index(<span class="string">&#x27;Feature&#x27;</span>)</span><br><span class="line">feature_scores.sort_values(<span class="string">&#x27;Score&#x27;</span>, ascending=<span class="literal">False</span>, inplace=<span class="literal">True</span>)</span><br><span class="line">feature_scores.plot.bar(figsize=(<span class="number">10</span>,<span class="number">3</span>), title=<span class="string">&#x27;Feature Scores of ANOVA Test&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/8.featureScoresOnANOVA.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Distributions of all features</i>
+</p>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">anova_features = anova_scores.get_feature_names_out()</span><br><span class="line">anova_features</span><br><span class="line"><span class="comment"># --&gt; array([&#x27;roc5&#x27;, &#x27;roc10&#x27;, &#x27;roc15&#x27;, &#x27;roc25&#x27;, &#x27;sma10_diff_5&#x27;, &#x27;volume10_diff_volume5&#x27;, &#x27;volume15_diff_volume5&#x27;, &#x27;rsi7&#x27;, &#x27;vol7&#x27;, &#x27;mfi14&#x27;, &#x27;vol14&#x27;, &#x27;o_m_c_return_lag1&#x27;, &#x27;macd&#x27;, &#x27;bband_downtrend&#x27;, &#x27;Chaikin_Oscillator&#x27;, &#x27;divInfluence&#x27;], dtype=object)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">k_best_selector_2 = SelectKBest(score_func=mutual_info_classif, k=<span class="built_in">int</span>(X_train.columns.shape[<span class="number">0</span>]*<span class="number">0.6</span>))</span><br><span class="line">mutual_if_scores = k_best_selector_2.fit(X_train, y_train[<span class="string">&#x27;y_label&#x27;</span>].values)</span><br><span class="line"></span><br><span class="line">feature_scores = pd.DataFrame(&#123;<span class="string">&#x27;Feature&#x27;</span>: X_train.columns, <span class="string">&#x27;Score&#x27;</span>: mutual_if_scores.scores_&#125;).set_index(<span class="string">&#x27;Feature&#x27;</span>)</span><br><span class="line">feature_scores.sort_values(<span class="string">&#x27;Score&#x27;</span>, ascending=<span class="literal">False</span>, inplace=<span class="literal">True</span>)</span><br><span class="line">feature_scores.plot.bar(figsize=(<span class="number">10</span>,<span class="number">3</span>), title=<span class="string">&#x27;Feature Scores of Mutual Information Test&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<img data-src="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/9.featureScoresOnMuInfo.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Distributions of all features</i>
+</p>
+
+
+<p>After seeing this diagram, we select the features that scores more than 0 instead of the top 60% of the features.</p>
+<h4 id="b-2-Wrapper"><a href="#b-2-Wrapper" class="headerlink" title="b.2. Wrapper"></a>b.2. Wrapper</h4><p>In the wrapper method, we choose to use forward and backward methods to generate to compare and contrast the differences. In the end, we will find the union of these two feature sets to find the desired features using both methods. The <code>sklearn</code> package has built-in methods that support both forward and backward methods. The <code>SequentialFeatureSelector</code> is designed for serving the purpose of finding features using the forward method. The <code>RFE</code> and <code>RFECV</code> are both designed for the backward method.</p>
+<h5 id="b-2-1-Forward"><a href="#b-2-1-Forward" class="headerlink" title="b.2.1 Forward"></a>b.2.1 Forward</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sfs = SFS(</span><br><span class="line">    estimator=RandomForestClassifier(n_estimators=<span class="number">5</span>),</span><br><span class="line">    n_features_to_select=<span class="number">0.6</span>,</span><br><span class="line">    direction=<span class="string">&#x27;forward&#x27;</span>,</span><br><span class="line">    scoring=<span class="string">&#x27;accuracy&#x27;</span>,</span><br><span class="line">    cv=<span class="number">5</span>,</span><br><span class="line">)</span><br><span class="line">sfs.fit(X_train, y_train[<span class="string">&#x27;y_label&#x27;</span>].values.flatten())</span><br><span class="line"></span><br><span class="line">wrapper_forward_features = sfs.get_feature_names_out()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Best subset (Forward):&quot;</span>, wrapper_forward_features)</span><br><span class="line"><span class="comment"># --&gt; Best subset (Forward): [&#x27;adx10&#x27; &#x27;roc25&#x27; &#x27;adx25&#x27; &#x27;volume5_diff_vol&#x27; &#x27;sma10_diff_5&#x27; &#x27;volume15_diff_volume5&#x27; &#x27;mfi7&#x27; &#x27;vol7&#x27; &#x27;vol14&#x27; &#x27;macd&#x27; &#x27;bband_uptrend&#x27; &#x27;bband_downtrend&#x27; &#x27;bband_midtrend&#x27; &#x27;Chaikin_Oscillator&#x27; &#x27;intra_momentum&#x27; &#x27;divInfluence&#x27;]</span></span><br></pre></td></tr></table></figure>
+<h5 id="b-2-2-Backward"><a href="#b-2-2-Backward" class="headerlink" title="b.2.2 Backward"></a>b.2.2 Backward</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">estimator = LogisticRegression(</span><br><span class="line">    penalty=<span class="string">&#x27;l1&#x27;</span>,</span><br><span class="line">    solver=<span class="string">&#x27;liblinear&#x27;</span>,</span><br><span class="line">    max_iter=<span class="number">1500</span></span><br><span class="line">)</span><br><span class="line">rfe = RFE(estimator, n_features_to_select=<span class="number">0.6</span>, step=<span class="number">1</span>)</span><br><span class="line">rfe.fit(X_train, y_train[<span class="string">&#x27;y_label&#x27;</span>].values.flatten())</span><br><span class="line"></span><br><span class="line">wrapper_backward_features = rfe.get_feature_names_out()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Best subset (Backward):&quot;</span>, wrapper_backward_features)</span><br><span class="line"><span class="comment"># --&gt; Best subset (Backward): [&#x27;roc5&#x27; &#x27;roc10&#x27; &#x27;roc15&#x27; &#x27;sma5_diff_close&#x27; &#x27;sma10_diff_5&#x27; &#x27;volume10_diff_volume5&#x27; &#x27;volume25_diff_volume5&#x27; &#x27;mfi7&#x27; &#x27;vol7&#x27; &#x27;o_m_c_return&#x27; &#x27;o_m_c_return_lag1&#x27; &#x27;macd&#x27; &#x27;bband_downtrend&#x27; &#x27;bband_midtrend&#x27; &#x27;intra_momentum&#x27; &#x27;divInfluence&#x27;]</span></span><br></pre></td></tr></table></figure>
+<h4 id="b-3-Embedded"><a href="#b-3-Embedded" class="headerlink" title="b.3. Embedded"></a>b.3. Embedded</h4><p>Lastly, we select <code>Logistic Regression</code> model with <code>L1 Regularization</code> to perform the model training. In the meantime, the feature importance has been automatically calculated during the training process. Therefore, we can easily fetch the features that are more relevant to the target movement.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">embedded_model = SelectFromModel(</span><br><span class="line">    LogisticRegression(</span><br><span class="line">        penalty=<span class="string">&#x27;l1&#x27;</span>, solver=<span class="string">&#x27;liblinear&#x27;</span></span><br><span class="line">    ),</span><br><span class="line">    max_features = <span class="built_in">int</span>(<span class="built_in">len</span>(X_train.columns) * <span class="number">0.6</span>)</span><br><span class="line">)</span><br><span class="line">embedded_model.fit(X_train, y_train[<span class="string">&#x27;y_label&#x27;</span>].values.flatten())</span><br><span class="line"></span><br><span class="line">embedded_features = embedded_model.get_feature_names_out()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Best subset (Embedded):&quot;</span>, embedded_features)</span><br><span class="line"></span><br><span class="line"><span class="comment"># --&gt; Best subset (Embedded): [&#x27;roc5&#x27; &#x27;roc15&#x27; &#x27;adx25&#x27; &#x27;sma5_diff_close&#x27; &#x27;sma10_diff_5&#x27; &#x27;volume10_diff_volume5&#x27; &#x27;volume25_diff_volume5&#x27; &#x27;mfi7&#x27; &#x27;vol7&#x27; &#x27;o_m_c_return&#x27; &#x27;o_m_c_return_lag1&#x27; &#x27;macd&#x27; &#x27;bband_downtrend&#x27; &#x27;bband_midtrend&#x27; &#x27;intra_momentum&#x27; &#x27;divInfluence&#x27;]</span></span><br></pre></td></tr></table></figure>
+<h3 id="c-Provide-the-final-list-of-selected-features"><a href="#c-Provide-the-final-list-of-selected-features" class="headerlink" title="(c) Provide the final list of selected features"></a>(c) Provide the final list of selected features</h3><p>The idea that I designed here was that we take the intersection of the results of the wrapper (forward and backward) methods and the embedded method, and then make sure they are under the hood of the results of the filter method. This hybrid approach offers advantages over a strict intersection of all methods: it maintains features that show either statistical significance (filter methods) and/or model importance (wrapper/embedded methods), while avoiding being overly restrictive. This balanced approach might be able to yield more stable features than using any single method alone, while being less restrictive than requiring features to pass all selection methods which might exclude potentially useful predictors.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">final_features = <span class="built_in">list</span>(<span class="built_in">set</span>(filter_features) &amp; (<span class="built_in">set</span>(wrapper_forward_features) | <span class="built_in">set</span>(wrapper_backward_features) | <span class="built_in">set</span>(embedded_features)))</span><br><span class="line"></span><br><span class="line">table = PrettyTable()</span><br><span class="line">table.title = <span class="string">&quot;Final Selected Features&quot;</span></span><br><span class="line">table.field_names = [<span class="string">&quot;Feature Names&quot;</span>, <span class="string">&quot;Description&quot;</span>]</span><br><span class="line"><span class="keyword">for</span> feature <span class="keyword">in</span> final_features:</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&#x27;roc&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Rate of change indicator&#x27;</span>])</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;sma&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Smoothing average indicator&#x27;</span>])</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;Chaikin&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Chaikin Oscillator&#x27;</span>])</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;momentum&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Momentum factor&#x27;</span>])</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;mfi&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Money Flow Index&#x27;</span>])</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;rsi&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Relative Strength Index&#x27;</span>])</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;volume&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Volume indicator&#x27;</span>])</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;bband&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Bollinger Band Index&#x27;</span>])</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;vol&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Volatility Index&#x27;</span>])</span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&#x27;adx&#x27;</span> <span class="keyword">in</span> feature:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;(Average Directional Index)&#x27;</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        table.add_row([feature, <span class="string">&#x27;Other indicators&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(table)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><em><a href="#Introduction">Back to Introduction</a></em></p>
+<hr>
+<h1 id="C-Model-Building-Tuning-and-Evaluation"><a href="#C-Model-Building-Tuning-and-Evaluation" class="headerlink" title="C. Model Building, Tuning, and Evaluation"></a>C. Model Building, Tuning, and Evaluation</h1><p> After all the steps we’ve taken, we now finally have the data prepared and ready to feed to the machine learning model. In this section, we transition from data preparation to the core of machine learning: building, optimizing, and validating predictive models. There are several topcis that we’re going to address:</p>
+<ol>
+<li>Train our basic model</li>
+<li>Fine-tune the hyperparameter</li>
+<li>Evaluate the performance against the matrix</li>
+<li>Finally, backtest this strategy against the buy-and-hold strategy</li>
+</ol>
+<p>This end-to-end pipeline ensures our model is both accurate and generalizable to unseen market conditions.</p>
+<h3 id="a-Build-a-model-to-predict-positive-market-moves-uptrend-using-the-feature-subset-derived-above"><a href="#a-Build-a-model-to-predict-positive-market-moves-uptrend-using-the-feature-subset-derived-above" class="headerlink" title="(a) Build a model to predict positive market moves (uptrend) using the feature subset derived above."></a>(a) Build a model to predict positive market moves (uptrend) using the feature subset derived above.</h3><p>The modern Python ML libraries are relatively mature and easy to use. Table below summarizes the pros and cons of the common gradient boosting models.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Best For</th>
+<th>Speed</th>
+<th>Handles Categorical Features</th>
+<th>Missing Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XGBoost</td>
+<td>Accuracy</td>
+<td>Fast</td>
+<td>Needs encoding (mostly)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>LightGBM</td>
+<td>Big Data</td>
+<td>Fastest</td>
+<td>Handles well (better than XGB)</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>CatBoost</td>
+<td>Categorical Data</td>
+<td>Moderate</td>
+<td>Best-in-class</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>Sklearn GBM</td>
+<td>Baseline</td>
+<td>Slow</td>
+<td>Needs encoding</td>
+<td>❌ No</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="text-align:center; color: sliver;">
+  <i>GB Models Comparison Summary</i>
+</p>
+
+<ul>
+<li>For highest accuracy: XGBoost (with hyperparameter tuning).</li>
+<li>For fastest training: LightGBM (especially on large datasets).</li>
+<li>For categorical data: CatBoost (minimal preprocessing needed).</li>
+<li>For simplicity: Scikit-learn’s GradientBoostingClassifier.</li>
+</ul>
+<p>Our data set is relatively balanced, small, and has no missing values according to our observation above. Also, we are pursuing high accuracy in order to maximize our strategy performance. I chose XGBoost as our baseline model for this research. XGBoost is known for handling small-to-medium datasets, and it has built-in regularization with speed faster than traditional GBDT. Let’s see how it works against the dataset that we have prepared.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">model = xgb.XGBClassifier(</span><br><span class="line">    objective=<span class="string">&#x27;binary:logistic&#x27;</span>,</span><br><span class="line">    eval_metric=<span class="string">&#x27;logloss&#x27;</span>,</span><br><span class="line">    early_stopping_rounds=<span class="number">50</span>,</span><br><span class="line">    verbosity=<span class="number">0</span>,</span><br><span class="line">    silent=<span class="literal">True</span>,</span><br><span class="line">    random_state=<span class="number">42</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">X_train = X_train.loc[:, final_features]</span><br><span class="line">X_test = X_test.loc[:, final_features]</span><br><span class="line"></span><br><span class="line">_ = model.fit(</span><br><span class="line">    X_train, y_train[<span class="string">&#x27;y_label&#x27;</span>].values.flatten(),</span><br><span class="line">    eval_set=[(X_train, y_train[<span class="string">&#x27;y_label&#x27;</span>].values.flatten()),(X_test, y_test[<span class="string">&#x27;y_label&#x27;</span>].values.flatten())],</span><br><span class="line">    sample_weight=y_train.loc[X_train.index, <span class="string">&#x27;weight&#x27;</span>],</span><br><span class="line">    verbose=<span class="literal">False</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="b-Tune-the-hyperparameters-of-the-estimator-to-obtain-an-optimal-model"><a href="#b-Tune-the-hyperparameters-of-the-estimator-to-obtain-an-optimal-model" class="headerlink" title="(b) Tune the hyperparameters of the estimator to obtain an optimal model"></a>(b) Tune the hyperparameters of the estimator to obtain an optimal model</h3><p><code>Sklearn</code> package has bulit in the API to train the model multiple folds. It is called <strong>GridSearchCV</strong>. We use this to train the model multiple times. Each time, the model will be train with the same training dataset but with different parameter set in order to find out the best parameter set that allow the model to perform well.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">params = &#123;</span><br><span class="line">    <span class="string">&#x27;learning_rate&#x27;</span>: [<span class="number">0.01</span>, <span class="number">0.05</span>, <span class="number">0.1</span>],</span><br><span class="line">    <span class="string">&#x27;max_depth&#x27;</span>: [<span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>],</span><br><span class="line">    <span class="string">&#x27;n_estimators&#x27;</span>: [<span class="number">100</span>, <span class="number">200</span>, <span class="number">300</span>],</span><br><span class="line">    <span class="string">&#x27;gamma&#x27;</span>: [<span class="number">0</span>, <span class="number">0.1</span>, <span class="number">0.2</span>],</span><br><span class="line">    <span class="string">&#x27;reg_alpha&#x27;</span>: [<span class="number">0</span>, <span class="number">0.05</span>, <span class="number">0.1</span>],</span><br><span class="line">    <span class="string">&#x27;reg_lambda&#x27;</span>: [<span class="number">0</span>, <span class="number">0.05</span>, <span class="number">0.1</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">grid = GridSearchCV(</span><br><span class="line">    estimator=model,</span><br><span class="line">    param_grid=params,</span><br><span class="line">    cv=<span class="number">5</span>,</span><br><span class="line">    scoring=<span class="string">&#x27;roc_auc&#x27;</span>,</span><br><span class="line">    verbose=<span class="number">0</span>,</span><br><span class="line">    n_jobs=<span class="number">1</span></span><br><span class="line">)</span><br><span class="line">grid.fit(</span><br><span class="line">    X_train,</span><br><span class="line">    y_train[<span class="string">&#x27;y_label&#x27;</span>].values.flatten(),</span><br><span class="line">    eval_set=[(X_train, y_train[<span class="string">&#x27;y_label&#x27;</span>].values.flatten()),(X_test, y_test[<span class="string">&#x27;y_label&#x27;</span>].values.flatten())],</span><br><span class="line">    sample_weight=y_train.loc[X_train.index, <span class="string">&#x27;weight&#x27;</span>],</span><br><span class="line">    verbose=<span class="literal">False</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">best_model = grid.best_estimator_</span><br><span class="line"><span class="built_in">print</span>(grid.best_params_)</span><br></pre></td></tr></table></figure>
+<p>Here we find out that while using <code>roc_auc</code> as the scoring function, the following parameter set will allow the model to maximize the predictability:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;gamma&#x27;</span>: <span class="number">0.2</span>,</span><br><span class="line"> <span class="string">&#x27;learning_rate&#x27;</span>: <span class="number">0.1</span>,</span><br><span class="line"> <span class="string">&#x27;max_depth&#x27;</span>: <span class="number">7</span>,</span><br><span class="line"> <span class="string">&#x27;n_estimators&#x27;</span>: <span class="number">100</span>,</span><br><span class="line"> <span class="string">&#x27;reg_alpha&#x27;</span>: <span class="number">0</span>,</span><br><span class="line"> <span class="string">&#x27;reg_lambda&#x27;</span>: <span class="number">0</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Also, we get to obtain the trained model with the best parameter set as<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grid.best_estimator_</span><br></pre></td></tr></table></figure><br>where we save this as <code>best_model</code> variable.</p>
+<h3 id="c-Evaluate-the-Model’s-Prediction-Quality"><a href="#c-Evaluate-the-Model’s-Prediction-Quality" class="headerlink" title="(c) Evaluate the Model’s Prediction Quality"></a>(c) Evaluate the Model’s Prediction Quality</h3><p>Let’s have a look at the performance and the quality of our trained model by looking at the following matrix.</p>
+<p>Firstly, we use the testing dataset to predict the next-day SPY return.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y_pred = best_model.predict(X_test)</span><br><span class="line">y_proba = best_model.predict_proba(X_test)[:, <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h4 id="c-1-Log-Loss-Progress"><a href="#c-1-Log-Loss-Progress" class="headerlink" title="(c.1) Log Loss Progress"></a>(c.1) Log Loss Progress</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">plt.plot(best_model.evals_result_[<span class="string">&#x27;validation_0&#x27;</span>][<span class="string">&#x27;logloss&#x27;</span>], label=<span class="string">&#x27;Train Log Loss&#x27;</span>)</span><br><span class="line">plt.plot(best_model.evals_result_[<span class="string">&#x27;validation_1&#x27;</span>][<span class="string">&#x27;logloss&#x27;</span>], label=<span class="string">&#x27;Test Log Loss&#x27;</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.title(<span class="string">&quot;Train Log Loss vs. Test Log Loss&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;Log Loss&quot;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>After plotting the log loss of both training and testing datasets, you’ll clearly see that, even though our training log loss has a significant decrease, the test log loss barely reduces and the gap between expands over time. This is a sign that our model is likely in the state of overfitting. However, the samples are too few, and the training log loss hasn’t been able to converge to a certain level. We can just say that we need more samples to train our model, and then see which state our model is in.</p>
+
+    </div>
+    
+      
+    
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Backtesting/" rel="tag"># Backtesting</a>
+              <a href="/tags/Python3/" rel="tag"># Python3</a>
+              <a href="/tags/Quantitative-Trading/" rel="tag"># Quantitative Trading</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/01/16/2025-01-18-wheel-trading-strategy/" rel="prev" title="【The Wheel Strategy】 Turn Options Into Monthly Income">
+      <i class="fa fa-chevron-left"></i> 【The Wheel Strategy】 Turn Options Into Monthly Income
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/03/29/2026-03-29-claude-w-ibkr/" rel="next" title="【How 2】 Escape Interactive Brokers' Connection Trap with the Help of AI">
+      【How 2】 Escape Interactive Brokers' Connection Trap with the Help of AI <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Libraries-Used-in-this-Template"><span class="nav-number">2.</span> <span class="nav-text">Libraries Used in this Template</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Helper-functions"><span class="nav-number">2.1.</span> <span class="nav-text">Helper functions</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#B-Feature-Selection-Using-the-Funnelling-Approach"><span class="nav-number">3.</span> <span class="nav-text">B. Feature Selection Using the Funnelling Approach</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#B-1-Data-Collection"><span class="nav-number">3.1.</span> <span class="nav-text">B.1 Data Collection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-2-Organizing-and-Examining-the-Raw-Data"><span class="nav-number">3.2.</span> <span class="nav-text">B.2 Organizing and Examining the Raw Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-3-Featuring-Engineering"><span class="nav-number">3.3.</span> <span class="nav-text">B.3 Featuring Engineering</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-3-1-Labeling-the-Sample-Data"><span class="nav-number">3.3.1.</span> <span class="nav-text">B.3.1 Labeling the Sample Data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-3-2-Creating-New-Features-and-Imputation"><span class="nav-number">3.3.2.</span> <span class="nav-text">B.3.2 Creating New Features and Imputation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-3-3-Exploratory-Data-Analysis-EDA"><span class="nav-number">3.3.3.</span> <span class="nav-text">B.3.3. Exploratory Data Analysis (EDA)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#B-3-3-1-Splitting-Training-and-Testing-Data"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">B.3.3.1. Splitting Training and Testing Data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-3-3-2-Drop-High-Correlated-Samples"><span class="nav-number">3.3.3.2.</span> <span class="nav-text">B.3.3.2 Drop High Correlated Samples</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-3-3-3-Handling-Near-Zero-Returns"><span class="nav-number">3.3.3.3.</span> <span class="nav-text">B.3.3.3 Handling Near-Zero Returns</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#B-3-3-3-1-Define-Near-Zero-Returns"><span class="nav-number">3.3.3.3.1.</span> <span class="nav-text">B.3.3.3.1 Define Near-Zero Returns</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#B-3-3-3-2-Design-Decreasing-Weights-for-Near-Zero-Returns"><span class="nav-number">3.3.3.3.2.</span> <span class="nav-text">B.3.3.3.2 Design Decreasing Weights for Near-Zero Returns</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-3-3-4-Logarithmic-Transformation-and-Standardization"><span class="nav-number">3.3.3.4.</span> <span class="nav-text">B.3.3.4 Logarithmic Transformation and Standardization</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-4-Feature-Selection"><span class="nav-number">3.4.</span> <span class="nav-text">B.4 Feature Selection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#b-Justify-the-selection-of-features-retained-at-each-step"><span class="nav-number">3.4.1.</span> <span class="nav-text">(b) Justify the selection of features retained at each step</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#b-1-Filter"><span class="nav-number">3.4.1.1.</span> <span class="nav-text">b.1. Filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-2-Wrapper"><span class="nav-number">3.4.1.2.</span> <span class="nav-text">b.2. Wrapper</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#b-2-1-Forward"><span class="nav-number">3.4.1.2.1.</span> <span class="nav-text">b.2.1 Forward</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-2-2-Backward"><span class="nav-number">3.4.1.2.2.</span> <span class="nav-text">b.2.2 Backward</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-3-Embedded"><span class="nav-number">3.4.1.3.</span> <span class="nav-text">b.3. Embedded</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-Provide-the-final-list-of-selected-features"><span class="nav-number">3.4.2.</span> <span class="nav-text">(c) Provide the final list of selected features</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-Model-Building-Tuning-and-Evaluation"><span class="nav-number">4.</span> <span class="nav-text">C. Model Building, Tuning, and Evaluation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-Build-a-model-to-predict-positive-market-moves-uptrend-using-the-feature-subset-derived-above"><span class="nav-number">4.0.1.</span> <span class="nav-text">(a) Build a model to predict positive market moves (uptrend) using the feature subset derived above.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-Tune-the-hyperparameters-of-the-estimator-to-obtain-an-optimal-model"><span class="nav-number">4.0.2.</span> <span class="nav-text">(b) Tune the hyperparameters of the estimator to obtain an optimal model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-Evaluate-the-Model%E2%80%99s-Prediction-Quality"><span class="nav-number">4.0.3.</span> <span class="nav-text">(c) Evaluate the Model’s Prediction Quality</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#c-1-Log-Loss-Progress"><span class="nav-number">4.0.3.1.</span> <span class="nav-text">(c.1) Log Loss Progress</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

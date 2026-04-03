@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -279,7 +279,7 @@
         <img data-src="/2022/08/20/2022-08-20-votingclassifier/cover.jpg" class="" width="800">
 <p>When it comes to using machine learning algorithm to pick the stocks that are most likely to produce a good return, it is similar to seeking the opinion of an investment consultant. However, it can be unsettling to make your investment decision after listening to just one consultant. Now is the moment to get second opinions and hire more investment advisors to make sure the investment concept is reliable, doable, and profitable.</p>
 <p>The same principle that you consult other machine learning algorithms to confirm the predictions made by these models are applied in ensemble learning. When you have collected all of the final data from these models, you may take your time relaxing in your nice chair like a big boss, analyzing the results, and making your important and sacred decision.</p>
-<a id="more"></a>
+<span id="more"></span>
 <h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><p>In the previous articles <a href="https://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">1</a> <a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">2</a> <a href="https://mikelhsia.github.io/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/">3</a> <a href="https://mikelhsia.github.io/2022/02/19/2022-02-17-machine-learning-performance-evaluation/">4</a> and <a href="https://mikelhsia.github.io/2022/06/10/2022-06-10-adcanced-optimization/">5</a>, we have built the machine learning script to predict the winners in the stock market using only the XGBoost model. Nevertheless, there are many algorithms out there for us to try and evaluate. So the most important question for us becomes much more complex. We need to build multiple machine learning models, use <code>GridSearch</code> to find the best hyperparameters, train/fit many different machine learning models, evaluate each model with the same metrics, pick the best-performing model for us to use, and …….</p>
 <img data-src="/2022/08/20/2022-08-20-votingclassifier/or_do_we.png" class="" width="600">
 <h1 id="How-are-we-going-to-do-this"><a href="#How-are-we-going-to-do-this" class="headerlink" title="How are we going to do this?"></a>How are we going to do this?</h1><h2 id="Ensemble-learning"><a href="#Ensemble-learning" class="headerlink" title="Ensemble learning"></a>Ensemble learning</h2><p>Ensemble learning is a method to combine the predictions from different machine learning models. We gave these machine learning models the name <code>weak learners</code>, as compared to our finalize machine learning model, these <code>weak learners</code> contribute only a part of their efforts to produce the final predictions. By saying that, the ensemble learning model is a more powerful predictor by using a <code>strong learner</code> to assemble the results from many <code>weak learners</code>, so that our final predictor is able to waive the variances from some of the machine learning models and also prevent the overfitting of a singular model. Below is the list of the ensemble learning techniques:</p>
@@ -425,7 +425,7 @@
 <li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=xBEh66V9gZo">Neural Networks Part 7: Cross Entropy Derivatives and Backpropagation</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=HGwBXDKFk9I">Neural Networks Part 8: Image Classification with Convolutional Neural Networks (CNNs)</a></li>
 </ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_model</span>():</span></span><br><span class="line">  model = tf.keras.Sequential()</span><br><span class="line">  model.add(tf.keras.layers.Dense(<span class="number">256</span>, activation=<span class="string">&quot;relu&quot;</span>, input_shape=(<span class="number">179</span>, ), name=<span class="string">&quot;dense_1&quot;</span>))</span><br><span class="line">  model.add(tf.keras.layers.Dropout(<span class="number">0.1</span>),)</span><br><span class="line">  model.add(tf.keras.layers.Dense(<span class="number">256</span>, activation=<span class="string">&quot;relu&quot;</span>, name=<span class="string">&quot;dense_2&quot;</span>))</span><br><span class="line">  model.add(tf.keras.layers.Dropout(<span class="number">0.1</span>)),</span><br><span class="line">  model.add(tf.keras.layers.Dense(<span class="number">1</span>, activation=<span class="string">&quot;sigmoid&quot;</span>, name=<span class="string">&quot;predictions&quot;</span>))</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Compile model</span></span><br><span class="line">  model.compile(</span><br><span class="line">    optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">    loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>,</span><br><span class="line">    metrics=[</span><br><span class="line">      tf.keras.metrics.AUC(),</span><br><span class="line">      tf.keras.metrics.BinaryAccuracy(),</span><br><span class="line">    ],</span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_model</span>():</span><br><span class="line">  model = tf.keras.Sequential()</span><br><span class="line">  model.add(tf.keras.layers.Dense(<span class="number">256</span>, activation=<span class="string">&quot;relu&quot;</span>, input_shape=(<span class="number">179</span>, ), name=<span class="string">&quot;dense_1&quot;</span>))</span><br><span class="line">  model.add(tf.keras.layers.Dropout(<span class="number">0.1</span>),)</span><br><span class="line">  model.add(tf.keras.layers.Dense(<span class="number">256</span>, activation=<span class="string">&quot;relu&quot;</span>, name=<span class="string">&quot;dense_2&quot;</span>))</span><br><span class="line">  model.add(tf.keras.layers.Dropout(<span class="number">0.1</span>)),</span><br><span class="line">  model.add(tf.keras.layers.Dense(<span class="number">1</span>, activation=<span class="string">&quot;sigmoid&quot;</span>, name=<span class="string">&quot;predictions&quot;</span>))</span><br><span class="line"></span><br><span class="line">  <span class="comment"># Compile model</span></span><br><span class="line">  model.<span class="built_in">compile</span>(</span><br><span class="line">    optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">    loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>,</span><br><span class="line">    metrics=[</span><br><span class="line">      tf.keras.metrics.AUC(),</span><br><span class="line">      tf.keras.metrics.BinaryAccuracy(),</span><br><span class="line">    ],</span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
 <p style="text-align:center; color: grey;">
   <i>My neural network model set up</i>
 </p>
@@ -640,20 +640,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -699,7 +699,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

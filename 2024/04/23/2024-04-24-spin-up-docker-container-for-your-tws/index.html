@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -276,7 +276,7 @@
 </p>
 
 <p>In my previous <strong>How2</strong> column <a href="https://mikelhsia.github.io/2022/12/07/2022-12-10-IBKR-Broker/">Connecting My Trading Strategies To Interactive Brokers</a>, I shared how to set up the Interactive Brokers API connection through the Trader Workstation (TWS) on the local machine. However, the enforced rules like daily auto restart and weekly log-out can be a hassle if you are away from your local machine for many days. In this article, we’ll leverage the power of <a target="_blank" rel="noopener" href="https://www.docker.com/">docker</a> to free you from managing your locally-run TWS attentively.</p>
-<a id="more"></a>
+<span id="more"></span>
 <hr>
 <p><strong><em>Previous readings</em></strong></p>
 <ul>
@@ -305,13 +305,13 @@
 <li>No physical display is required.</li>
 <li>No user interaction such as login or 2FA required</li>
 </ol>
-<h3 id="How-to-spin-up-an-IBEAM-container"><a href="#How-to-spin-up-an-IBEAM-container" class="headerlink" title="How to spin up an IBEAM container"></a>How to spin up an IBEAM container</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --env IBEAM_ACCOUNT&#x3D;[tws_account]--env IBEAM_PASSWORD&#x3D;[tws_password] --env IBEAM_PAGE_LOAD_TIMEOUT&#x3D;120 -p 5000:5000 voyz&#x2F;ibeam</span><br></pre></td></tr></table></figure>
+<h3 id="How-to-spin-up-an-IBEAM-container"><a href="#How-to-spin-up-an-IBEAM-container" class="headerlink" title="How to spin up an IBEAM container"></a>How to spin up an IBEAM container</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --env IBEAM_ACCOUNT=[tws_account]--env IBEAM_PASSWORD=[tws_password] --env IBEAM_PAGE_LOAD_TIMEOUT=120 -p 5000:5000 voyz/ibeam</span><br></pre></td></tr></table></figure>
 <p>It’s just that simple.</p>
 <blockquote>
 <p>PS: Use 5001 port on your local machine if you’re using Mac devices.</p>
 </blockquote>
 <h3 id="How-to-test-the-IBEAM-API"><a href="#How-to-test-the-IBEAM-API" class="headerlink" title="How to test the IBEAM API"></a>How to test the IBEAM API</h3><p>You can use the APIs used are available in <a target="_blank" rel="noopener" href="https://interactivebrokers.github.io/cpwebapi/endpoints">TWS Web API Doc</a>. For example:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -X GET &quot;https:&#x2F;&#x2F;localhost:5001&#x2F;v1&#x2F;api&#x2F;one&#x2F;user&quot; -k</span><br><span class="line"></span><br><span class="line">curl -X GET &quot;https:&#x2F;&#x2F;localhost:5001&#x2F;v1&#x2F;api&#x2F;portfolio&#x2F;accounts&quot; -k</span><br><span class="line"></span><br><span class="line">curl -X GET &quot;https:&#x2F;&#x2F;localhost:5001&#x2F;v1&#x2F;api&#x2F;trsrv&#x2F;stocks?symbols&#x3D;AAPL,WDC&quot; -k</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -X GET &quot;https://localhost:5001/v1/api/one/user&quot; -k</span><br><span class="line"></span><br><span class="line">curl -X GET &quot;https://localhost:5001/v1/api/portfolio/accounts&quot; -k</span><br><span class="line"></span><br><span class="line">curl -X GET &quot;https://localhost:5001/v1/api/trsrv/stocks?symbols=AAPL,WDC&quot; -k</span><br></pre></td></tr></table></figure>
 <p style="text-align:center; color: grey;">
   <i>API call examples</i>
 </p>
@@ -566,20 +566,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -625,7 +625,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

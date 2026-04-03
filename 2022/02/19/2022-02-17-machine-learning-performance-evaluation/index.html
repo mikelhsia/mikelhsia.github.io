@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -267,7 +267,7 @@
 </p>
 
 <p>Phew! With all the hard work of fetching data, processing factors, splitting training and testing datasets, selecting the right model to train, you finally have your machine learning model trained and be able to test how powerful it is. You’re very excited to feed a bunch of test data and got a 100%+ rate of return. What a success! But be careful, <code>rate of return</code> is not the sole factor to evaluate the quality of your trading strategy. There are other metrics that help you to understand the strengths and weaknesses of your trading strategy, and you can improve your trading behavior based on these metrics.</p>
-<a id="more"></a>
+<span id="more"></span>
 <p>Here are a group of metrics that I would like to recommend to you as I’ve calculated and adopted them in my own quantitative trading projects. These metrics are objective enough for you to evaluate the quality of your strategy, and they are relatively easy enough to calculate in your own framework. So, bear with me and hear me out.</p>
 <blockquote>
 <p>Previous reading:</p>
@@ -326,7 +326,7 @@
 
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">group_number &#x3D; 6</span><br><span class="line">group_label &#x3D; [f&#39;R&#123;x&#125;&#39; for x in range(group_number, 0, -1)]</span><br><span class="line"></span><br><span class="line">data[&#39;rate&#39;] &#x3D; data.groupby(&#39;date&#39;)[&#39;score&#39;].apply(lambda x : pd.cut(x, bins&#x3D;group_number, labels&#x3D;group_label))</span><br><span class="line">data[&#39;log_rtn&#39;] &#x3D; np.log(test[&#39;rtn&#39;] + 1)</span><br><span class="line"></span><br><span class="line">x &#x3D; data.groupby([&#39;date&#39;, &#39;rate&#39;])[&#39;log_rtn&#39;].apply(lambda x: x.sum()&#x2F;len(x)).reset_index().set_index([&#39;rate&#39;, &#39;date&#39;])</span><br><span class="line">z &#x3D; pd.DataFrame(index&#x3D;x.loc[&#39;R1&#39;].index)</span><br><span class="line"></span><br><span class="line">for i in range(1,group_number+1):</span><br><span class="line">    try:</span><br><span class="line">        z[f&#39;R&#123;i&#125;&#39;] &#x3D; x.loc[f&#39;R&#123;i&#125;&#39;,:].cumsum()</span><br><span class="line">    except Exception as e:</span><br><span class="line">        continue</span><br><span class="line"></span><br><span class="line">plt.figure(figsize&#x3D;(15, 10))</span><br><span class="line">plt.xticks(rotation&#x3D;90)</span><br><span class="line">plt.yticks(rotation&#x3D;45)</span><br><span class="line"></span><br><span class="line">sns.lineplot(data&#x3D;z, dashes&#x3D;False)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">group_number = 6</span><br><span class="line">group_label = [f&#x27;R&#123;x&#125;&#x27; for x in range(group_number, 0, -1)]</span><br><span class="line"></span><br><span class="line">data[&#x27;rate&#x27;] = data.groupby(&#x27;date&#x27;)[&#x27;score&#x27;].apply(lambda x : pd.cut(x, bins=group_number, labels=group_label))</span><br><span class="line">data[&#x27;log_rtn&#x27;] = np.log(test[&#x27;rtn&#x27;] + 1)</span><br><span class="line"></span><br><span class="line">x = data.groupby([&#x27;date&#x27;, &#x27;rate&#x27;])[&#x27;log_rtn&#x27;].apply(lambda x: x.sum()/len(x)).reset_index().set_index([&#x27;rate&#x27;, &#x27;date&#x27;])</span><br><span class="line">z = pd.DataFrame(index=x.loc[&#x27;R1&#x27;].index)</span><br><span class="line"></span><br><span class="line">for i in range(1,group_number+1):</span><br><span class="line">    try:</span><br><span class="line">        z[f&#x27;R&#123;i&#125;&#x27;] = x.loc[f&#x27;R&#123;i&#125;&#x27;,:].cumsum()</span><br><span class="line">    except Exception as e:</span><br><span class="line">        continue</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(15, 10))</span><br><span class="line">plt.xticks(rotation=90)</span><br><span class="line">plt.yticks(rotation=45)</span><br><span class="line"></span><br><span class="line">sns.lineplot(data=z, dashes=False)</span><br></pre></td></tr></table></figure>
 <p style="font-size: 0.8em; text-align:center; color: grey;">
     <i>Code snippet to generate stratified analysis diagram</i>
 </p>
@@ -471,20 +471,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -530,7 +530,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -273,7 +273,7 @@
         <img data-src="/2021/06/14/2021-06-14-N-insights-found-while-implementing-machine-learning-trading-algorithm/cover.jpg" class="" width="600">
 <p>In the post <a href="https://mikelhsia.github.io/2021/05/10/2021-05-14-machine-learning-prototype/">【Machine Learning】 Part II - How to build a machine learning boilerplate?</a>, we have successfully built our machine learning boilerplate. By having this template, we can develop an advanced machine learning trading strategy upon. However, even with the strategy result that looks profoundly profitable, we still won’t be able to know how much money we can make by looking at the accuracy rate of our machine learning trading algorithm.</p>
 <p>In order to better understand whether the results from the output of our model are really concerning our portfolio return, I put together a rather simple strategy and run several backtests with different parameters. In the end, we’re going to answer several frequently asked questions in order to decrypt the myths of machine learning trading algorithms.</p>
-<a id="more"></a>
+<span id="more"></span>
 <p>Here I introduced the <a target="_blank" rel="noopener" href="https://www.joinquant.com/">JoinQuant platform</a> into our toolset in order to backtest our strategy. After several times of tuning and research to further advance our preliminary machine learning boilerplate, I’ve executed 108 backtest on the JoinQuant platform to see how well the strategy could perform if we launch this machine learning strategy to the stock market. By summarizing the results from these 108 backtest, there are a few things that are interesting for beginners of quant trading to learn before developing their own machine learning quantitative trading strategies.</p>
 <h1 id="Setup-before-we-start"><a href="#Setup-before-we-start" class="headerlink" title="Setup before we start"></a>Setup before we start</h1><h2 id="Quick-introduction-of-the-machine-learning-models"><a href="#Quick-introduction-of-the-machine-learning-models" class="headerlink" title="Quick introduction of the machine learning models"></a>Quick introduction of the machine learning models</h2><p>I picked three different machine learning models to see whether different models will greatly impact the outcome of the strategy. Three models are: <code>Logistic regression</code>, <code>SVM</code> with Gaussian kernel, and <code>XGBoost</code>. I’m not going to cover the theory of each model as our focus in this article is to extract some valuable insights from the backtest results.</p>
 <h3 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h3><p><code>Logistic regression</code> is one of the most commonly used algorithms in the field. Similar to the theory of linear regression as we explain <strong>Supervised Learning</strong> <a href="https://mikelhsia.github.io/2021/04/22/2021-04-22-machine-learning-intro/">here</a>, the input data will be fed into the pipeline to produce a final score. Logistic regression simply applies the <strong><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Sigmoid_function">Sigmoid function</a></strong> to convert the final score into either 0 or 1. We’re going to get an array of [1, 0, 0, 1, …, 0] as the outcome from the logistic regression, which we can reinterpret the array into [True, False, False, True, …, False] as our final results.</p>
@@ -522,20 +522,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -581,7 +581,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

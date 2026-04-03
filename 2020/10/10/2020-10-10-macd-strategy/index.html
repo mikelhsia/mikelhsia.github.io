@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -290,7 +290,7 @@ width: 45%;
 <img data-src="/2020/10/10/2020-10-10-macd-strategy/cover.png" class="" width="500">
 <p>I’ve been thinking for weeks. As a beginner in automated trading and quant trading, what would be the best practical entry-level strategy that I can automate and practice what I’ve been learning? a.) I don’t need to make a huge fortune out of it. b.) I won’t be able to short stocks and no rights to bid on options. c.) I can bear lost as long as it’s not a huge one. d.) I would like to trade daily in order to have further feedback regarding how to further improve the strategy. After days of research, I believe the MACD strategy would be the one to start with.</p>
 <p><strong>MACD (Moving Average Convergence Divergence)</strong> is a basic indicator strategy for capturing the stock price momentum both upward and downward. The idea of the MACD trading strategy is to buy or sell when the signals were triggered. As easy as that. Even grandma and grandpa can follow simple instructions to profit from the stock market.</p>
-<p>There are several explanations of why momentum strategy such as MACD strategy works:<br><a id="more"></a></p>
+<p>There are several explanations of why momentum strategy such as MACD strategy works:<br><span id="more"></span></p>
 <ol>
 <li>One explanation is that the momentum generated when the stock price soars more than the market expected, then it tends to generate traction to attract more attention from other investors.</li>
 <li>Another explanation is that investors have a different response time to the good news. Therefore the stock price would continue to rise for several days until all investors have digested the news and made the necessary moves (either buy or sell).</li>
@@ -307,14 +307,14 @@ width: 45%;
 <h1 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h1><p>So we need an additional secondary indicator that helps us remove the noise and decide the trend whether it’s upward or downward. What indicator we should adopt to work together with the MACD strategy?</p>
 <p>Luckily enough, after reading this article <a target="_blank" rel="noopener" href="https://tradingsim.com/blog/macd/">MACD – 5 Profitable Trading Strategies</a>, we have found several options to opt-in. Therefore the objective of this article is <u><strong>to dive-in to the details of how to implement these secondary indicators, and how they perform respectively</strong></u>.</p>
 <h1 id="What-is-MACD"><a href="#What-is-MACD" class="headerlink" title="What is MACD?"></a>What is MACD?</h1><p>The history of MACD can be traced back to 1979, Gerald Apple invented the MACD indicator, it was an analytic tool for tracking stock and gold price trend. The MACD was constructed by both short-term and long-term <a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/e/ema.asp">EMA (Exponential Moving Average)</a>. If the MACD indicator turns from negative to positive, then it’s a buy-in signal; vise-versa. 12 days for short-term EMA and 26 days for long-term EMA are the common setup of the MACD strategy. Here’s a quick guide of how to calculate MACD indicator:</p>
-<p>$EMA_{Current} = (ClosingPrice - EMA_{PreviousDay}) \times Multiplier + EMA_{PreviousDay}$</p>
+<p>$EMA<em>{Current} = (ClosingPrice - EMA</em>{PreviousDay}) \times Multiplier + EMA_{PreviousDay}$</p>
 <blockquote>
 <p><em>As we are using 10 days in this exponential moving average example, the weighting multiplier would be calculated as follows:</em></p>
 <p>$Multiplier = \frac{2}{TimePeriods + 1} = \frac{2}{10 + 1} = 18.18\%$</p>
 </blockquote>
-<p>$MACD = EMA_{ShortTerm} - EMA_{LongTerm}$</p>
+<p>$MACD = EMA<em>{ShortTerm} - EMA</em>{LongTerm}$</p>
 <p>$MACD_{Signal} = 9\,day\,EMA\,of\,MACD\newline$</p>
-<p>$MACD_{Hist} = MACD - MACD_{Signal}\newline$</p>
+<p>$MACD<em>{Hist} = MACD - MACD</em>{Signal}\newline$</p>
 <h1 id="Let’s-get-started"><a href="#Let’s-get-started" class="headerlink" title="Let’s get started!!"></a>Let’s get started!!</h1><h2 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h2><ul>
 <li>On <a target="_blank" rel="noopener" href="https://www.quantopian.com">Quantopian platform</a></li>
 <li>Run the backtest in a five-year span, from Jan 2015 to Sep 2020</li>
@@ -324,7 +324,7 @@ width: 45%;
 <li>Hedge assets such as Gold or VIX related ETF to hedge the downside risk</li>
 </ul>
 <img data-src="/2020/10/10/2020-10-10-macd-strategy/macd.png" class="" width="600">
-<h2 id="Enter-and-exit-Strategy"><a href="#Enter-and-exit-Strategy" class="headerlink" title="Enter and exit Strategy"></a>Enter and exit Strategy</h2><p>When the $MACD_{Hist}$ is above 0 together when the signal of the secondary indicator is triggered, this indicates that the current $MACD$ line starts trending up above the past 9-day EMA. So once this combined signal reveals, then we enter the position. When the $MACD_{Signal}$ is below 0, then this means the stock price is starting trending low. So we exit the position to capture the return as much as we can compare to the signal using $MACD_{Hist}$ and $MACD_{Signal}$ both below 0.</p>
+<h2 id="Enter-and-exit-Strategy"><a href="#Enter-and-exit-Strategy" class="headerlink" title="Enter and exit Strategy"></a>Enter and exit Strategy</h2><p>When the $MACD<em>{Hist}$ is above 0 together when the signal of the secondary indicator is triggered, this indicates that the current $MACD$ line starts trending up above the past 9-day EMA. So once this combined signal reveals, then we enter the position. When the $MACD</em>{Signal}$ is below 0, then this means the stock price is starting trending low. So we exit the position to capture the return as much as we can compare to the signal using $MACD<em>{Hist}$ and $MACD</em>{Signal}$ both below 0.</p>
 <blockquote>
 <p><em>PS:</em><br><em>There’s another exit strategy that is quite popular on the internet, that you could set a certain percentage as your take-profit and stop-loss point. For example, you can exit the position once you’ve hit 10% of profit or lost 10% of the original investment. It seems quite make sense to me in the beginning, so I played with it and tried to incorporate this into my exit strategy. It turned out the results didn’t seem plausible. My assumption would be that this exit strategy doesn’t serve the purpose of capturing the momentum in the MACD strategy, as the stock price could fluctuate before it reaches the timing that the MACD signal predicts.</em></p>
 </blockquote>
@@ -372,12 +372,12 @@ width: 45%;
 <p>$EMA_{1(i)} = The\,current\,value\,of\,the\,Exponential\,Moving\,Average$</p>
 <p>$EMA_{2(i)} = EMA(EMA_1, N, i)$</p>
 <p>$EMA_{3(i)} = EMA(EMA_2, N, i)$</p>
-<p>$TRIX_{(i)} = \frac{EMA_{3(i)} - EMA_{3(i-1)}}{EMA_{3(i-1)}}$</p>
+<p>$TRIX<em>{(i)} = \frac{EMA</em>{3(i)} - EMA<em>{3(i-1)}}{EMA</em>{3(i-1)}}$</p>
 <h4 id="Code-in-python-3"><a href="#Code-in-python-3" class="headerlink" title="Code in python:"></a>Code in python:</h4><img data-src="/2020/10/10/2020-10-10-macd-strategy/trix.png" class="" width="600">
 <h3 id="5-Awesome-Oscillator"><a href="#5-Awesome-Oscillator" class="headerlink" title="5. Awesome Oscillator"></a>5. Awesome Oscillator</h3><p>According to the article <a target="_blank" rel="noopener" href="https://tradingsim.com/blog/awesome-oscillator/">Awesome Oscillator Day Trading Strategies</a>, the awesome oscillator is quite awesome, or to say it’s amazing. First of all, the awesome oscillator is a boundless oscillator, comparing to the traditional oscillator that ranges from +100 to -100. Secondly, it’s less complex in terms of equation computation, as TRIX modified the concept of normal SMA strategy from using the close price to using the middle price in an intraday. To incorporate the awesome oscillator into our MACD trading strategy, we need both MACD and awesome oscillator signals to be triggered in order to enter or close the positions.</p>
 <p>$SMA_{Fast\,Period} = Simple\,Moving\,Average(\frac{(High - Low)}{2}, 5\,periods)$</p>
 <p>$SMA_{Slow\,Period} = Simple\,Moving\,Average(\frac{(High - Low)}{2}, 34\,periods)$</p>
-<p>$Awesome\,Oscillator = SMA_{Fast\,Period} – SMA_{Slow\,Period}$</p>
+<p>$Awesome\,Oscillator = SMA<em>{Fast\,Period} – SMA</em>{Slow\,Period}$</p>
 <h4 id="Code-in-python-4"><a href="#Code-in-python-4" class="headerlink" title="Code in python:"></a>Code in python:</h4><img data-src="/2020/10/10/2020-10-10-macd-strategy/awesome_scillator.png" class="" width="600">
 <h3 id="6-Simple-Moving-Average"><a href="#6-Simple-Moving-Average" class="headerlink" title="6. Simple Moving Average"></a>6. Simple Moving Average</h3><p>This strategy was mentioned in the article <a target="_blank" rel="noopener" href="https://tradingsim.com/blog/macd/">MACD – 5 Profitable Trading Strategies</a> as a bouns strategy to look at. In this strategy, we enter a position when the MACD signal is triggered, and then we look for the timing with the assistance of the MA line. Meaning, we buy only when the following conditions are met:</p>
 <ol>
@@ -594,20 +594,20 @@ width: 45%;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -653,7 +653,7 @@ width: 45%;
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

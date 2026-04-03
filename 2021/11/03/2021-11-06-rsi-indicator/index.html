@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -277,7 +277,7 @@
 <li><a href="https://mikelhsia.github.io/2020/10/10/2020-10-10-macd-strategy/">How to save your silver bullets with MACD strategy?</a></li>
 <li><a href="https://mikelhsia.github.io/2021/07/19/2021-07-20-advanced-macd-strategy/">Optimize your MACD strategies with advanced indicators</a></li>
 </ul>
-<a id="more"></a>
+<span id="more"></span>
 <h1 id="Train-of-thought-How-to-optimize-our-trading-strategy"><a href="#Train-of-thought-How-to-optimize-our-trading-strategy" class="headerlink" title="Train of thought - How to optimize our trading strategy"></a>Train of thought - How to optimize our trading strategy</h1><img data-src="/2021/11/03/2021-11-06-rsi-indicator/train_of_thought.png" class="" width="300">
 <p style="font-size: 0.8em; text-align:center; color: grey;">
     <i>Train of thought</i>
@@ -354,7 +354,7 @@
 </blockquote>
 <h3 id="2-RSI-stack"><a href="#2-RSI-stack" class="headerlink" title="2. RSI stack"></a>2. RSI stack</h3><p>The concept of the RSI stack is to use multiple consecutive time frames to further confirm the relative strength. Taking the example from the post <a target="_blank" rel="noopener" href="https://alpaca.markets/learn/backtrader-01/">Alpaca &amp; Backtrader: Tools of the Trade (Part 1)</a>, you can see that the author uses <code>15m, 30m, 1h</code> three different time frames to confirm the relative strength is strong enough to start bidding on the reverting direction. Since here we are constructing our strategy to run on a daily basis, we use <code>1d, 2d</code> as the time frame to confirm the strength of the current trend.</p>
 <ul>
-<li>Buy signal: Original buy signal + $RSI_{n} &lt; 30$ + $RSI_{n-1} &lt; 30$</li>
+<li>Buy signal: Original buy signal + $RSI<em>{n} &lt; 30$ + $RSI</em>{n-1} &lt; 30$</li>
 <li>Sell signal: Original sell signal</li>
 </ul>
 <h3 id="3-The-RSI²-Leading-Indicator"><a href="#3-The-RSI²-Leading-Indicator" class="headerlink" title="3. The RSI² Leading Indicator"></a>3. The RSI² Leading Indicator</h3><p>As the RSI is derived directly from the stock price movements, so the RSI indicator value will highly depend on the market condition overall. Therefore <a target="_blank" rel="noopener" href="https://python.plainenglish.io/the-rsi%C2%B2-leading-indicator-detecting-trend-exhaustion-early-in-trading-284a59dc1ea3">in this post</a> suggests that we can perform another RSI function over the original RSI, called $RSI^2$. This will tell us when will the original RSI meets the extreme conditions and start to revert to the opposite direction.</p>
@@ -598,20 +598,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -657,7 +657,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

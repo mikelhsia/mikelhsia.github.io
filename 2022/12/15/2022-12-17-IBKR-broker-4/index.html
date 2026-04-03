@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -267,7 +267,7 @@
       
         <img data-src="/2022/12/15/2022-12-17-IBKR-broker-4/cover.png" class="" width="800">
 <p>In the last post in this series, we’re going to look at some questions that I discovered while working on connecting to Interactive Broker API. Some of them are due to the obscurity of the configuration and hard to find the right place to configure them, and some of them would need the extra tool to resolve. I put all of them down into one post and share it with you.</p>
-<a id="more"></a>
+<span id="more"></span>
 <hr>
 <p>Become a <a target="_blank" rel="noopener" href="https://medium.com/@mikelhsia/membership">Medium member</a> to continue learning without limits. I’ll receive a small portion of your membership fee if you use the following link, at no extra cost to you.</p>
 <blockquote>
@@ -295,7 +295,7 @@
 <li>Add <code>async</code> before the scheduled function definition.<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ibkr_api.py</span></span><br><span class="line"><span class="keyword">import</span> ib_insync</span><br><span class="line">ib_insync.util.patchAsyncio()</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># main.py</span></span><br><span class="line"><span class="keyword">from</span> apscheduler.schedulers.asyncio <span class="keyword">import</span> AsyncIOScheduler</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">test</span>():</span></span><br><span class="line">  print(datetime.datetime.now().strftime(’%Y-%m-%d-%H_%M_%S’))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  scheduler = AsyncIOScheduler()</span><br><span class="line"></span><br><span class="line">  scheduler.add_job(</span><br><span class="line">    test,</span><br><span class="line">    <span class="string">&#x27;cron&#x27;</span>,</span><br><span class="line">    day_of_week=<span class="string">&#x27;mon-fri&#x27;</span>,</span><br><span class="line">    hour=<span class="number">9</span>,</span><br><span class="line">    minute=<span class="number">10</span>,</span><br><span class="line">    timezone=ZoneInfo(<span class="string">&#x27;US/Easter&#x27;</span>),</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># main.py</span></span><br><span class="line"><span class="keyword">from</span> apscheduler.schedulers.asyncio <span class="keyword">import</span> AsyncIOScheduler</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">test</span>():</span><br><span class="line">  <span class="built_in">print</span>(datetime.datetime.now().strftime(’%Y-%m-%d-%H_%M_%S’))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  scheduler = AsyncIOScheduler()</span><br><span class="line"></span><br><span class="line">  scheduler.add_job(</span><br><span class="line">    test,</span><br><span class="line">    <span class="string">&#x27;cron&#x27;</span>,</span><br><span class="line">    day_of_week=<span class="string">&#x27;mon-fri&#x27;</span>,</span><br><span class="line">    hour=<span class="number">9</span>,</span><br><span class="line">    minute=<span class="number">10</span>,</span><br><span class="line">    timezone=ZoneInfo(<span class="string">&#x27;US/Easter&#x27;</span>),</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
 <p style="font-size: 0.8em; text-align:center; color: grey;">
   <i>Apscheduler + ib_insync code snippet</i>
 </p>
@@ -500,20 +500,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -559,7 +559,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

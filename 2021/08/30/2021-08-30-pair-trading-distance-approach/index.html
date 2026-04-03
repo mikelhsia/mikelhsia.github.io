@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -298,7 +298,7 @@
 <li><strong>Research and performance analysis</strong>: Implement each variation and compare</li>
 </ol>
 <p>Let’s get it started!</p>
-<a id="more"></a>
+<span id="more"></span>
 <img data-src="/2021/08/30/2021-08-30-pair-trading-distance-approach/get_started.jpg" class="" width="150">
 <hr>
 
@@ -363,7 +363,7 @@
 </p>
 
 <h2 id="Selecting-pairs-with-a-higher-number-of-zero-crossings"><a href="#Selecting-pairs-with-a-higher-number-of-zero-crossings" class="headerlink" title="Selecting pairs with a higher number of zero-crossings"></a>Selecting pairs with a higher number of zero-crossings</h2><p>It’s a good sign that the spread of the paired stocks is stable enough. However, if the spread of a certain pair is way too stable, there will be no chance for the traders to step in and make a profit. Therefore in this variant, among the top 10% pairs that have the smallest <strong>Euclidean squared distance</strong>, we further pick the pairs that had the highest number of crossing the zero-spread line. A high number of zero-crossing gives this pair enough energy to swing up and down, but without losing the ability to maintain its stability and come back to the zero-spread line.</p>
-<p>Here’s a tip to share with you, that it’s fairly simple to calculate the number of zero-crossing if you have your spread in proper time-series format.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Both price_a and price_b are nd.array or pd.Series objects</span></span><br><span class="line">spread = pd.Series((price_a - price_b).reshape(<span class="number">-1</span>))</span><br><span class="line">num_of_zero_crossing = ((spread * spread.shift())&lt;<span class="number">0</span>).sum()</span><br></pre></td></tr></table></figure></p>
+<p>Here’s a tip to share with you, that it’s fairly simple to calculate the number of zero-crossing if you have your spread in proper time-series format.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Both price_a and price_b are nd.array or pd.Series objects</span></span><br><span class="line">spread = pd.Series((price_a - price_b).reshape(-<span class="number">1</span>))</span><br><span class="line">num_of_zero_crossing = ((spread * spread.shift())&lt;<span class="number">0</span>).<span class="built_in">sum</span>()</span><br></pre></td></tr></table></figure></p>
 <img data-src="/2021/08/30/2021-08-30-pair-trading-distance-approach/zero-crossing.png" class="" width="500">
 <p style="font-size: 0.8em; text-align:center; color: grey;">
     <i>Why the number of zero-crossing matters</i>
@@ -573,20 +573,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -632,7 +632,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

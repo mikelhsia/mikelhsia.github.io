@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.0.2">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
@@ -170,6 +170,236 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2026/03/29/2026-03-29-claude-w-ibkr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/03/29/2026-03-29-claude-w-ibkr/" class="post-title-link" itemprop="url">【How 2】 Escape Interactive Brokers' Connection Trap with the Help of AI</a>
+        </h2>
+
+        
+          
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-03-29 00:00:00" itemprop="dateCreated datePublished" datetime="2026-03-29T00:00:00+08:00">2026-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-04-04 02:17:01" itemprop="dateModified" datetime="2026-04-04T02:17:01+08:00">2026-04-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/How2/" itemprop="url" rel="index"><span itemprop="name">How2</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2026/03/29/2026-03-29-claude-w-ibkr/" class="post-meta-item leancloud_visitors" data-flag-title="【How 2】 Escape Interactive Brokers' Connection Trap with the Help of AI" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2026/03/29/2026-03-29-claude-w-ibkr/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2026/03/29/2026-03-29-claude-w-ibkr/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <img data-src="/2026/03/29/2026-03-29-claude-w-ibkr/cover.png" class="" width="600">
+<p style="text-align:center; color: grey;">
+  <i>Photo by <a target="_blank" rel="noopener" href='https://gemini.google.com/'>Gemini</a>, Two trading scripts. One IB Gateway. Constant timeouts.</i>
+</p>
+
+<p>Picture two people trying to call the same phone number at the same time. One gets through. The other gets a busy signal — or worse, connects but hears nothing. Neither knows what the other is doing. Neither knows there <em>is</em> another person.</p>
+<p>Running multiple trading strategies through a single IBKR TWS or IB Gateway is almost exactly this. The platform wasn’t designed for concurrent connections — it’s a trading terminal, not a message router. When two strategies fire at the same time, one gets data and one gets silence, and the logs rarely tell you which is which.</p>
+<p>I’d been sitting on the fix for a while: a message queue in the middle, one process owning the IB connection, everything else talking to it. The architecture was clear in my head. I just didn’t have the time to build it solo. Now, since the AI coding capability improves drastically, I finally decided to open the Claude Code and said: “<em>I have an idea. Help me build it.</em>“</p>
+<blockquote>
+<p><strong><em>This is what building with AI actually feels like.</em></strong></p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/03/29/2026-03-29-claude-w-ibkr/" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/" class="post-title-link" itemprop="url">2025-07-01-updated-boilertemplate-ml-project</a>
+        </h2>
+
+        
+          
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-01 14:13:37" itemprop="dateCreated datePublished" datetime="2025-07-01T14:13:37+08:00">2025-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-02 12:57:56" itemprop="dateModified" datetime="2025-07-02T12:57:56+08:00">2025-07-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Trading-Strategy/" itemprop="url" rel="index"><span itemprop="name">Trading Strategy</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Trading-Strategy/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/" class="post-meta-item leancloud_visitors" data-flag-title="2025-07-01-updated-boilertemplate-ml-project" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p style="text-align:center; color: grey;">
+  <i>Extracted from Website: <a target="_blank" rel="noopener" href='https://steadyoptions.com/articles/the-options-wheel-strategy-wheel-trade-explained-r632/'>SteadyOptions</a></i>
+</p>
+
+<!--Introduction-->
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/01/2025-07-01-updated-boilertemplate-ml-project/" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1063,232 +1293,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2024/04/09/2024-03-25-hybrid-asset-allocation/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Michael Hsia">
-      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Michael's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/04/09/2024-03-25-hybrid-asset-allocation/" class="post-title-link" itemprop="url">Testing the Waters - Backtesting HAA and Its Variations Towards Success</a>
-        </h2>
-
-        
-          
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2024-04-09 14:01:23" itemprop="dateCreated datePublished" datetime="2024-04-09T14:01:23+08:00">2024-04-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-04-12 12:08:29" itemprop="dateModified" datetime="2024-04-12T12:08:29+08:00">2024-04-12</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2024/04/09/2024-03-25-hybrid-asset-allocation/" class="post-meta-item leancloud_visitors" data-flag-title="Testing the Waters - Backtesting HAA and Its Variations Towards Success" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2024/04/09/2024-03-25-hybrid-asset-allocation/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2024/04/09/2024-03-25-hybrid-asset-allocation/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img data-src="/2024/04/09/2024-03-25-hybrid-asset-allocation/cover.png" class="" width="800">
-<p style="text-align:center; color: grey;">
-  <i>Cover image created through <a target="_blank" rel="noopener" href='https://https://copilot.microsoft.com/'>Copilot</a></i>
-</p>
-
-<p>As is known to all, diversification is the key to managing the risk of your investment. However, it’ll take a lot of effort and time to hand-pick quality assets that have little correlation with each other. In the <a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4346906">Hybrid Asset Allocation trading strategy</a>, <a target="_blank" rel="noopener" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4346906">Wouter J. Keller and Jan Willem Keuning</a> actually brought up an easier way to introduce diversification into the trading strategy. In this article, we’re going to first talk about HAA strategy and see how it boosts the diversification of our portfolio. Then, we’re also going to backtest the HAA (Hybrid Asset Allocation) trading strategy and several of its variations against the benchmark.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/09/2024-03-25-hybrid-asset-allocation/" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2024/01/18/2024-01-18-Revisit-Buy-On-Gao-Strategy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Michael Hsia">
-      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Michael's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/01/18/2024-01-18-Revisit-Buy-On-Gao-Strategy/" class="post-title-link" itemprop="url">From Theory to Profits - Elevating the Buy-on-Gap Strategy with Advanced Techniques</a>
-        </h2>
-
-        
-          
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2024-01-18 12:05:56" itemprop="dateCreated datePublished" datetime="2024-01-18T12:05:56+08:00">2024-01-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-02-01 01:05:47" itemprop="dateModified" datetime="2024-02-01T01:05:47+08:00">2024-02-01</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Quantitative-Trading/How2/" itemprop="url" rel="index"><span itemprop="name">How2</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2024/01/18/2024-01-18-Revisit-Buy-On-Gao-Strategy/" class="post-meta-item leancloud_visitors" data-flag-title="From Theory to Profits - Elevating the Buy-on-Gap Strategy with Advanced Techniques" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2024/01/18/2024-01-18-Revisit-Buy-On-Gao-Strategy/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2024/01/18/2024-01-18-Revisit-Buy-On-Gao-Strategy/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img data-src="/2024/01/18/2024-01-18-Revisit-Buy-On-Gao-Strategy/cover.jpeg" class="" width="800">
-<p style="text-align:center; color: grey;">
-  <i>Cover image created by <a target="_blank" rel="noopener" href='https://https://copilot.microsoft.com/'>Copilot</a></i>
-</p>
-
-<p>The best ideas are often inspired by or adapted from the work of others. Likewise, profitable quantitative trading strategies are not necessarily original, but they can be generated by adding personal insights regarding the market or strategy itself. In this post, I’m going to introduce the process that I usually do when discovering a prospering trading strategy.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/01/18/2024-01-18-Revisit-Buy-On-Gao-Strategy/" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1358,20 +1362,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
 
@@ -1417,7 +1421,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
