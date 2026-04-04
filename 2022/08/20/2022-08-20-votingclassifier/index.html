@@ -24,35 +24,35 @@
   <meta name="description" content="When it comes to using machine learning algorithm to pick the stocks that are most likely to produce a good return, it is similar to seeking the opinion of an investment consultant. However, it can b">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【ML algo trading】 VI - Employ the power of ensemble learning to increase your portfolio return">
-<meta property="og:url" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/index.html">
+<meta property="og:url" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/index.html">
 <meta property="og:site_name" content="Michael&#39;s blog">
 <meta property="og:description" content="When it comes to using machine learning algorithm to pick the stocks that are most likely to produce a good return, it is similar to seeking the opinion of an investment consultant. However, it can b">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/cover.jpg">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/or_do_we.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/ensemble_types.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/stacking.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/backtest_results.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/1-group.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/1-return.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/2-group.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/2-return.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/3-group.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/3-return.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/4-group.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/4-return.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/5-group.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/5-return.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/6-group.png">
-<meta property="og:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/6-return.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/cover.jpg">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/or_do_we.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/ensemble_types.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/stacking.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/backtest_results.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/1-group.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/1-return.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/2-group.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/2-return.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/3-group.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/3-return.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/4-group.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/4-return.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/5-group.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/5-return.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/6-group.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/6-return.png">
 <meta property="article:published_time" content="2022-08-20T03:45:58.000Z">
 <meta property="article:modified_time" content="2022-08-25T02:21:08.673Z">
 <meta property="article:author" content="Michael Hsia">
 <meta property="article:tag" content="Backtesting">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/cover.jpg">
+<meta name="twitter:image" content="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/cover.jpg">
 
-<link rel="canonical" href="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/">
+<link rel="canonical" href="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/">
 
 
 <script id="page-configurations">
@@ -196,7 +196,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/">
+    <link itemprop="mainEntityOfPage" href="https://mikelhsia.github.io/2022/08/20/2022-08-20-votingclassifier/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
