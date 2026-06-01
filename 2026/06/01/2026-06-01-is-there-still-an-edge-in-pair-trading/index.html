@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/favicon.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikelhsia.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Ever built something so carefully that its most valuable answer turned out to be “no”? That’s pretty much the story of my last few weeks. I went looking for edge in the mean reversion behind pairs t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Is There Still Edge in Pairs Trading? My Framework Said &quot;Not Here&quot; — Three Times">
+<meta property="og:url" content="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/index.html">
+<meta property="og:site_name" content="Michael&#39;s blog">
+<meta property="og:description" content="Ever built something so carefully that its most valuable answer turned out to be “no”? That’s pretty much the story of my last few weeks. I went looking for edge in the mean reversion behind pairs t">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/cover.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/spread_mean_reversion_concept.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/pairs_trading_data_flow.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/three_drift_filters.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/crack_spread_refinery_margin.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/pairs_trading_screening_funnel.png">
+<meta property="og:image" content="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/mean_reversion_moving_center.png">
+<meta property="article:published_time" content="2026-05-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-06-01T10:29:10.023Z">
+<meta property="article:author" content="Michael Hsia">
+<meta property="article:tag" content="Pair Trading">
+<meta property="article:tag" content="Quantitative Trading">
+<meta property="article:tag" content="Cointegration">
+<meta property="article:tag" content="Mean Reversion">
+<meta property="article:tag" content="Statistical Arbitrage">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/cover.png">
+
+<link rel="canonical" href="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Is There Still Edge in Pairs Trading? My Framework Said "Not Here" — Three Times | Michael's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177399736-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-177399736-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Michael's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Michael's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life-long Learning</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://mikelhsia.github.io/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Michael Hsia">
+      <meta itemprop="description" content="Free your potential with learning for the rest of your life">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Michael's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Is There Still Edge in Pairs Trading? My Framework Said "Not Here" — Three Times
+        </h1>
+
+        
+          <h2 class="post-title" itemprop="name headline" style="font-size: 1em;color: grey;font-style: italic;padding: 0px 50px 0px 50px;">
+            What testing cointegration and mean reversion across stocks, ETFs, and commodity futures taught me about statistical arbitrage
+          </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2026-06-01 00:00:00 / Modified: 18:29:10" itemprop="dateCreated datePublished" datetime="2026-06-01T00:00:00+08:00">2026-06-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Quantitative-Trading/" itemprop="url" rel="index"><span itemprop="name">Quantitative Trading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/" class="post-meta-item leancloud_visitors" data-flag-title="Is There Still Edge in Pairs Trading? My Framework Said "Not Here" — Three Times" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <!-- SUBTITLE (for Medium, paste this as the subtitle field):
+What testing cointegration and mean reversion across stocks, ETFs, and commodity
+futures taught me about statistical arbitrage -->
+<img data-src="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/cover.png" class="" width="800">
+<p>Ever built something so carefully that its most valuable answer turned out to be <strong>“no”</strong>?</p>
+<p>That’s pretty much the story of my last few weeks. I went looking for edge in the mean reversion behind <code>pairs trading</code> — the whole statistical-arbitrage playbook — and built a framework as rigorous as I could to test the idea <strong>honestly</strong> instead of flatteringly. Then I ran it on three different asset universes, one after another, and the backtest results failed me three times in a row.</p>
+<p>This whole project started life as my final project for the <a target="_blank" rel="noopener" href="https://www.cqf.com/"><strong>CQF (Certificate in Quantitative Finance)</strong></a>. I passed — but when I handed it in, I had that nagging feeling that I’d rushed it, and that I could do it far more thoroughly if I actually gave it the time it deserved. A couple of months later, I went back, rebuilt the framework from scratch, and let it run on real data until it told me something I didn’t want to hear. This post is the story of those three rejections — stocks, ETFs, and commodity futures — and why I’ve come around to thinking of this carefully built framework like the manager who rejects every proposal you bring him… and turns out to be right every time.</p>
+<span id="more"></span>
+<p><strong><em>Previous readings</em></strong></p>
+<ul>
+<li><a href="https://mikelhsia.github.io/2025/01/16/2025-01-18-wheel-trading-strategy/">【The Wheel Strategy】 Turn Options Into Monthly Income</a></li>
+<li><a href="https://mikelhsia.github.io/2024/11/11/2024-11-11-new-type-of-grid-trading-system/">Beyond Traditional Grid Trading - Introducing A New Type of Grid Trading System</a></li>
+<li><a href="https://mikelhsia.github.io/2024/09/23/2024-09-30-market-indicator/">Supercharge Your Trading Strategy - Bull? Bear? Here’s How to Profit</a></li>
+</ul>
+<hr>
+<h1 id="First-what-does-it-even-mean-for-a-spread-to-“revert”"><a href="#First-what-does-it-even-mean-for-a-spread-to-“revert”" class="headerlink" title="First, what does it even mean for a spread to “revert”?"></a>First, what does it even mean for a spread to “revert”?</h1><p>The dream of pairs trading is simple and seductive — and you’ve probably read this pitch a hundred times, so I’ll keep it quick. You find two things that move together — two bond ETFs, gold and silver, crude oil at two different delivery months — and you trade the <em>gap</em> between them instead of betting on direction. When the gap stretches too wide, you bet it snaps back. You don’t care if the market goes up or down; you only care that the rubber band returns to its resting length.</p>
+<img data-src="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/spread_mean_reversion_concept.png" class="" width="600" title="A mean-reverting spread oscillating around its resting level with entry bands">
+<p><strong>You trade the gap, not the direction — when the spread stretches past the entry band, you bet it relaxes back to the mean</strong></p>
+<p>The hard part is that little word <em>together</em>. Two lines on a chart can look like dance partners for a year and then wander off in opposite directions forever. So the framework I built is really one long, suspicious interrogation of that word:</p>
+<ul>
+<li><strong><code>Cointegration</code> (Johansen test / <code>VECM</code>):</strong> the statistical question of whether two price series are genuinely <em>tethered</em>, not just briefly correlated. Correlation is a fair-weather friend; cointegration is supposed to be the real marriage. (see <a href="https://mikelhsia.github.io/2023/02/25/2023-02-25-pair-trading-cointegration-part1/"><strong>here</strong></a> for reference).</li>
+<li><strong>A <code>Kalman filter</code></strong> to track the hedge ratio — <em>how many</em> units of B you short against A — as it drifts over time, instead of freezing it once and hoping.</li>
+<li><strong>An <code>Ornstein–Uhlenbeck</code> fit</strong> to measure the spread’s <code>half-life</code>: how many days it typically takes the rubber band to relax halfway back. Short half-life means fast, frequent, tradeable. Long half-life means you’ll grow old holding the position — and trust me, you don’t want that one.</li>
+<li><strong><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.physa.2010.01.045">A Bertram optimal threshold (<code>a*</code>)</a>:</strong> the math (Bertram, 2010) for <em>where</em> to enter (instead of using traditional fixed Z-score) — the deviation that maximizes your Sharpe per unit of time, rather than a hand-waved “two standard deviations.”</li>
+</ul>
+<img data-src="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/pairs_trading_data_flow.png" class="" width="600" title="Algo structure and data flow">
+<p>And then — the part that ended up mattering the most — a set of <strong>drift filters</strong>. Before the framework trusts a spread at all, it asks three more uncomfortable questions — the kind designed to make the data confess.</p>
+<img data-src="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/three_drift_filters.png" class="" width="600" title="The three drift filters: drift_test, Hurst exponent, and out-of-sample reversion">
+<p><strong>The three drift filters run after the OU half-life screen. A pair has to pass all three or it gets thrown out — no matter how pretty the cointegration looked</strong></p>
+<p>Is the spread quietly <em>trending</em> instead of oscillating (a HAC <code>drift_test</code>)? Is it persistent like a random walk rather than mean-reverting (the <code>Hurst</code> exponent)? And does the equilibrium itself stay put from one month to the next (<code>mu_e_drift</code>)? Fail any one of these and the pair gets thrown out.</p>
+<p>I ran this whole machine on S&amp;P 500 stocks at daily resolution first. It found nothing worth trading. That was the first <em>no</em> — and honestly, fair enough. Single stocks carry their own idiosyncratic, unpredictable noise. So I went looking for cleaner tethers.</p>
+<h1 id="Round-1-four-ETF-pairs-four-different-ways-to-fail"><a href="#Round-1-four-ETF-pairs-four-different-ways-to-fail" class="headerlink" title="Round 1: four ETF pairs, four different ways to fail"></a>Round 1: four ETF pairs, four different ways to fail</h1><p>ETFs felt like the obvious upgrade. A bond-curve pair, a couple of commodity-country pairs, the classic stock-vs-bond hedge — each one has a <em>story</em> for why the gap should revert. So I tested four, and here’s the thing that still makes me smile bitterly: all four failed, and <strong>no two failed the same way.</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Why they should revert</th>
+<th>How it actually failed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TLT / IEF</strong></td>
+<td>Two points on the same Treasury yield curve</td>
+<td>Spread too <em>quiet</em> — the optimizer wanted to enter at noise-level wiggles (<code>a*</code> clamped to 1)</td>
+</tr>
+<tr>
+<td><strong>EWA / EWC</strong></td>
+<td>Two commodity-exporting economies (Australia, Canada)</td>
+<td>The commodity cycle dragged the spread into a slow trend — drift filter rejected 100%</td>
+</tr>
+<tr>
+<td><strong>GLD / SLV</strong></td>
+<td>Gold and silver, the original “physical” arb</td>
+<td><code>a*</code> actually unlocked — but a multi-year trending ratio tripped the drift filter</td>
+</tr>
+<tr>
+<td><strong>SPY / TLT</strong></td>
+<td>The textbook stocks-vs-bonds seesaw</td>
+<td>The hedge ratio regime-switched from −0.2 to +2.3 — no stable relationship to trade</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Four pairs, four failure modes, one verdict. And here’s why I didn’t find that depressing: the framework wasn’t broken. <strong>GLD/SLV proved it</strong> — there, the Bertram optimizer <em>did</em> unlock a real entry threshold, which means the machine responds correctly when a spread genuinely has magnitude. It wasn’t rejecting everything reflexively. It was rejecting these spreads <em>for specific, different, correct reasons.</em></p>
+<p>But it left me with a suspect. ETFs are wrappers. They carry roll yield, tracking error, dividend-cash-flow noise — distortions that have nothing to do with the underlying assets and everything to do with the fund structure. What if the drift my filters kept flagging was partly <em>wrapper</em> drift? The most famous cautionary tale here is USO in 2020, the oil ETF that bled out on contango even as the oil it tracked stayed roughly put. If the wrapper was the villain, the fix was obvious: drop the wrapper. Trade the actual contracts.</p>
+<h1 id="Round-2-futures-and-the-promise-of-physical-arbitrage"><a href="#Round-2-futures-and-the-promise-of-physical-arbitrage" class="headerlink" title="Round 2: futures, and the promise of physical arbitrage"></a>Round 2: futures, and the promise of <em>physical</em> arbitrage</h1><p>This is the part I was genuinely excited about. With commodity futures you get something equities and ETFs simply can’t offer: an arbitrage that real humans with refineries, crushers, and storage tanks are <em>economically forced</em> to defend.</p>
+<img data-src="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/crack_spread_refinery_margin.png" class="" width="600" title="Crack spread diagram: crude oil into a refinery out to gasoline, with the spread equal to the refinery margin">
+<p><strong>The crack spread is the refinery’s margin. When it gets out of line, real money piles in to pull it back — the reversion isn’t a statistical coincidence, it’s produced by people whose jobs depend on it</strong></p>
+<p>A refinery buys crude and sells gasoline, so the <strong>crack spread</strong> between them is literally their margin — and when it gets out of line, real money piles in to pull it back. That’s supposed to be the one corner of the market where edge survives. So I went after the two Tier-1 spreads:</p>
+<ul>
+<li><strong>The calendar spread</strong> — crude oil now vs. crude oil three months out. The tether is the cost of carry (storage + financing).</li>
+<li><strong>The crack spread</strong> — gasoline vs. crude. The tether is the refinery margin itself.</li>
+</ul>
+<p>Before any strategy code, I spent an afternoon on plumbing on the <a target="_blank" rel="noopener" href="https://www.quantconnect.com/">QuantConnect</a> backtest platform. Once the data was clean, I ran a quick gross-of-cost probe on each spread, looking only at the statistics. Both looked <em>promising</em>: strong cointegration, a tradeable half-life, and — for the crack — a rich, fat spread that swings 20–50%. By every reversion metric, this was the best-looking setup I’d seen in the whole project. All of a sudden, my confidence of finding an edge was through the roof.</p>
+<p>And then I ran them through the full framework.</p>
+<h1 id="The-plot-twist-clean-reversion-around-a-moving-target"><a href="#The-plot-twist-clean-reversion-around-a-moving-target" class="headerlink" title="The plot twist: clean reversion around a moving target"></a>The plot twist: clean reversion around a moving target</h1><p>Both spreads reverted <em>beautifully</em>. And both got rejected anyway. Here’s the funnel for the crack spread — how many pairs survive each filter:</p>
+<img data-src="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/pairs_trading_screening_funnel.png" class="" width="600" title="Screening funnel for the crack spread showing 40 candidates narrowing to 1 tradeable pair">
+<p><strong>40 cointegrating candidates go in; exactly one survives every filter. The two coral stages — <code>drift_test</code> and <code>mu_e_drift</code> — do almost all the killing</strong></p>
+<p>Look where the cliffs are. The spread passes the “does it revert?” tests with flying colors — the <code>Hurst</code> exponent came in around <strong>0.09</strong> (anything under 0.5 is mean-reverting; 0.09 is <em>emphatically</em> mean-reverting), and it snapped back inside the out-of-sample window almost every time. The reversion is real. It is, if anything, <em>cleaner</em> than the calendar spread.</p>
+<p>But two filters do almost all the killing, and they’re the same two for both spreads: the <strong><code>drift_test</code></strong> (the spread is quietly trending inside the window) and <strong><code>mu_e_drift</code></strong> (the spread’s resting point jumps around from month to month). In plain English:</p>
+<blockquote>
+<p><strong>These commodity spreads mean-revert cleanly — but around a center that keeps moving.</strong> The rubber band snaps back reliably; the <em>peg it’s tied to</em> slides across the table. A strategy that assumes a fixed mean gets run over, and the drift filters correctly refuse to play.</p>
+</blockquote>
+<img data-src="/2026/06/01/2026-06-01-is-there-still-an-edge-in-pair-trading/mean_reversion_moving_center.png" class="" width="600" title="Two-panel comparison of a fixed mean versus a drifting center that a fixed-mean model gets run over by">
+<p><strong>Left: what a fixed-mean model assumes. Right: what the commodity spreads actually do — clean reversion around a centre that slides. Same clean snapping-back, completely different tradeability</strong></p>
+<p>That’s the same fingerprint I saw on the trending ETF pairs. Escaping the wrapper didn’t change the answer — which tells me the wrapper was never really the villain. The villain is structural: a <em>fixed-mean</em> mean-reversion model meeting spreads whose equilibrium genuinely drifts, at daily resolution.</p>
+<p>Along the way I confidently predicted that the crack’s rich spread would “unlock” the Bertram threshold (<strong>a*</strong>) the way it never did for the quiet bond ETFs. I was wrong — and wrong in an instructive way. When you run gross-of-cost (zero fees, to isolate raw edge), the cost term in the Bertram math goes to zero, and the optimizer pins the threshold to its floor <em>regardless of how fat the spread is.</em> The “clamp” I’d been reading as a signal about spread size was, in that mode, just an artifact of turning costs off. The fat spread was real; my interpretation of that one number was not. Good frameworks catch your data errors. They don’t catch your overconfidence — that one’s on me.</p>
+<h1 id="Why-“no”-is-the-actual-product"><a href="#Why-“no”-is-the-actual-product" class="headerlink" title="Why “no” is the actual product"></a>Why “no” is the actual product</h1><p>It would be easy to read this as four weeks of failure. Every one of these rejections was <em>specific and correct.</em> Too-quiet spread. Commodity-cycle drift. Regime-switching hedge. Drifting equilibrium. The framework never once gave me a false green light, never sold me a backtest that would’ve melted in production. In a domain where the default failure mode is fooling yourself with an overfit equity curve, a tool whose strongest feature is a well-reasoned <em>no</em> is not a consolation prize. It’s the whole asset.</p>
+<h1 id="Where-this-leaves-me"><a href="#Where-this-leaves-me" class="headerlink" title="Where this leaves me"></a>Where this leaves me</h1><p>I went looking for a commodity arbitrage and came back with four ETF rejections, two futures rejections, and a much sharper question than the one I started with. The holy grail of an ever-profitable mean-reversion strategy stayed exactly as hidden as it was before. But I trust my map of where it <strong>isn’t</strong> a great deal more — and I trust the instrument I’m using to draw that map.</p>
+<p>Maybe that’s the quiet lesson in all of this. The market is always happy to hand you a reason to trade. However, all those movements and mechanisms hidden behind the curtain are actually the killers that wear out your profit and make your strategy bleed. And through the futures backtest results that I obtained, I now have something better than an edge: a precise description of <strong>why</strong> there isn’t one here, which points me directly to what to try next.</p>
+<ul>
+<li><strong>A moving-center model</strong>. The spreads revert — that part is real and strong. The fixed mean is what fails. So instead of measuring deviations from a frozen average, track the center as it moves (a Kalman-filtered mean, or a detrended spread) and trade deviations from <strong>that</strong>. This is a genuine redesign, not a tweak — but those clean <code>Hurst</code> numbers are practically begging for it.</li>
+<li><strong>Minute resolution</strong>. The center drifts over <strong>days and months</strong>. Zoom in to intraday bars and that drift nearly vanishes within a session — the mean is approximately stationary for the few hours you’d hold. The exact same framework that rejected everything at daily resolution might finally find an equilibrium that sits still long enough to trade. That’s the next experiment.</li>
+</ul>
+<p>I hope you enjoyed following the dead ends as much as I enjoyed walking them. If you’ve got a sharper idea for handling a drifting equilibrium, let me know — I’d love to hear it. On to minute bars.</p>
+<hr>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li>Bertram, W. K. (2010). <a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.physa.2010.01.045">Analytic solutions for optimal statistical arbitrage trading</a>. <em>Physica A: Statistical Mechanics and its Applications</em>, 389(11), 2234–2243.</li>
+<li>Engle, R. F., &amp; Granger, C. W. J. (1987). <a target="_blank" rel="noopener" href="https://doi.org/10.2307/1913236">Co-integration and error correction: Representation, estimation, and testing</a>. <em>Econometrica</em>, 55(2), 251–276.</li>
+<li>Johansen, S. (1991). <a target="_blank" rel="noopener" href="https://doi.org/10.2307/2938278">Estimation and hypothesis testing of cointegration vectors in Gaussian vector autoregressive models</a>. <em>Econometrica</em>, 59(6), 1551–1580.</li>
+<li>Uhlenbeck, G. E., &amp; Ornstein, L. S. (1930). <a target="_blank" rel="noopener" href="https://doi.org/10.1103/PhysRev.36.823">On the theory of the Brownian motion</a>. <em>Physical Review</em>, 36(5), 823–841.</li>
+<li>Hurst, H. E. (1951). Long-term storage capacity of reservoirs. <em>Transactions of the American Society of Civil Engineers</em>, 116, 770–799.</li>
+<li>Kalman, R. E. (1960). <a target="_blank" rel="noopener" href="https://doi.org/10.1115/1.3662552">A new approach to linear filtering and prediction problems</a>. <em>Journal of Basic Engineering</em>, 82(1), 35–45.</li>
+<li>CQF — <a target="_blank" rel="noopener" href="https://www.cqf.com/">Certificate in Quantitative Finance</a>, CQF Institute (Fitch Learning).</li>
+</ul>
+
+    </div>
+    
+      
+        <div>
+    <p style="color: grey; font-family: Georgia; font-size: 1.2em;"><i>
+        Disclaimer: Nothing herein is financial advice or even a recommendation to trade real money. Many platforms exist for simulated trading (paper trading) which can be used for building and developing the strategies discussed. Please use common sense and consult a professional before trading or investing your hard-earned money.
+    </i></p>
+</div>
+
+
+
+
+      
+    
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Enjoy reading? Some donations would motivate me to produce more quality content</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Tip
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="Michael Hsia WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="Michael Hsia Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/stripe.png" alt="Michael Hsia Stripe">
+        <p>Stripe</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Pair-Trading/" rel="tag"># Pair Trading</a>
+              <a href="/tags/Quantitative-Trading/" rel="tag"># Quantitative Trading</a>
+              <a href="/tags/Cointegration/" rel="tag"># Cointegration</a>
+              <a href="/tags/Mean-Reversion/" rel="tag"># Mean Reversion</a>
+              <a href="/tags/Statistical-Arbitrage/" rel="tag"># Statistical Arbitrage</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/03/29/2026-03-29-claude-w-ibkr/" rel="prev" title="【How 2】 Escape Interactive Brokers' Connection Trap with the Help of AI">
+      <i class="fa fa-chevron-left"></i> 【How 2】 Escape Interactive Brokers' Connection Trap with the Help of AI
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#First-what-does-it-even-mean-for-a-spread-to-%E2%80%9Crevert%E2%80%9D"><span class="nav-number">1.</span> <span class="nav-text">First, what does it even mean for a spread to “revert”?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Round-1-four-ETF-pairs-four-different-ways-to-fail"><span class="nav-number">2.</span> <span class="nav-text">Round 1: four ETF pairs, four different ways to fail</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Round-2-futures-and-the-promise-of-physical-arbitrage"><span class="nav-number">3.</span> <span class="nav-text">Round 2: futures, and the promise of physical arbitrage</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-plot-twist-clean-reversion-around-a-moving-target"><span class="nav-number">4.</span> <span class="nav-text">The plot twist: clean reversion around a moving target</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-%E2%80%9Cno%E2%80%9D-is-the-actual-product"><span class="nav-number">5.</span> <span class="nav-text">Why “no” is the actual product</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Where-this-leaves-me"><span class="nav-number">6.</span> <span class="nav-text">Where this leaves me</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">7.</span> <span class="nav-text">References</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Michael Hsia</p>
+  <div class="site-description" itemprop="description">Free your potential with learning for the rest of your life</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+
+  </nav>
+    
+
+  <div class="">
+
+    <div class="">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Michael Hsia</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'xqc1TRzBeSqWMcMIO6i05hrV-MdYXbMMI',
+      appKey     : '8y8oPqyB7YE9KwpM33MRijdR',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://xqc1trzb.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
